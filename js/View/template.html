@@ -7,7 +7,7 @@
 
 	<div class='tutorial-buttons'>
 		<a
-			class='button {{ !prevTutorial ? "disabled" : "" }}'
+			class='button {{ !prevTutorialFirstStep ? "disabled" : "" }}'
 			href='{{#prevTutorialFirstStep}}../../{{slug}}{{/prevTutorialFirstStep}}'
 			on-tap='goto:{{prevTutorialFirstStep}}'
 		>&laquo;</a>
@@ -15,7 +15,7 @@
 		<strong>{{currentTutorial.index + 1}}/{{tutorials.length}}</strong>
 
 		<a
-			class='button {{ !nextTutorial ? "disabled" : "" }}'
+			class='button {{ !nextTutorialFirstStep ? "disabled" : "" }}'
 			href='{{#nextTutorialFirstStep}}../../{{slug}}{{/nextTutorialFirstStep}}'
 			on-tap='goto:{{nextTutorialFirstStep}}'
 		>&raquo;</a>

@@ -1,0 +1,8 @@
+@import "base";
+
+.window {
+	position: absolute;
+	width: 100%;
+	left: 0;
+	@include border-box;
+}

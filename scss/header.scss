@@ -1,0 +1,32 @@
+#header {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 3em;
+	padding: 0.5em;
+	@include border-box;
+
+	h1, h2 {
+		margin: 0;
+		float: left;
+	}
+
+	h2 {
+		margin-top: 0.35em;
+	}
+}
+
+.tutorial-buttons {
+	float: left;
+	margin: 0.7em 1em 0 3em;
+
+	strong {
+		font-family: 'Voltaire';
+		position: relative;
+		top: 0.1em;
+		width: 2.5em;
+		display: inline-block;
+		text-align: center;
+	}
+}

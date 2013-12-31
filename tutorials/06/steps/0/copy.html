@@ -1,0 +1,11 @@
+<h2>Introducing the triple-stache</h2>
+
+<p>Ordinarily in a template, mustaches stand in for data. But occasionally you need to insert chunks of HTML into your view &ndash; for that, we have the triple-stache: <code>{{{content}}}</code>.</p>
+
+<p>In fact, you're looking at the work of a triple-stache right now &ndash; this whole tutorial is one big Ractive, and the HTML for this explanatory text is represented by a triple.</p>
+
+<p>Try running the code in the console.</p>
+
+<div class='hint'>
+	<p>That was a short tutorial! When using triples, bear in mind that when their data changes, the nodes they represent must be removed from the DOM before being re-rendered and reinserted. For that reason, you shouldn't use triples where regular mustaches will do the same job &ndash; <span class='logo'>Ractive.js</span> is able to operate more efficiently with mustaches.</p>
+</div>

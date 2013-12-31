@@ -1,0 +1,96 @@
+<style type='text/css'>
+	{{currentStep.styles}}
+</style>
+
+<div id='header'>
+	<h1>Learn Ractive.js</h1>
+
+	<div class='tutorial-buttons'>
+		<a
+			class='button {{ !prevTutorial ? "disabled" : "" }}'
+			href='{{#prevTutorialFirstStep}}../../{{slug}}{{/prevTutorialFirstStep}}'
+			on-tap='goto:{{prevTutorialFirstStep}}'
+		>&laquo;</a>
+
+		<strong>{{currentTutorial.index + 1}}/{{tutorials.length}}</strong>
+
+		<a
+			class='button {{ !nextTutorial ? "disabled" : "" }}'
+			href='{{#nextTutorialFirstStep}}../../{{slug}}{{/nextTutorialFirstStep}}'
+			on-tap='goto:{{nextTutorialFirstStep}}'
+		>&raquo;</a>
+	</div>
+
+	<h2>{{currentTutorial.title}}</h2>
+</div>
+
+<div id='content'>
+
+	<div id='copy-block' class='block copy-block'>
+		<div class='info'>
+			<div class='buttons'>
+				<a class='button' on-tap='reset'>reset</a>
+			</div>
+			<div class='buttons-left'>
+				<a
+					class='button {{ !prevStep ? "disabled" : "" }}'
+					href='{{#prevStep}}../../{{slug}}{{/prevStep}}'
+					on-tap='goto:{{prevStep}}'
+				>&laquo;</a>
+
+				<strong>{{currentStep.index + 1}}/{{currentTutorial.length}}</strong>
+
+				<a
+					class='button {{ !nextStep ? "disabled" : "" }}'
+					href='{{#nextStep}}../../{{slug}}{{/nextStep}}'
+					on-tap='goto:{{nextStep}}'
+				>&raquo;</a>
+			</div>
+		</div>
+		<div id='copy' class='copy content'>
+			{{{currentStep.copy}}}
+			<div class='button-container-left'>
+				<a class='button block-button {{ !currentStep.fixed ? "disabled" : "" }}' on-tap='fix'>fix code</a>
+			</div>
+
+			<div class='button-container-right'>
+				<a
+					class='button block-button {{ !nextStep ? "disabled" : "" }}'
+					href='{{#nextStep}}../../{{slug}}{{/nextStep}}'
+					on-tap='goto:{{nextStep}}'
+				>next {{stepOrTutorial}} &raquo;</a>
+			</div>
+		</div>
+	</div>
+
+	<div id='output-block' class='block output-block'>
+		<div class='info'><strong>#output</strong></div>
+		<div id='output' class='output content'></div>
+	</div>
+
+	<div id='template' class='block code-block'>
+		<div class='info'><strong>#template</strong></div>
+		<div class='content' id='template-editor'></div>
+	</div>
+
+	<div id='javascript' class='block code-block'>
+		<div class='info'>
+			<div class='buttons'>
+				<a class='button' on-tap='execute-js'>execute (Shift-Enter)</a>
+			</div>
+			<strong>#javascript</strong>
+		</div>
+		<div class='content' id='javascript-editor'></div>
+	</div>
+
+	<div id='console' class='block code-block'>
+		<div class='info'>
+			<div class='buttons'>
+				<a class='button' on-tap='execute-console'>execute (Shift-Enter)</a>
+			</div>
+			<strong>#console</strong>
+		</div>
+		<div class='content' id='console-editor'></div>
+	</div>
+
+</div>

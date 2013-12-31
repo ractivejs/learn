@@ -1,0 +1,83 @@
+@import "base";
+
+html, body {
+	margin: 0;
+	width: 100%;
+	height: 100%;
+	position: relative;
+}
+
+body {
+	font-family: 'Baskerville', 'Garamond', 'Georgia';
+	font-size: 16px;
+	color: #333;
+	min-width: 48em;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-family: 'Voltaire';
+	margin: 1.5em 0 0.5em 0;
+	line-height: 1.2;
+
+	&:first-child {
+		margin-top: 0.5em;
+	}
+}
+
+p {
+	margin: 0.5em 0;
+	line-height: 1.5;
+}
+
+a {
+	color: $green;
+	text-decoration: none;
+
+	&:hover {
+		text-decoration: underline;
+	}
+
+	&:visited {
+		color: $green;
+	}
+}
+
+.hint {
+	background-color: #f4f4f4;
+	border-radius: 0.2em;
+	padding: 0.5em;
+	font-size: 1em;
+	margin: 1em 0;
+	color: #666;
+}
+
+kbd {
+	font-size: 0.8em;
+	font-family: 'Helvetica Neue', 'Arial';
+	color: #777;
+	border-top: 1px solid #eee;
+	border-left: 1px solid #eee;
+	border-right: 2px solid #eee;
+	border-bottom: 2px solid #eee;
+	background-color: #fafafa;
+	padding: 0.2em 0.4em;
+	border-radius: 0.2em;
+}
+
+.logo, strong {
+	font-family: 'Voltaire';
+}
+
+@import "fonts";
+@import "button";
+@import "container";
+@import "Divvy";
+@import "header";
+@import "loading";
+@import "separator";
+@import "block/block";
+@import "block/output";
+@import "code/code";
+@import "code/codemirror";
+@import "content/content";
+@import "content/window";

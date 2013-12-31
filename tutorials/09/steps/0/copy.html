@@ -1,0 +1,41 @@
+<h2>How to use partials</h2>
+
+<p>Partials are a good way to split complex templates up into several more manageable files. Take this todo list, for example. It's not too bad, but the template would look neater if we could separate out the code for an individual item.</p>
+
+<p>Well, we can. Add this above the rest of the JavaScript:</p>
+
+<pre class='prettyprint lang-js'>
+var item = "&lt;li data-index='{{i}}' class='{{ done ? \"done\" : \"pending\" }}'&gt;" +
+             "&lt;input type='checkbox' checked='{{done}}'&gt;" +
+             "&lt;span on-tap='edit'&gt;" +
+               "{{description}}" +
+
+               "{{#.editing}}" +
+                 "&lt;input id='editTodo' class='edit' value='{{description}}' on-blur='stop_editing'&gt;" +
+               "{{/.editing}}" +
+             "&lt;/span&gt;" +
+             "&lt;a class='button' on-tap='remove'&gt;x&lt;/a&gt;" +
+           "&lt;/li&gt;";
+</pre>
+
+<p>Then, in the main template we replace all that with a partial, which looks like a regular mustache but with a <code>&gt;</code> character:</p>
+
+<pre class='prettyprint lang-html'>
+&lt;ul class='todos'&gt;
+  {{#items:i}}
+    {{&gt;item}}
+  {{/items}}
+&lt;/ul&gt;
+</pre>
+
+<p>Finally, we need to add the partial when we define our <code>TodoList</code>:</p>
+
+<pre class='prettyprint lang-js'>
+var TodoList = Ractive.extend({
+  template: template,
+  partials: { item: item },
+  // etc...
+});
+</pre>
+
+<p>Execute this code.</p>

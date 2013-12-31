@@ -1,0 +1,28 @@
+<h2>By the numbers</h2>
+
+<p>You can also use mathematical expressions. Let's rummage around in the bag of contrived examples and see what comes out... yep... this one will do... it's a shopping basket.</p>
+
+<p>We have an <code>item</code> property, a <code>price</code>, and a <code>quantity</code>. Add an expression where the total should go:</p>
+
+<pre class='prettyprint lang-html'>
+&lt;td&gt;{{ price * quantity }}&lt;/td&gt;
+</pre>
+
+<p>Execute the code. The total should appear. Now we just need to add a currency formatter &ndash; here's one for the UK (if you're not from here, write one for your own currency for extra credit):</p>
+
+<pre class='prettyprint lang-js'>
+function ( num ) {
+  if ( num < 1 ) return ( 100 * num ) + 'p';
+  return '£' + num.toFixed( 2 );
+}
+</pre>
+
+<p>Add that, and use in the template it for both the price and the total. Try changing the price and the quantity via the console.</p>
+
+<div class='hint'>
+	<p>You might reasonably ask how this works. What happens is this: when the template is parsed, any <em>references</em> inside expressions (such as <code>price</code>, <code>quantity</code> or <code>format</code> in the example above) are identified. At render time, as soon as those references can be <em>resolved</em>, the expression is registered as a dependency of each of the <em>keypaths</em> that the references resolve to, and a function is created to evaluate the expression. (Whenever possible, <span class='logo'>Ractive.js</span> will re-use functions &ndash; for example <code>{{ a+b }}</code> and <code>{{ c+d }}</code> would share the same function.)</p>
+
+	<p>When the value of one or more of those dependencies change, the expression is re-evaluated. If the result changes, the DOM is updated.</p>
+
+	<p>For the super-curious, there's more information on the <a href='https://github.com/RactiveJS/Ractive/wiki/Expressions'>wiki</a>.</p>
+</div>

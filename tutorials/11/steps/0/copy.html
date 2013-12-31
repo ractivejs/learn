@@ -1,0 +1,39 @@
+<h2>Using Ractive.js for graphics</h2>
+
+<p><span class='logo'>Ractive.js</span> works with SVG just as easily as with HTML. This makes it possible to create data-driven graphics using the same declarative structure as we use with the rest of the web.</p>
+
+<p>In the template, we've got some hard-coded values. Let's replace them with mustaches:</p>
+
+<pre class='prettyprint lang-html'>
+&lt;!-- the rectangle --&gt;
+&lt;rect width='{{width}}' height='{{height}}'/&gt;
+</pre>
+
+<p>We can use expressions to replace the other hard-coded values:</p>
+
+<pre class='prettyprint lang-html'>
+&lt;!-- the area of the rectangle --&gt;
+&lt;text class='area' x='{{ width / 2 }}' y='{{ height / 2 }}'&gt;
+  {{ Math.round( width * height ) }} px²
+&lt;/text&gt;
+</pre>
+
+<p>Note that we're using <code>Math.round()</code> to make the end result cleaner.</p>
+
+<p>Apply similar changes to the labels, then add some data:</p>
+
+<pre class='prettyprint lang-js'>
+ractive = new Ractive({
+  el: output,
+  template: template,
+  data: { width: 100, height: 100 }
+});
+</pre>
+
+<p>Execute this code. Now we can have some fun &ndash; run the code in the console.</p>
+
+<div class='hint'>
+	<p>SVG is a big topic; bigger than can be accommodated here. It's well worth learning how to use it though. Unfortunately, the web is littered with bad SVG tutorials, but once you get your head round the basics it all makes a lot of sense.</p>
+
+	<p>Since you're a better (and more charismatic) developer than most, I predict you'll pick it up easily.</p>
+</div>

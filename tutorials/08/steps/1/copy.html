@@ -1,0 +1,31 @@
+<h2>Checkboxes and radios</h2>
+
+<p>You can control whether checkboxes are checked or not like so:</p>
+
+<pre class='prettyprint lang-html'>
+&lt;input type='checkbox' checked='{{checked}}'&gt;
+&lt;p&gt;The checkbox is {{^checked}}not{{/checked}} checked.&lt;/p&gt;
+</pre>
+
+<p>If you have a group of radio buttons, you can do this:</p>
+
+<pre class='prettyprint lang-html'>
+&lt;label&gt;&lt;input type='radio' name='{{color}}' value='red' checked&gt; red&lt;/label&gt;
+&lt;label&gt;&lt;input type='radio' name='{{color}}' value='green'&gt; green&lt;/label&gt;
+&lt;label&gt;&lt;input type='radio' name='{{color}}' value='blue'&gt; blue&lt;/label&gt;
+&lt;p&gt;The selected colour is &lt;span style='color: {{color}};'&gt;{{color}}&lt;/span&gt;.&lt;/p&gt;
+</pre>
+
+<p>Here, because we've set the <code>name</code> attribute to <code>{{color}}</code>, the value of <code>color</code> is set to the <code>value</code> attribute of whichever radio button is currently checked. (If you need to read that sentence a couple of times, I don't blame you.) Notice that the value is initialised to <code>red</code>, because that option is checked.</p>
+
+<div class='hint'>
+	<p>Front-end über nerds will notice that this isn't how these attributes normally work. For example, a checkbox with <code>checked='false'</code> is the same as one with <code>checked='true'</code>, because it's a <em>boolean attribute</em> which either exists on the element or doesn't &ndash; its <em>value</em> is completely irrelevant.</p>
+
+	<p>Furthermore, once you've interacted with a checkbox, its <code>checked</code> attribute becomes irrelevant! You can only change the value programmatically by doing <code>element.checked = true</code> rather than <code>element.setAttribute( 'checked' )</code>.</p>
+
+	<p>Combine all that with cross-browser quirks (e.g. IE8 and below only fire <code>change</code> events on blur), and we're in some seriously confusing territory.</p>
+
+	<p>So <span class='logo'>Ractive.js</span> makes no apology for using <code>checked='{{checked}}'</code> to mean 'checked if <code>checked</code> is <code>true</code>, unchecked if it's <code>false</code>'. We're bringing sanity to the process of gathering user input.</p>
+</div>
+
+<p>Try changing the values of <code>checked</code> and <code>color</code> via the console.</p>

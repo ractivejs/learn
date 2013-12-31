@@ -1,0 +1,30 @@
+#output {
+	img {
+		display: block;
+	}
+
+	table {
+		border-spacing: 0;
+		width: 100%;
+	}
+
+	th, td {
+		border-bottom: 1px solid #eee;
+		padding: 0.5em 1em;
+		text-align: left;
+	}
+
+	input {
+		font-family: inherit;
+		font-size: inherit;
+		padding: 0.2em;
+	}
+
+	label {
+		display: block;
+	}
+
+	svg {
+		overflow: hidden;
+	}
+}

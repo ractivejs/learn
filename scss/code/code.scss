@@ -1,0 +1,89 @@
+@import "codeColours";
+
+code, pre {
+	font-family: monospace;
+	font-size: 0.8em;
+	border: 1px solid rgb(242,245,239);
+	border-radius: 0.2em;
+	background-color: $light-green;
+	color: #444;
+}
+
+
+pre {
+	white-space: pre;
+	display: block;
+	padding: 0.5em;
+	overflow-x: auto;
+	margin: 0 0 1em 0;
+	line-height: 1.5;
+}
+
+code {
+	font-weight: normal;
+	padding: 0.15em 0.3em;
+	position: relative;
+}
+
+
+.prettyprinted {
+	color: #aaa;
+}
+
+.prettyprint {
+	.pln { color: $plain; }
+	.pun { color: $punctuation; }
+	.str { color: $string; }
+	.kwd { color: $keyword; }
+	.typ { color: $blue; }
+	.tag { color: $tag; }
+	.atn { color: $attrName }
+	.atv { color: $attrValue }
+	.lit { color: $literal }
+	.com { color: $comment }
+
+	&.lang-js {
+		.pun { color: #444; }
+	}
+}
+
+.cm-s-ractive {
+	font-size: 0.8em;
+	line-height: 1.5 !important;
+	div.CodeMirror-selected { background: #b36539 !important; }
+	.CodeMirror-gutters     { background: #fcfcfc; border-right: 1px solid #eee; }
+	.CodeMirror-linenumber  { color: #d0d0d0; }
+	.CodeMirror-cursor      { border-left: 1px solid black !important; }
+	.CodeMirror-lines       { padding: 10px 0; }
+
+	span.cm-comment                      { color: $comment; }
+	span.cm-atom                         { color: #845dc4; }
+	span.cm-number                       { color: $literal; }
+	span.cm-attribute                    { color: $attrName; }
+	span.cm-keyword                      { color: $keyword; }
+	span.cm-string                       { color: $string; }
+	span.cm-meta                         { color: #ff9d00; }
+	span.cm-variable                     { color: $plain; }
+	span.cm-variable-2                   { color: $plain; }
+	span.cm-variable-3                   { color: $plain; }
+	span.cm-def                          { color: $plain; }
+	span.cm-property                     { color: $plain; }
+	span.cm-tag                          { color: $tag; }
+	span.cm-error                        { color: #9d1e15; }
+	span.cm-bracket                      { color: #d8d8d8; }
+	span.cm-builtin, span.cm-special     { color: #ff9e59; }
+	span.cm-link                         { color: #845dc4; }
+
+	&.CodeMirror {
+		color: $punctuation;
+		
+		pre {
+			color: $plain;
+		}
+	}
+
+	&.CodeMirror-focused {
+		background: #f9f9f9;
+		.CodeMirror-gutters { background: #f6f6f6; border-right: 1px solid #eee; }
+	}
+}

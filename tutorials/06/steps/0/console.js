@@ -1,0 +1,1 @@
+ractive.set( 'content', '<a href="http://bit.ly/QOyWC1"><img src="../../gifs/image.gif"/></a>' );

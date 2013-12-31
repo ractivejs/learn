@@ -1,0 +1,57 @@
+.button {
+	background-color: #999;
+	border: 1px solid #888;
+	cursor: pointer;
+	color: white;
+	padding: 0.1em 0.3em;
+	border-radius: 0.2em;
+	font-family: 'Voltaire', 'Helvetica Neue', 'Arial';
+	font-size: 0.9em;
+	@include no-select;
+
+	&:link, &:visited {
+		color: white;
+	}
+
+	&:hover {
+		background-color: #666;
+		border: 1px solid #555;
+		text-decoration: none;
+	}
+
+	&.disabled {
+		background-color: #ddd;
+		border: 1px solid #ccc;
+		cursor: default;
+
+		&:hover {
+			background-color: #ddd;
+			border: 1px solid #ccc;
+		}
+	}
+}
+
+.button-container-left, .button-container-right {
+	width: 50%;
+	margin: 1em 0 0 0;
+	float: left;
+	@include border-box;
+}
+
+.button-container-left {
+	padding: 0 0.2em 0.5em 0;
+}
+
+.button-container-right {
+	padding: 0 0 0.5em 0.2em;
+}
+
+.block-button {
+	display: block;
+	text-align: center;
+	float: left;
+	width: 100%;
+	font-size: 1em;
+	padding: 0.4em 0.8em;
+	@include border-box;
+}

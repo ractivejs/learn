@@ -1,0 +1,31 @@
+<h2>Modifying lists</h2>
+
+<p>Let's say you wanted to add an item to your list. You could use <code>ractive.set()</code> the way you're used to, but you'd have to find the length of the existing array first:</p>
+
+<pre class='prettyprint lang-js'>
+var index = ractive.get( 'superheroes' ).length;
+ractive.set( 'superheroes[' + index + ']', newSuperhero );
+</pre>
+
+<p>That's not ideal. We <em>could</em> use <code>ractive.update( 'superheroes' )</code> instead, which will make sure that the table is up to date:</p>
+
+<pre class='prettyprint lang-js'>
+xmen[ xmen.length ] = newSuperhero;
+ractive.update( 'superheroes' );
+</pre>
+
+<div class='hint'>
+	<p>If you don't pass a keypath argument to <code>ractive.update()</code>, <span class='logo'>Ractive.js</span> will update everything that has changed since the last set or update.</p>
+</div>
+
+<p>But there's a more convenient way. <span class='logo'>Ractive.js</span> wraps the <em>mutator methods</em> of arrays (<code>push</code>, <code>pop</code>, <code>shift</code>, <code>unshift</code>, <code>splice</code>, <code>sort</code> and <code>reverse</code>) so that they trigger updates automatically:</p>
+
+<pre class='prettyprint lang-js'>
+xmen.push( newSuperhero );
+</pre>
+
+<p>Try running this code in the console &ndash; we've already defined our new superhero.</p>
+
+<div class='hint'>
+	<p>If you'd rather <span class='logo'>Ractive.js</span> didn't modify arrays like this, you can disable the behaviour by passing in <code>modifyArrays: false</code> at initialisation. But don't worry &ndash; we're not touching the Array prototype.</p>
+</div>

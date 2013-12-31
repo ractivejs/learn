@@ -1,0 +1,84 @@
+.divvy-inner.block {
+	position: relative;
+	padding: 2em 0 0 0;
+	border: 1px solid #e9e9e9;
+	@include border-box;
+
+	.info {
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 2em;
+		padding: 0.5em;
+		@include border-box;
+		overflow: hidden;
+		@include no-select;
+
+		strong {
+			font-family: 'Voltaire';
+			position: relative;
+			top: 0.1em;
+			line-height: 0;
+		}
+
+		.buttons {
+			float: right;
+			text-align: right;
+		}
+
+		.buttons-left {
+			float: left;
+			text-align: left;
+		}
+	}
+
+	.content {
+		position: relative;
+		width: 100%;
+		height: 100%;
+		border-top: 1px solid #eee;
+		overflow: auto;
+		@include border-box;
+	}
+}
+
+.divvy-inner.copy-block {
+	border: 1px solid #aaa;
+
+	.info {
+		background-color: #fafafa;
+
+		strong {
+			width: 2.5em;
+			display: inline-block;
+			text-align: center;
+			top: 0.1em;
+			line-height: 1;
+		}
+	}
+}
+
+.divvy-inner.copy-block, .divvy-inner.output-block {
+	font-family: 'Baskerville', 'Garamond', 'Georgia';
+	@include border-box;
+
+	.content {
+		padding: 0.5em;
+	}
+}
+
+.divvy-inner.code-block, .divvy-inner.output-block {
+	.info {
+		background-color: $light-green;
+	}
+
+	.content {
+		position: relative;
+		width: 100%;
+		height: 100%;
+		background-color: #fdfdfd;
+		border-top: 1px solid #eee;
+		@include border-box;
+	}
+}

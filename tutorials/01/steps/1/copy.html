@@ -1,0 +1,33 @@
+<h2>Context is everything</h2>
+
+<p>That's all well and good, but it's a little on the verbose side. You can imagine if we had lots more properties on the capital city object that we wanted to refer to &ndash; we don't want to keep writing <code>{{country.capital.xyz}}</code> if we don't have to.</p>
+
+<p>We don't have to. Instead, we can use a <em>section</em> to provide <em>context</em>:</p>
+
+<pre class='prettyprint lang-html'>
+{{#country}}
+&lt;p&gt;{{name}} is a {{climate.temperature}} country with {{climate.rainfall}} rainfall and a population of {{population}}.&lt;/p&gt;
+{{/country}}
+</pre>
+
+<p>Note the <code>#</code> character, indicating that we're dealing with a section, and also the closing mustache with a <code>/</code> character.</p>
+
+<div class='hint'>
+	<p>If you're used to the Handlebars way of doing things, this is equivalent to Handlebars' <code>#with</code> block helper. In mustache, a <code class='prettyprint lang-html'>{{#section}}&lt;!-- stuff --&gt;{{/section}}</code> can in fact be a context section, a list section (<code>#each</code> in Handlebars), or conditional section (<code>#if</code>), depending on whether it is given an object, an array, or a primitive value.</p>
+
+	<p>That might sound confusing, but in practice it isn't at all &ndash; it's just nice and concise. We'll learn about lists and conditionals in future tutorials.</p>
+</div>
+
+<p>Go ahead and update the template, creating a section for the capital as well. (You can either create a <code>{{#country.capital}}</code> section, or a <code>{{#capital}}</code> section <em>inside</em> the <code>{{#country}}</code> section. Use whichever structure is easier in a given situation.)</p>
+
+<div class='hint'>
+	<p>Notice that if you create a <code>{{#capital}}</code> section, you could end up having two <code>{{name}}</code> variables &ndash; one for the country, one for the capital.<p>
+
+	<p>We say that the capital <code>{{name}}</code> reference has a two-level <em>context stack</em> &ndash; if the innermost context (<code>country.capital</code>) has a <code>name</code> property, <code>{{name}}</code> resolves to the <code>country.capital.name</code> <em>keypath</em>.</p>
+
+	<p>If not, Ractive moves <em>up the context stack</em> (in this case, to <code>country</code>, and then to the root <code>data</code> object) until it <em>does</em> find a context with a <code>name</code> property. Once a reference is resolved, its keypath is fixed. Unresolved references are re-evaluated with each call to <code>ractive.set()</code>.</p>
+</div>
+
+<p>If you get stuck, hit the <strong>fix code</strong> button.</p>
+
+<p>Execute the code.</p>

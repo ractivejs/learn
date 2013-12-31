@@ -1,0 +1,17 @@
+<table class='superheroes'>
+  <tr>
+    <th>#</th>
+    <th class='sortable'>Superhero name</th>
+    <th class='sortable'>Real name</th>
+    <th class='sortable'>Superpower</th>
+  </tr>
+
+  {{#superheroes:num}}
+    <tr>
+      <td>{{ num + 1 }}</td>
+      <td><a href='{{info}}'>{{name}}</a></td>
+      <td>{{realname}}</td>
+      <td>{{power}}</td>
+    </tr>
+  {{/superheroes}}
+</table>

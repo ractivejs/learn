@@ -1,0 +1,1 @@
+slideshow.goto( 3 );

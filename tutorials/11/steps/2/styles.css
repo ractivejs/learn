@@ -1,0 +1,209 @@
+.graphic {
+	position: relative;
+	padding: 4em 0 6em 0;
+	width: 100%;
+	height: 100%;
+	
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+.header {
+	position: absolute;
+	padding: 0.5em;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 4em;
+
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+.header h3, .header p {
+	margin: 0;
+}
+
+.header button {
+	float: right;
+}
+
+svg {
+	width: 100%;
+	height: 100%;
+	border-top: 1px solid #eee;
+	border-bottom: 1px solid #eee;
+
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+.detail {
+	position: absolute;
+	padding: 0.5em;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	margin: 0 auto;
+	height: 6em;
+
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+.detail p {
+	max-width: 32em;
+}
+
+.background {
+	fill: #f9f9f9;
+}
+
+.tapcatcher {
+	fill: rgba(255,255,255,0.01);
+}
+
+#hotspots g, ellipse, circle {
+	cursor: pointer;
+	fill: white;
+	fill-opacity: 0.5;
+	stroke: #1E2458;
+	stroke-width: 2;
+}
+
+#hotspots text.large {
+	fill: #333;
+	font-family: 'Voltaire';
+	font-size: 2em;
+	text-anchor: middle;
+	pointer-events: none;
+}
+
+#hotspots text.large.white {
+	fill: white;
+}
+
+.visible {
+	opacity: 1;
+	pointer-events: normal;
+
+	-webkit-transition: opacity 1s ease-in-out;
+	-moz-transition: opacity 1s ease-in-out;
+	-ms-transition: opacity 1s ease-in-out;
+	-o-transition: opacity 1s ease-in-out;
+	transition: opacity 1s ease-in-out;
+}
+
+.hidden {
+	opacity: 0;
+	pointer-events: none;
+	
+	-webkit-transition: opacity 0.2s ease-in-out;
+	-moz-transition: opacity 0.2s ease-in-out;
+	-ms-transition: opacity 0.2s ease-in-out;
+	-o-transition: opacity 0.2s ease-in-out;
+	transition: opacity 0.2s ease-in-out;
+}
+
+#neuron {
+	cursor: pointer;
+}
+
+.detail {
+	-webkit-transition: opacity 1s ease-in-out;
+	-moz-transition: opacity 1s ease-in-out;
+	-ms-transition: opacity 1s ease-in-out;
+	-o-transition: opacity 1s ease-in-out;
+	transition: opacity 1s ease-in-out;
+}
+
+.detail.visible {
+	opacity: 1;
+	pointer-events: normal;
+}
+
+.detail.hidden {
+	opacity: 0;
+	pointer-events: none;
+}
+
+.label {
+	-webkit-transition: opacity 0.2s ease-in-out;
+	-moz-transition: opacity 0.2s ease-in-out;
+	-ms-transition: opacity 0.2s ease-in-out;
+	-o-transition: opacity 0.2s ease-in-out;
+	transition: opacity 0.2s ease-in-out;
+
+	cursor: pointer;
+}
+
+.label-bg {
+	fill: #f9fcf6;
+}
+
+.selected .label-bg {
+	fill: #729d34;
+}
+
+.label text {
+	font-family: 'Helvetica Neue', 'Arial';
+	font-size: 1.4em;
+	fill: #333;
+}
+
+.selected text {
+	fill: white;
+}
+
+.label .small {
+	font-size: 1em;
+}
+
+.label line, .label polyline, .label ellipse {
+	stroke: #729d34;
+	stroke-width: 2;
+	fill: none;
+}
+
+.label path {
+	fill: #729d34;
+}
+
+.label line {
+	marker-end: url(#arrow-end);
+}
+
+.label .outline {
+	stroke: #f9f9f9;
+	stroke-width: 4;
+	marker-end: url(#arrow-end-outline);
+}
+
+.label .no-arrow {
+	marker-end: none;
+}
+
+.label polyline {
+	marker-start: url(#arrow-start);
+	marker-end: url(#arrow-end);
+}
+
+.label polyline.outline {
+	marker-start: url(#arrow-start-outline);
+}
+
+.label-bg {
+	fill: #f9fcf6;
+	stroke: #729d34;
+	stroke-width: 2;
+}
+
+.hint {
+	stroke-width: 4;
+	stroke: #333;
+	marker-end: url(#arrow-end-black);
+}

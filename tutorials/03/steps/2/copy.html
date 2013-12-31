@@ -1,0 +1,38 @@
+<h2>Unsubscribing from events</h2>
+
+<p>There are a couple of ways to unsubscribe from events. If you've used jQuery, you'll be used to this syntax:</p>
+
+<pre class='prettyprint lang-js'>
+ractive.on( 'select', selectHandler );
+
+// later...
+ractive.off( 'select', selectHandler );
+</pre>
+
+<p>That's fine, as long as you stored a reference to <code>selectHandler</code> (i.e. you didn't just use an anonymous function). If you didn't, you can also do this:</p>
+
+<pre class='prettyprint lang-js'>
+ractive.off( 'select' ); // unsubscribes ALL 'select' handlers
+ractive.off(); // unsubscribes all handlers of any type
+</pre>
+
+<p>Alternatively, you can do this:</p>
+
+<pre class='prettyprint lang-js'>
+var listener = ractive.on( 'select', selectHandler );
+
+var otherListeners = ractive.on({
+  activate: function () { alert( 'Activating' ); },
+  deactivate: function () { alert( 'Deactivating!' ); }
+});
+
+// later...
+listener.cancel();
+otherListeners.cancel();
+</pre>
+
+<p>Try adding a 'silence' button which removes the 'activate' and 'deactivate' handlers.</p>
+
+<div class='hint'>
+	<p>We haven't yet covered <code>ractive.teardown()</code>, which removes your view from the DOM and cleans up after it. However as you'd expect this will remove any event handlers bound with <code>ractive.on()</code>.</p>
+</div>

@@ -1,0 +1,38 @@
+<h2>Finding the index</h2>
+
+<p>Often when working with lists, we want to know the <em>index</em> of the list item we're currently rendering.</p>
+
+<p>Mustache doesn't have a good way of doing this, so <span class='logo'>Ractive.js</span> introduces the <em>index reference</em>:</p>
+
+<pre class='prettyprint lang-html'>
+{{#list:num}}
+  &lt;!-- inside here, {{num}} is the index --&gt;
+{{/list}}
+</pre>
+
+<p>By declaring <code>num</code> to be an index reference, we can use it the same way we'd use any other variable. Let's add a number column to our table &ndash; first add the column to the header row:</p>
+
+<pre class='prettyprint lang-html'>
+&lt;tr&gt;
+  &lt;th&gt;#&lt;/th&gt;
+  &lt;th&gt;Superhero name&lt;/th&gt;
+  &lt;!-- etc --&gt;
+&lt;/tr&gt;
+</pre>
+
+<p>Then to the list row:</p>
+
+<pre class='prettyprint lang-html'>
+{{#superheroes:num}}
+  &lt;tr&gt;
+    &lt;td&gt;{{num}}&lt;/td&gt;
+    &lt;td&gt;&lt;a href='{{info}}'&gt;{{name}}&lt;/a&gt;&lt;/td&gt;
+    &lt;td&gt;{{realname}}&lt;/td&gt;
+    &lt;td&gt;{{power}}&lt;/td&gt;
+  &lt;/tr&gt;
+{{/superheroes}}
+</pre>
+
+<p>Execute the code.</p>
+
+<p>Not bad, but it would look better if the numbers started at 1 rather than 0. Use an expression to increment each row number by 1.</p>

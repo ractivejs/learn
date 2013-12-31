@@ -1,0 +1,47 @@
+<h2>Making it sortable (part 2)</h2>
+
+<p>So we've wired up our event handler, and it's behaving as it should. The next step is to add some logic that actually sorts the table. For bonus points, we'll add a 'sorted' class to the header of the sorted column.</p>
+
+<p>There's a nice easy way to ensure that the table remains sorted, even when we add more data: an expression. That's right, you can use expressions with sections.</p>
+
+<p>Update the template:</p>
+
+<pre class='prettyprint lang-html'>
+{{# sort(superheroes, sortColumn) :num}}
+  &lt;tr&gt;
+   &lt;!-- row contents --&gt;
+  &lt;/tr&gt;
+{{/ end of superheroes list }}
+</pre>
+
+<p>Notice that we can use any text we like to close an expression section &ndash; in thise case <code>{{/ end of superheroes list }}</code>.</p>
+
+<p>Now we need to add the <code>sort</code> function. Here's one (if you're not sure why this works, <a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Array/sort'>here's an MDN page</a> that will help explain):</p>
+
+<pre class='prettyprint lang-js'>
+function ( array, sortColumn ) {
+  array = array.slice(); // clone, so we don't modify the underlying data
+
+  return array.sort( function ( a, b ) {
+    return a[ sortColumn ] < b[ sortColumn ] ? -1 : 1;
+  });
+}
+</pre>
+
+<p>Wiring it up is easy:</p>
+
+<pre class='prettyprint lang-js'>
+ractive.on( 'sort', function ( event, column ) {
+  this.set( 'sortColumn', column );
+});
+</pre>
+
+<p>Try executing this code and clicking different headers to sort the table. (You could specify an initial sort column by adding e.g. `sortColumn: 'name'` to `data`.)</p>
+
+<p>The last job is to add a <code>sorted</code> class to the header of the currently sorted column. There are several ways we could do this &ndash; you could use a bit of jQuery inside the <code>sort</code> proxy event handler, for example. But for this demonstration we'll put the logic in the template, using the conditional operator:</p>
+
+<pre class='prettyprint lang-html'>
+&lt;th class='sortable {{ sortColumn === "name" ? "sorted" : "" }}' on-tap='sort' data-column='name'&gt;Superhero name&lt;/th&gt;
+</pre>
+
+<p>Do this for each of the headers, then execute the code. Congratulations! You've built a sortable table in just a few steps. Now comes the fun part &ndash; add Storm back to the table via the console. The table will maintain its sort order.</p>

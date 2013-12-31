@@ -1,0 +1,33 @@
+<h2>Stay classy</h2>
+
+<p>If you've used Backbone Views in the past, you'll be familiar with the basic concept of <em>extending</em> the <em>base class</em> to create a new <em>subclass</em> with default data and additional methods.</p>
+
+<p>In this tutorial we're going to learn about <code>Ractive.extend</code> and use it to create an image slideshow, using the <a href='http://devopsreactions.tumblr.com/'>devopsreactions.tumblr.com</a> gifs from the <a href='../../event-proxies/5'>final step of the Event Proxies tutorial</a>. </p>
+
+<p>We've got our basic template set up &ndash; we just need to make a few additions. First, we need to add a mustache for the image URL:</p>
+
+<pre class='prettyprint lang-html'>
+&lt;div class='main-image' style='background-image: url({{image.src}});'&gt;&lt;/div&gt;
+</pre>
+
+<div class='hint'>
+	<p>We're using a CSS background rather than an <code>img</code> element for this example, because you can use the <code>background-size: contain</code> CSS rule to ensure that the image is shown at maximum size without distorting the aspect ratio. (Unless you're using IE8, in which case get out. Go on, leave.)</p>
+</div>
+
+<p>Then, we need to add a mustache for the image caption:</p>
+
+<pre class='prettyprint lang-html'>
+&lt;div class='caption'&gt;
+  &lt;p&gt;{{image.caption}}&lt;/p&gt;
+&lt;/div&gt;
+</pre>
+
+<p>Finally, let's add some proxy events that we can wire up later:</p>
+
+<pre class='prettyprint lang-html'>
+&lt;a class='prev' on-tap='prev'&gt;&lt;span&gt;&amp;laquo;&lt;/span&gt;&lt;/a&gt;
+&lt;!-- ... --&gt;
+&lt;a class='next' on-tap='next'&gt;&lt;span&gt;&amp;raquo;&lt;/span&gt;&lt;/a&gt;
+</pre>
+
+<p>Execute the JavaScript to redraw the view, with some placeholder data.</p>

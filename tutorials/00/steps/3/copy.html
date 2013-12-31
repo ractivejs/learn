@@ -1,0 +1,43 @@
+<h2>Dynamic attributes</h2>
+
+<p>So far, we've only updated text content within a ractive. But we can use the same <a href='http://mustache.github.io/'>mustache syntax</a> to update element <em>attributes</em>.</p>
+
+<p>Let's add a style attribute to our <code>&lt;p&gt;</code> element:</p>
+
+<pre class='prettyprint lang-html'>
+&lt;p style='color: {{color}}; font-size: {{size}}em; font-family: {{font}};'&gt;
+  {{greeting}} {{recipient}}!
+&lt;/p&gt;
+</pre>
+
+<p>Now we just need to add some data:</p>
+
+<pre class='prettyprint lang-js'>
+var ractive = new Ractive({
+  el: output,
+  template: template,
+  data: {
+    greeting: 'Hello',
+    recipient: 'world',
+    color: 'purple',
+    size: 2,
+    font: 'Arial'
+  }
+});
+</pre>
+
+<p>Execute this code. You should see a large purple 'Hello world!' message written in Arial.</p>
+
+<p>And, of course, we can update this attribute. Try running this in the console:</p>
+
+<pre class='prettyprint lang-js'>
+ractive.set({
+  color: 'red',
+  size: 3,
+  font: 'Comic Sans MS'
+});
+</pre>
+
+<div class='hint'>
+	<p>Note that even though we're changing three properties, Ractive recognises that they all belong to the same attribute, and only touches the DOM once.</p>
+</div>

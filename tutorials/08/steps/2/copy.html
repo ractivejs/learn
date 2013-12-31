@@ -1,0 +1,54 @@
+<h2>Drop-down menus</h2>
+
+<p>As well as <code>&lt;input&gt;</code> elements (and <code>&lt;textarea&gt;</code>s, which work similarly), two-way binding works with <code>&lt;select&gt;</code> menus. Let's replace the radio group with a <code>&lt;select&gt;</code>:</p>
+
+<pre class='prettyprint lang-html'>
+&lt;select value='{{color}}'&gt;
+  &lt;option value='red'&gt;red&lt;/option&gt;
+  &lt;option value='green'&gt;green&lt;/option&gt;
+  &lt;option value='blue' selected&gt;blue&lt;/option&gt;
+&lt;/select&gt;
+</pre>
+
+<div class='hint'>
+	<p>I apologise to my fellow Brits, and other English-speaking non-Americans, for the repeated use of <code>color</code> instead of <code>colour</code>. Occupational hazard.</div>
+</div>
+
+<p>Re-render the ractive. Notice that once again, the data is initialised to the value of the selected <code>&lt;option&gt;</code> &ndash; in this case, blue.</p>
+
+<p>That's good, but we can go one better &ndash; rather than hard-coding our colours into the template, let's do it properly:</p>
+
+<pre class='prettyprint lang-html'>
+&lt;select value='{{color}}'&gt;
+  {{#colors}}
+    &lt;option value='{{.}}'&gt;{{.}}&lt;/option&gt;
+  {{/colors}}
+&lt;/select&gt;
+</pre>
+
+<div class='hint'>
+	<p>We haven't seen <code>{{.}}</code> before. It's called the <em>implicit iterator</em>, and it basically points to the current list item. Previously, whenever we've used lists, they've been lists of objects. The implicit iterator allows us to use lists of <em>primitives</em> (in this case, strings) instead.</p>
+
+  <p>In the Ractive variant of Mustache, you can use <code>{{this}}</code> as an alternative to <code>{{.}}</code> if you prefer.</p>
+</div>
+
+<p>And add some data to our view:</p>
+
+<pre class='prettyprint lang-js'>
+var colors = [ 'red', 'green', 'blue' ];
+
+var ractive = new Ractive({
+  el: output,
+  template: template,
+  data: {
+    colors: colors,
+    color: colors[0]
+  }
+});
+</pre>
+
+<div class='hint'>
+	<p>The template no longer has an <code>&lt;option&gt;</code> with a <code>selected</code> attribute, so we need to specify an initial value of <code>color</code>.</p>
+</div>
+
+<p>Execute this code. You can add more colours to the menu via the console.</p>

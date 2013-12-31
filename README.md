@@ -1,7 +1,7 @@
-examples.ractivejs.org
-======================
+learn.ractivejs.org
+===================
 
-A collection of examples demonstrating Ractive's capabilities.
+Interactive coding tutorials for Ractive.js
 
 
 Contributing

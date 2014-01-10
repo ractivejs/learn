@@ -41,7 +41,7 @@ ractive.on( 'sort', function ( event, column ) {
 <p>The last job is to add a <code>sorted</code> class to the header of the currently sorted column. There are several ways we could do this &ndash; you could use a bit of jQuery inside the <code>sort</code> proxy event handler, for example. But for this demonstration we'll put the logic in the template, using the conditional operator:</p>
 
 <pre class='prettyprint lang-html'>
-&lt;th class='sortable {{ sortColumn === "name" ? "sorted" : "" }}' on-tap='sort' data-column='name'&gt;Superhero name&lt;/th&gt;
+&lt;th class='sortable {{ sortColumn === "name" ? "sorted" : "" }}' on-tap='sort:name'&gt;Superhero name&lt;/th&gt;
 </pre>
 
 <p>Do this for each of the headers, then execute the code. Congratulations! You've built a sortable table in just a few steps. Now comes the fun part &ndash; add Storm back to the table via the console. The table will maintain its sort order.</p>

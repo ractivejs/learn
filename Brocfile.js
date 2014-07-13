@@ -31,10 +31,11 @@ var pick = require( 'broccoli-static-compiler' ),
 		ractive_components = compileRactive( 'src/ractive_components', {
 			files: [ '**/*.html' ],
 			destDir: '/ractive_components',
-			type: 'es6'
+			type: 'amd'
 		});
+		ractive_components = transpileES6( ractive_components, { globals: { define: true } });
 
-		app = merge([ app, ractive_components ]);
+		//app = merge([ app, ractive_components ]);
 		app = transpileES6Modules( app, { type: 'amd' });
 		app = cleanTranspiled( app );
 		app = transpileES6( app, { globals: { define: true } });
@@ -46,11 +47,15 @@ var pick = require( 'broccoli-static-compiler' ),
 			destDir: '/vendor/'
 		});
 
-		app = requirejs( merge([ app, vendor ]), {
+		app = requirejs( merge([ app, ractive_components, vendor ]), {
 			requirejs: {
 				name: 'app',
 				out: 'app.js',
 				optimize: 'none',
+
+				paths: {
+					divvy: 'vendor/divvy/divvy'
+				},
 
 				onModuleBundleComplete: function ( data ) {
 					var fs, amdclean, outputFile, prod, paths, cdnPaths, cdnDependencies, names, aliases;

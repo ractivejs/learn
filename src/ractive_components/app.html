@@ -1,9 +1,26 @@
 <link rel='ractive' href='./left-nav.html'>
+<link rel='ractive' href='./divvy.html'>
+<link rel='ractive' href='./copy-block.html'>
+<link rel='ractive' href='./output-block.html'>
+<link rel='ractive' href='./template-block.html'>
+<link rel='ractive' href='./javascript-block.html'>
+<link rel='ractive' href='./console-block.html'>
 
 <div class='app' style='{{style}}' on-tap='tapped'>
 	<header>
 		<h1>{{currentStep.tutorialIndex + 1}}. {{currentStep.tutorialTitle}}</h1>
 	</header>
+
+	<divvy columns='[
+		{ size: 45, children: [{ id: "copy-block", size: 3 }, { id: "output-block", size: 2 }] },
+		{ size: 55, children: [{ id: "template", size: 3 }, { id: "javascript", size: 5 }, { id: "console", size: 2 }] }
+	]'>
+		<copy-block/>
+		<output-block/>
+		<template-block/>
+		<javascript-block/>
+		<console-block/>
+	</divvy>
 
 	<left-nav open='{{navOpen}}'/>
 </div>
@@ -11,7 +28,7 @@
 <style>
 	.app {
 		position: relative;
-		padding: 1.5em 1em 1em 5em;
+		padding: 5em 1em 1em 5em;
 
 		-webkit-transition: all 0.2s cubic-bezier(.02,.91,.29,1);
 		-moz-transition: all 0.2s cubic-bezier(.02,.91,.29,1);
@@ -25,6 +42,9 @@
 	}
 
 	header {
+		position: absolute;
+		top: 1.5em;
+		left: 5em;
 		padding: 0;
 		margin: 0;
 	}
@@ -33,12 +53,20 @@
 		margin: 0;
 		font-size: 2em;
 	}
+
+	.divvy-container {
+		position: relative;
+		width: 100%;
+		height: 100%;
+	}
 </style>
 
 <script>
 	component.exports = {
 		init: function () {
-			var container = this.find( '.app' ), baseUrl, pattern;
+			var self = this, container, divvy, baseUrl, pattern;
+
+			container = this.find( '.app' );
 
 			baseUrl = window.location.origin;
 			pattern = /\/([^\/]+)\/(\d+)/;

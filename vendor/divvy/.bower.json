@@ -1,0 +1,30 @@
+{
+  "name": "divvy",
+  "description": "Layout manager for web apps",
+  "author": "Rich Harris",
+  "version": "0.1.6",
+  "main": "divvy.js",
+  "license": "MIT",
+  "ignore": [
+    ".*",
+    "*.json",
+    "*.md",
+    "build",
+    "grunt",
+    "node_modules",
+    "release",
+    "src",
+    "Gruntfile.js"
+  ],
+  "homepage": "https://github.com/Rich-Harris/divvy",
+  "_release": "0.1.6",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.1.6",
+    "commit": "fc58daaee5422b9410006f9464e799aa826dcd45"
+  },
+  "_source": "git://github.com/Rich-Harris/divvy.git",
+  "_target": "~0.1.6",
+  "_originalSource": "divvy",
+  "_direct": true
+}

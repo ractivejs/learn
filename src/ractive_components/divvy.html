@@ -1,0 +1,32 @@
+<div class='divvy-container'>
+	{{>content}}
+</div>
+
+<script>
+	var Divvy = require( 'divvy' );
+
+	component.exports = {
+		init: function () {
+			var self = this, divvy;
+
+			// Create divvy layout helper
+			divvy = new Divvy({
+				el: this.find( '.divvy-container' ),
+				columns: this.get( 'columns' ),
+				rows: this.get( 'rows' )
+			});
+
+			divvy.restore();
+
+			divvy.on( 'resize', function ( changed ) {
+				this.save();
+
+				if ( !changed[ 'output-block' ] ) {
+					return;
+				}
+
+				self.fire( 'resize' );
+			});
+		}
+	};
+</script>

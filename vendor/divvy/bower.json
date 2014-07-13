@@ -1,0 +1,19 @@
+{
+  "name": "divvy",
+  "description": "Layout manager for web apps",
+  "author": "Rich Harris",
+  "version": "0.1.6",
+  "main": "divvy.js",
+  "license": "MIT",
+  "ignore": [
+    ".*",
+    "*.json",
+    "*.md",
+    "build",
+    "grunt",
+    "node_modules",
+    "release",
+    "src",
+    "Gruntfile.js"
+  ]
+}

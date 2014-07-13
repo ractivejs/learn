@@ -1,0 +1,27 @@
+<h2>Events, dear boy, events</h2>
+
+<p>DOM events are central to anything interactive on the web. You've probably written <code>element.addEventListener('click', handler)</code> or <code>$('#button').on('click', handler)</code> style code a thousand times.</p>
+
+<p>With <span class='logo'>Ractive.js</span>, you can subscribe to <em>proxy events</em> instead. You declare a proxy event like this...</p>
+
+<pre class='prettyprint lang-html'>
+&lt;button on-click='activate'&gt;Activate!&lt;/button&gt;
+</pre>
+
+<p>...and subscribe to it like this:</p>
+
+<pre class='prettyprint lang-js'>
+ractive.on( 'activate', function ( event ) {
+  // `this` is the ractive
+  // `event` contains information about the proxy event
+  alert( 'Activating!' );
+});
+</pre>
+
+<p>This is generally more convenient &ndash; you don't need to pepper the DOM with <code>id</code> and <code>class</code> attributes just so you've got a hook to identify elements with, and proxy event names carry meaning about the user's intended action in a way that <code>mouseover</code> and friends don't, making your templates and your code <em>easier to reason about</em>.</p>
+
+<p>Update the template and JavaScript, then execute.</p>
+
+<div class='hint'>
+	<p>If you use your developer tools to inspect the button, you'll notice that it doesn't have a <code>on-click</code> attribute. When <span class='logo'>Ractive.js</span> parses the template, it knows to treat attributes beginning <code>on-</code> differently. You'll learn more about parsing in a later tutorial.</p>
+</div>

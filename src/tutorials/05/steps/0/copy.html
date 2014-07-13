@@ -1,0 +1,19 @@
+<h2>Working with lists</h2>
+
+<p>Lists of data, of some form or another, are often at the heart of webapps. In this tutorial we're going to build a sortable table of superheroes, using data taken from <a href='http://www.superherodb.com'>superherodb.com</a>.</p>
+
+<p>We've already got an array of objects representing four of the X-Men, over there on the right. We just need to update the template.</p>
+
+<p>Begin by wrapping the second <code>&lt;tr&gt;</code> in a section:</p>
+
+<pre class='prettyprint lang-html'>
+{{#superheroes}}
+&lt;tr&gt;
+  &lt;!-- row content --&gt;
+&lt;/tr&gt;
+{{/superheroes}}
+</pre>
+
+<p>Then, insert mustaches representing each of the three properties in the table &ndash; <code>name</code>, <code>realname</code> and <code>power</code>. For extra credit, wrap the name in a link pointing to the <code>info</code> URL.</p>
+
+<p>Execute the code. As ever, you can interact with the result via the console.</p>

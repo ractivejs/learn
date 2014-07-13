@@ -1,0 +1,84 @@
+<h2>Creating a Slideshow class</h2>
+
+<p>Time to create our <code>Slideshow</code> class:</p>
+
+<pre class='prettyprint lang-js'>
+var Slideshow = Ractive.extend({
+  template: template, // this will be applied to all Slideshow instances
+
+  // method for changing the currently displayed image
+  goto: function ( imageNum ) {
+    // goto method goes here...
+  },
+
+  // initialisation code
+  init: function ( options ) {
+    // initialisation code goes here...
+  }
+});
+</pre>
+
+<p>Each <code>Slideshow</code> instance will have a <code>goto</code> method in addition to the normal <code>Ractive</code> instance methods. Any set-up work we need to do can happen in the <code>init</code> method, which gets called as soon as the template has been rendered.</p>
+
+<p>Let's write our <code>goto</code> method:</p>
+
+<pre class='prettyprint lang-js'>
+function ( imageNum ) {
+  // make sure the image number is between 0...
+  while ( imageNum < 0 ) {
+    imageNum += this.images.length;
+  }
+
+  // and the maximum
+  imageNum = imageNum % this.images.length;
+
+  // update the view
+  this.set( 'image', this.images[ imageNum ] );
+  this.currentImage = imageNum;
+}
+</pre>
+
+<p>This method presupposes the existence of <code>this.images</code>. We can add this property, as well as the proxy event handling code, in our <code>init</code> method:</p>
+
+<pre class='prettyprint lang-js'>
+function ( options ) {
+  var self = this;
+
+  this.images = options.images;
+
+  this.on({
+    prev: function () { self.goto( self.currentImage - 1 ); },
+    next: function () { self.goto( self.currentImage + 1 ); }
+  });
+
+  this.goto( 0 ); // start with the first image
+}
+</pre>
+
+<p>Let's add some code to instantiate the slideshow with our gifs:</p>
+
+<pre class='prettyprint lang-js'>
+var slideshow = new Slideshow({
+  el: output,
+  images: [
+    { src: '../../gifs/problem.gif', caption: 'Trying to work out a problem after the 5th hour' },
+    { src: '../../gifs/css.gif',     caption: 'Trying to fix someone else\'s CSS' },
+    { src: '../../gifs/ie.gif',      caption: 'Testing interface on Internet Explorer' },
+    { src: '../../gifs/w3c.gif',     caption: 'Trying to code to W3C standards' },
+    { src: '../../gifs/build.gif',   caption: 'Visiting the guy that wrote the build scripts' },
+    { src: '../../gifs/test.gif',    caption: 'I don\'t need to test that. What can possibly go wrong?' }
+  ]
+});
+</pre>
+
+<p>Go ahead and execute the code &ndash; you should now have a working slideshow.</p>
+
+<div class='hint'>
+  <p>Needless to say, you could add as many bells and whistles as you wanted &ndash; fading or sliding transitions, image preloading, thumbnails, touchscreen gesture controls, and so on.</p>
+
+  <p>You could, of course, just use an existing image slideshow library. But then you would have to learn that library, and potentially submit to its design philosophy.</p>
+
+  <p><span class='logo'>Ractive.js</span> is all about flexibility. If you want to change the design or behaviour of a component (say, adding a class name to a particular element), the power to do so is in your hands &ndash; the template is easy to understand and tweak because it's basically just HTML, and the view logic is straightforward.</p>
+
+  <p>It's better to be able to build your own solution than to rely on developers maintaining high quality and up-to-date documentation.</p>
+</div>

@@ -1,0 +1,46 @@
+<div class='temperatures'>
+  
+  <!-- header and options -->
+  <div class='header'>
+    <h2>Average high and low temperature</h2>
+    
+    <!-- switch between celsius and fahrenheit -->
+    <div class='radio-group'>
+      <label>°C <input type='radio' name='{{degreeType}}' value='celsius' checked></label>
+      <label>°F <input type='radio' name='{{degreeType}}' value='fahrenheit'></label>
+    </div>
+
+    <p>{{selectedCity.name}}</p>
+  </div>
+
+  <!-- the chart -->
+  <div class='bar-chart'>
+    {{#selectedCity}}
+      
+      <!-- 12 sections, one for each month -->
+      {{#months:i}}
+        <div class='bar-group' style='width: {{ 100 / months.length }}%;'>
+          
+          <!-- average high temperature -->
+          <div class='bar-outer high {{ (high >= 0) ? "positive" : "negative" }}' style='height: {{ scale(high) }}%;'>
+            <div class='bar-inner' style='background-color: {{ getColor(high) }};'></div>
+            <span>{{ format(high, degreeType) }}</span>
+          </div>
+
+
+          <!-- average low temperature -->
+          <div class='bar-outer low {{ (low >= 0) ? "positive" : "negative" }}' style='height: {{ scale(low) }}%;'>
+            <div class='bar-inner' style='background-color: {{ getColor(low) }};'></div>
+            <span>{{ format(low, degreeType) }}</span>
+          </div>
+
+          <!-- month label (JFMAMJJASOND) -->
+          <span class='month-label'>{{ monthNames[i] }}</span>
+        </div>
+      {{/months}}
+    {{/selectedCity}}
+
+    <!-- horizontal line representing freezing -->
+    <div class='axis'></div>
+  </div>
+</div>

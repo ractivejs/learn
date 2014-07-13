@@ -1,0 +1,24 @@
+<svg>
+  
+  <!-- offset everything by 30,30 so we can see the labels -->
+  <g transform='translate(30,30)'>
+    
+    <!-- the rectangle -->
+    <rect width='{{width}}' height='{{height}}'/>
+
+    <!-- the area of the rectangle -->
+    <text class='area' x='{{ width / 2 }}' y='{{ height / 2 }}'>
+      {{ Math.round( width * height ) }} px²
+    </text>
+
+    <!-- the width -->
+    <text transform='translate( {{ width / 2 }}, -10 )'>
+      {{ Math.round( width ) }} px
+    </text>
+
+    <!-- the height -->
+    <text transform='translate( -10, {{ height / 2 }} ), rotate(-90)'>
+      {{ Math.round( height ) }} px
+    </text>
+  </g>
+</svg>

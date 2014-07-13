@@ -1,0 +1,28 @@
+<h2>Using expressions</h2>
+
+<p>One problem with the last example &ndash; the population number. Printing out a number like 62641000 (<a href='https://www.google.co.uk/publicdata/explore?ds=d5bncppjof8f9_&ctype=l&strail=false&bcs=d&nselm=h&met_y=sp_pop_totl&scale_y=lin&ind_y=false&rdim=region&idim=country:GBR&ifdim=region&hl=en&dl=en&ind=false&q=uk+population'>the most recent figure for the UK's population</a>) just looks a bit daft.</p>
+
+<p>We <em>could</em> replace the number with a string, like '62.6 million'. But numbers are a hell of a lot easier to work with.</p>
+
+<p>Instead, we can use an <em>expression</em>. Expressions look just like regular mustaches:</p>
+
+<pre class='prettyprint lang-html'>
+{{ format(population) }}
+</pre>
+
+<p>Add a <code>format</code> property alongside the country data (it may seem weird adding a function as 'data', but it will make sense in due course!):</p>
+
+<pre class='prettyprint lang-js'>
+function ( num ) {
+  if ( num > 1000000000 ) return ( num / 1000000000 ).toFixed( 1 ) + ' billion';
+  if ( num > 1000000 ) return ( num / 1000000 ).toFixed( 1 ) + ' million';
+  if ( num > 1000 ) return ( Math.floor( num / 1000 ) ) + ',' + ( num % 1000 );
+  return num;
+}
+</pre>
+
+<p>Execute the code. Doesn't that look better? Try changing the values via the console.</p>
+
+<div class='hint'>
+	<p>Note that expressions are not part of the mustache syntax &ndash; they are specific to <span class='logo'>Ractive.js</span>.</p>
+</div>

@@ -1,0 +1,15 @@
+<table class='superheroes'>
+  <tr>
+    <th>Superhero name</th>
+    <th>Real name</th>
+    <th>Superpower</th>
+  </tr>
+
+  {{#superheroes}}
+    <tr>
+      <td><a href='{{info}}'>{{name}}</a></td>
+      <td>{{realname}}</td>
+      <td>{{power}}</td>
+    </tr>
+  {{/superheroes}}
+</table>

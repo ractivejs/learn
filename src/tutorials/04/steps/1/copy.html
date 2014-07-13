@@ -1,0 +1,11 @@
+<h2>If this then NOT that</h2>
+
+<p>Having two properties (<code>signedIn</code> and <code>notSignedIn</code>) to represent one piece of data (whether or not the user is signed in) is the sort of thing that makes most programmers itch uncontrollably.</p>
+
+<p>Fortunately mustache has us covered. We can use an <em>inverted section</em>:</p>
+
+<pre class='prettyprint lang-html'>
+{{^signedIn}}&lt;!-- not-signed-in block --&gt;{{/signedIn}}
+</pre>
+
+<p>Replace the <code>{{#notSignedIn}}</code> section with a <code>{{^signedIn}}</code> section. Then, remove the references to <code>notSignedIn</code> in the JavaScript. Then breathe a sigh of relief &ndash; doesn't that feel better?</p>

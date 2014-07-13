@@ -1,0 +1,29 @@
+<h2>...and bowing out in style</h2>
+
+<p>Similarly, we can specify <code>outro</code> transitions. When an element is no longer needed on the page, it will exit gracefully.</p>
+
+<p>Try adding <code>outro</code> transitions to the three buttons;</p>
+
+<pre class='prettyprint lang-html'>
+&lt;div intro='fade' outro='fly' class='large button' on-tap='show:2'&gt;Click me!&lt;/div&gt;
+</pre>
+
+<p>Execute the code. Aaargh! It looks horrible!</p>
+
+<p>That's because new elements are being rendered before the old ones get removed from the DOM. What we need to do is trigger the removal, wait, and then trigger rendering of the new element.</p>
+
+<p>We do that by adding a callback to our proxy event handler:</p>
+
+<pre class='prettyprint lang-js'>
+ractive.on({
+  show: function ( event, which ) {
+    this.set( 'visible', null, function () {
+      this.set( 'visible', which );
+    });
+  }
+});
+</pre>
+
+<div class='hint'>
+	<p>You can pass a callback to <code>ractive.set()</code>, <code>ractive.update()</code> and <code>ractive.teardown()</code>, or as the <code>complete</code> property of your initialisation options. At present, promises are not implemented, and there is no way to specify a callback when using array mutation methods.</p>
+</div>

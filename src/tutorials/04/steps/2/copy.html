@@ -1,0 +1,30 @@
+<h2>True or false?</h2>
+
+<p>In fact, we can be even more efficient. The condition in a conditional section doesn't have to be <code>true</code> or <code>false</code> &ndash; instead it is evaluated as <em>truthy</em> or <em>falsy</em>.</p>
+
+<p>Let's stipulate that the <code>user</code> property only exists if a user is signed in, and that if they are signed in, <code>user</code> is an object with a <code>name</code> property.</p>
+
+<p>Edit the sign-in code accordingly:</p>
+
+<pre class='prettyprint lang-js'>
+ractive.on( 'signIn', function () {
+  var name = prompt( 'Enter your username to sign in', 'ractive_fan' );
+  ractive.set( 'user.name', name );
+});
+</pre>
+
+<div class='hint'>
+	<p>Here, we're setting a property on an object that doesn't exist yet. That's fine &ndash; <span class='logo'>Ractive.js</span> will create the object. If we'd done <code>ractive.set( 'user[0]', name )</code> or <code>ractive.set( 'user.0', name )</code> it would assume we wanted to create an array instead of an object.</p>
+</div>
+
+<p>Initially, <code>user</code> will be <code>undefined</code>, but once someone signs in, <code>user</code> will be an object. Since <code>undefined</code> is falsy and objects are always truthy, we can use <code>user</code> instead of <code>signedIn</code>.</p>
+
+<p>Update the template accordingly, discarding <code>signedIn</code> in favour of <code>user</code>. Notice that <code>{{#user}}</code> isn't just a conditional section any more &ndash; it's also a <em>context section</em>. So we can use the <code>{{name}}</code> property in our 'welcome back!' message.</p>
+
+<p>Execute the code.</p>
+
+<div class='hint'>
+	<p>In JavaScript, the following values are falsy: <code>undefined</code>, <code>null</code>, <code>NaN</code>, <code>0</code>, <code>""</code> (the empty string), and <code>false</code>.</p>
+
+	<p>However in mustache, there is a special case &ndash; arrays with a length of 0 are treated as falsy. This will make sense when we tackle list sections in the next tutorial.</p>
+</div>

@@ -1,0 +1,30 @@
+<h2>Parlez-vous Français?</h2>
+
+<p>Here's where <span class='logo'>Ractive.js</span> separates from other templating libraries. Normally, if you wanted to change the data, you would have to re-render the entire view, which would have the effect of discarding the DOM nodes you'd already created. That's wasteful.</p>
+
+<p>Instead, we can manipulate views we've already created. Try running this in the <strong>#console</strong> block (lower right):</p>
+
+<pre class='prettyprint lang-js'>
+ractive.set( 'greeting', 'Bonjour' );
+</pre>
+
+<p>And now this:</p>
+
+<pre class='prettyprint lang-js'>
+ractive.set( 'recipient', 'tout le monde' );
+</pre>
+
+<p>Ooh la la! Even better, we could set both properties in one go. Let's do it in Mandarin this time:</p>
+
+<pre class='prettyprint lang-js'>
+ractive.set({
+  greeting: '你好',
+  recipient: '世界'
+});
+</pre>
+
+<div class='hint'>
+	<p>What's happening here is that the contents of the <code>&lt;p&gt;</code> element are split into four text nodes &ndash; one for <code>{{greeting}}</code>, one for the space character, one for <code>{{recipient}}</code>, and one for the <code>!</code>. Ractive stores references to the nodes that correspond to the variables, and updates them when the data changes, leaving everything else untouched.</p>
+
+	<p>Surgically updating text nodes is much faster than replacing elements, particularly when you only need to change part of your ractive.</p>
+</div>

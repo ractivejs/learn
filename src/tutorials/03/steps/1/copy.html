@@ -1,0 +1,16 @@
+<h2>Subscribing to multiple events</h2>
+
+<p>You can subscribe to multiple proxy events in one go:</p>
+
+<pre class='prettyprint lang-js'>
+ractive.on({
+  activate: function () {
+    alert( 'Activating!' );
+  },
+  deactivate: function () {
+    alert( 'Deactivating!' );
+  }
+});
+</pre>
+
+<p>Add a 'deactivate' button and wire it up.</p>

@@ -1,0 +1,65 @@
+<div class='temperatures'>
+
+  <!-- header and options -->
+  <div class='header'>
+    <h2>Average high and low temperature</h2>
+    
+    <!-- switch between celsius and fahrenheit -->
+    <div class='radio-group'>
+      <label>°C <input type='radio' name='{{degreeType}}' value='celsius' checked></label>
+      <label>°F <input type='radio' name='{{degreeType}}' value='fahrenheit'></label>
+    </div>
+
+    <!-- dropdown menu -->
+    <select value='{{selected}}'>
+      {{#cities:i}}
+      <option value='{{i}}'>{{name}}</option>
+      {{/cities}}
+    </select>
+  </div>
+
+  <!-- the chart -->
+  <div class='bar-chart'>
+    <div id='svg_wrapper'> <!-- needed to determine size of SVG element in Firefox -->
+      <svg id='svg'>
+
+        <!-- gradient - higher temperatures are redder, lower temperatures are bluer -->
+        <defs>
+          <linearGradient id='gradient' x2='0' y2='100%' gradientUnits='userSpaceOnUse'>
+            <stop offset='0%' stop-color='rgb(255,0,0)' />
+            <stop offset='100%' stop-color='rgb(0,0,255)' />
+          </linearGradient>
+        </defs>
+
+        <!-- horizontal line representing freezing -->
+        <line class='freezing' x1='0' y1='{{ yScale(0) }}' x2='{{width}}' y2='{{ yScale(0) }}'/>
+
+        {{#selectedCity}}
+          
+          <!-- the band -->
+          <polygon fill='url(#gradient)' stroke='url(#gradient)' class='temperature-band' points='{{ getBand(months,xScale,yScale) }}'/>
+
+          {{#months:i}}
+            <!-- point markers for average highs -->
+            <g class='marker' transform='translate({{ xScale(i+0.5) }},{{ yScale(high) }})'>
+              <circle r='2'/>
+              <text y='-10'>{{ format(high,degreeType) }}</text>
+            </g>
+
+            <!-- point markers for average lows -->
+            <g class='marker' transform='translate({{ xScale(i+0.5) }},{{ yScale(low) }})'>
+              <circle r='2'/>
+              <text y='15'>{{ format(low,degreeType) }}</text>
+            </g>
+          {{/months}}
+        {{/selectedCity}}
+      </svg>
+    </div>
+
+    <div class='month-labels'>
+      {{#monthNames:i}}
+      <span style='width: {{ 100 / monthNames.length }}%;'>{{ monthNames[i] }}</span>
+      {{/monthNames}}
+    </div>
+  </div>
+</div>

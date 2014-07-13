@@ -1,0 +1,13 @@
+<h2>To-do list</h2>
+
+<input on-change='newTodo' on-enter='blur' class='newTodo' placeholder='What needs to be done?'>
+
+<ul class='todos'>
+  {{#items:i}}
+    {{>item}}
+  {{/items}}
+</ul>
+
+<!-- {{>item}} -->
+ <!-- add the partial here -->
+<!-- {{/item}} -->

@@ -1,0 +1,21 @@
+<h2>Making it sortable (part 1)</h2>
+
+<p>It's time to make our table sortable. We've added a 'sortable' class to the three headers to indicate they can be clicked on.</p>
+
+<p>First, let's add a proxy <code>sort</code> event to each column header, specifying the column header as an event argument:</p>
+
+<pre class='prettyprint lang-html'>
+&lt;th class='sortable' on-tap='sort:name'&gt;Superhero name&lt;/th&gt;
+&lt;th class='sortable' on-tap='sort:realname'&gt;Real name&lt;/th&gt;
+&lt;th class='sortable' on-tap='sort:power'&gt;Superpower&lt;/th&gt;
+</pre>
+
+<p>That way, when the user taps one of the column headers, the view will fire a <code>sort</code> event.</p>
+
+<pre class='prettyprint lang-js'>
+ractive.on( 'sort', function ( event, column ) {
+  alert( 'Sorting by ' + column );
+});
+</pre>
+
+<p>Execute the code. When you tap on the three sortable headers, the browser should alert the name of the column we're sorting by. Now we just need to add the sorting logic.</p>

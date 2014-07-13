@@ -1,0 +1,23 @@
+<h2>Get a load of this</h2>
+
+<p>As well as <em>setting</em> data, you can <em>get</em> it, which sometimes comes in handy. Let's add some interactivity to our demo &ndash; add the following to the template:</p>
+
+<pre class='prettyprint lang-html'>
+&lt;button id='count'&gt;Times this button has been clicked: {{counter}}&lt;/button&gt;
+</pre>
+
+<p>Then, let's wire it up. In later tutorials, we'll learn a more convenient way to do this, but for now we'll use good old <code>addEventListener</code>. First, add a <code>counter</code> property to <code>data</code>, and initialise it to <code>0</code>. Then add the event handler:</p>
+
+<pre class='prettyprint lang-js'>
+document.getElementById( 'count' ).addEventListener( 'click', function () {
+  ractive.set( 'counter', ractive.get( 'counter' ) + 1 );
+});
+</pre>
+
+<p>Execute this code. Try clicking on the button a few times &ndash; the counter should increment with each click.</p>
+
+<div class='hint'>
+	<p>With traditional templating libraries this would be much harder. You'd be removing and recreating the button each time, so you'd have to keep detaching and reattaching the event handler. Or you could use event delegation, but that's extra work too. Or you could abandon templating and manipulate the DOM manually &ndash; but that way madness lies.</p>
+</div>
+
+<p>Congratulations! You've completed the first tutorial. If you're ready to dive in and start using Ractive in your own projects, <a href='http://www.ractivejs.org/download/'>download the latest version</a> and <a href='https://github.com/rich-harris/Ractive/wiki'>read the docs</a>. Otherwise, let's move on to the next tutorial.</p>

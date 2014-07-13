@@ -1,0 +1,21 @@
+.color-mixer {
+	height: 100%;
+}
+
+.color-mixer th, .color-mixer td {
+	height: 20%;
+}
+
+.color-mixer th:first-child, .color-mixer td:first-child {
+	text-align: right;
+}
+
+.color-mixer th:last-child, .color-mixer td:last-child {
+	width: 70%;
+}
+
+.color-mixer div {
+	width: 100%;
+	max-width: 100%;
+	height: 100%;
+}

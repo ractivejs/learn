@@ -1,0 +1,19 @@
+<h2>To-do list</h2>
+
+<input on-change='newTodo' on-enter='blur' class='newTodo' placeholder='What needs to be done?'>
+
+<ul class='todos'>
+  {{#items:i}}
+    <li data-index='{{i}}' class='{{ done ? "done" : "pending" }}'>
+      <input type='checkbox' checked='{{done}}'>
+      <span on-tap='edit'>
+        {{description}}
+
+        {{#.editing}}
+          <input id='editTodo' class='edit' value='{{description}}' on-blur='stop_editing'>
+        {{/.editing}}
+      </span>
+      <a class='button' on-tap='remove'>x</a>
+    </li>
+  {{/items}}
+</ul>

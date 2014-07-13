@@ -1,0 +1,18 @@
+<h2>If this then that</h2>
+
+<p>Often, you want to show or hide part of your view depending on whether a particular condition is met. For example you might want to show a slightly different view to users depending on whether they're signed in or not.</p>
+
+<p>In this example we've already set up a mock sign-in mechanism &ndash; click the 'sign in' button and enter your name in the prompt.</p>
+
+<p>All we need to do is hide the 'please sign in' message when we're signed in, and the 'welcome back!' message when we're not.</p>
+
+<p>Wrap the first block in a conditional section that uses the <code>notSignedIn</code> property:</p>
+
+<pre class='prettyprint lang-html'>
+{{#notSignedIn}}
+  &lt;!-- message for non-signed-in users --&gt;
+  &lt;p&gt;Hi there! Please &lt;a class='button' on-tap='signIn'&gt;sign in&lt;/a&gt;.&lt;/p&gt;
+{{/notSignedIn}}
+</pre>
+
+<p>Now do the same for the other block, except with the <code>signedIn</code> property. Execute the code.</p>

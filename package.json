@@ -1,0 +1,19 @@
+{
+  "name": "learn.ractivejs.org",
+  "description": "Ractive.js tutorials",
+  "author": "Rich Harris",
+  "devDependencies": {
+    "broccoli": "~0.12.3",
+    "grunt": "~0.4.5",
+    "jit-grunt": "~0.7.0",
+    "broccoli-static-compiler": "~0.1.4",
+    "broccoli-merge-trees": "~0.1.4",
+    "broccoli-es6-transpiler": "~0.1.0",
+    "broccoli-es6-module-transpiler": "~0.1.1",
+    "broccoli-filter": "~0.1.6",
+    "broccoli-writer": "~0.1.1",
+    "promo": "~0.1.0",
+    "mkdirp": "~0.5.0",
+    "spelunk": "~0.1.1"
+  }
+}

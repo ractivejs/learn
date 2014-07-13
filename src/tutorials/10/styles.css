@@ -1,0 +1,168 @@
+svg {
+	width: 100%;
+	height: 100%;
+}
+
+.temperatures {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	padding: 4em 0 0 0;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+
+.header {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 2em;
+}
+
+.radio-group {
+	display: inline-block;
+	float: right;
+	text-align: right;
+	padding: 0.5em 0 0 0;
+}
+
+.header h2 {
+	float: left;
+	margin: 0;
+}
+
+.header select {
+	position: relative;
+	top: 0.1em;
+	float: left;
+	clear: left;
+	font-size: inherit;
+	font-family: inherit;
+	z-index: 7;
+}
+
+.header label {
+	position: relative;
+	z-index: 7;
+}
+
+.header p {
+	float: left;
+	clear: left;
+	margin: 0;
+}
+
+.bar-chart {
+	position: relative;
+	padding: 0 0 3em 0;
+	width: 100%;
+	height: 100%;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+.bar-group {
+	position: relative;
+	float: left;
+	height: 100%;
+	text-align: center;
+}
+
+.month-label {
+	position: absolute;
+	bottom: -2em;
+	left: 0;
+	width: 100%;
+}
+
+.bar-outer {
+	position: absolute;
+	width: 100%;
+	padding: 0 1px;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+.bar-outer.positive {
+	bottom: 20%;
+}
+
+.bar-outer.positive .bar-inner {
+	bottom: 0;
+	border-top: 1px solid #333;
+	border-left: 1px solid #333;
+	border-right: 1px solid #333;
+	border-radius: 2px 2px 0 0;
+}
+
+.bar-outer.negative {
+	top: 80%;
+}
+
+.bar-outer.negative .bar-inner {
+	top: 0;
+	border-bottom: 1px solid #333;
+	border-left: 1px solid #333;
+	border-right: 1px solid #333;
+	border-radius: 0 0 2px 2px;
+}
+
+.bar-outer.high.negative {
+	z-index: 6;
+}
+
+.bar-inner {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+.high.positive span {
+	top: -0.6em;
+	font-weight: bold;
+}
+
+.low.positive span {
+	top: 0.8em;
+	color: white;
+	text-shadow: 0 0 3px rgba(0,0,0,1), 0 0 3px rgba(0,0,0,1), 0 0 3px rgba(0,0,0,1);
+}
+
+.high.negative span {
+	bottom: 0.8em;
+	color: white;
+	text-shadow: 0 0 3px rgba(0,0,0,1), 0 0 3px rgba(0,0,0,1), 0 0 3px rgba(0,0,0,1);
+}
+
+.low.negative span {
+	bottom: -0.6em;
+	font-weight: bold;
+}
+
+.bar-chart span {
+	position: absolute;
+	width: 100%;
+	left: 0;
+	font-family: 'Helvetica Neue', Arial;
+	font-size: 0.7em;
+	line-height: 0;
+	z-index: 6;
+}
+
+.axis {
+	position: relative;
+	width: 100%;
+	height: 0;
+	border-top: 1px solid #333;
+	z-index: 5;
+	left: 0;
+	top: 80%;
+}

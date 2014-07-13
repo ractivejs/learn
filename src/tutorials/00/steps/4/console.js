@@ -1,0 +1,6 @@
+// Psst! Instead of doing this...
+// `ractive.set( 'counter', ractive.get( 'counter' ) + 1 )`
+//
+// ...you can do this...
+ractive.add( 'counter' );
+// ...see also `ractive.subtract()` and `ractive.toggle()`

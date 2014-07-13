@@ -1,0 +1,15 @@
+<div class='gif-thumbs'>
+	<img on-tap='select' src='../../gifs/css.jpg' data-caption="Trying to fix someone else's CSS">
+	<img on-tap='select' src='../../gifs/problem.jpg' data-caption="Trying to work out a problem after the 5th hour">
+	<img on-tap='select' src='../../gifs/ie.jpg' data-caption="Testing interface on Internet Explorer">
+	<img on-tap='select' src='../../gifs/w3c.jpg' data-caption="Trying to code to W3C standards">
+	<img on-tap='select' src='../../gifs/build.jpg' data-caption="Visiting the guy that wrote the build scripts">
+	<img on-tap='select' src='../../gifs/test.jpg' data-caption="I don't need to test that. What can possibly go wrong?">
+</div>
+
+{{#gif}}
+<div class='gif'>
+	<p>{{caption}}</p>
+	<img src='{{gif}}'>
+</div>
+{{/gif}}

@@ -1,0 +1,51 @@
+<link rel='ractive' href='./left-nav.html'>
+
+<div class='app' style='{{style}}'>
+	<header>
+		<h1>{{index + 1}}. {{title}}</h1>
+	</header>
+
+	<left-nav open='{{navOpen}}'/>
+</div>
+
+<style>
+	.app {
+		position: relative;
+		padding: 1.5em 1em 1em 5em;
+
+		-webkit-transition: all 0.2s cubic-bezier(.02,.91,.29,1);
+		-moz-transition: all 0.2s cubic-bezier(.02,.91,.29,1);
+		-ms-transition: all 0.2s cubic-bezier(.02,.91,.29,1);
+		-o-transition: all 0.2s cubic-bezier(.02,.91,.29,1);
+		transition: all 0.2s cubic-bezier(.02,.91,.29,1);
+
+		-webkit-box-sizing: border-box;
+		-moz-box-sizing: border-box;
+		box-sizing: border-box;
+	}
+
+	header {
+		padding: 0;
+		margin: 0;
+	}
+
+	h1 {
+		margin: 0;
+		font-size: 2em;
+	}
+</style>
+
+<script>
+	component.exports = {
+		computed: {
+			style: function () {
+				var open = this.get( 'navOpen' );
+
+				// TODO accommodate shit browsers...
+				return [ '-webkit-', '-moz-', '-ms-', '-o-', '' ].map( prefix => {
+					return prefix + 'transform: translate(' + ( open ? 12 : 0 ) + 'em,0)';
+				}).join( ';' );
+			}
+		}
+	};
+</script>

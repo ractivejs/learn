@@ -3,11 +3,20 @@ var Writer = require( 'broccoli-writer' ),
 	Promise = promo.Promise,
 	fs = require( 'fs' ),
 	path = require( 'path' ),
+	_ = require( 'lodash' ),
 	mkdirp = promo( require( 'mkdirp' ) ),
 	spelunk = promo( require( 'spelunk' ) ),
 
 	readFile = promo( fs.readFile ),
-	writeFile = promo( fs.writeFile );
+	writeFile = promo( fs.writeFile ),
+
+	config;
+
+config = {
+	gaTrackingId: 'UA-5602942-2',
+	gaProperty: 'learn.ractivejs.org',
+	id: 'learn'
+}
 
 function TutorialCompiler ( inputTree, options ) {
 	var key;
@@ -42,30 +51,52 @@ TutorialCompiler.prototype.write = function ( readTree, destDir ) {
 			return Promise.all( promises );
 
 			function tutorialPromise () {
-				return readFile( path.join( srcDir, 'templates', 'tutorial.html' ) ).then( function ( template ) {
-					var promises;
+				var partials, partialPromise;
 
-					promises = tutorialData.map( function ( tutorial ) {
-						var promises = tutorial.steps.map( function ( step, i ) {
-							var dirname, filename, content;
+				partialPromise = spelunk( path.join( srcDir, 'partials' ) ).then( function ( result ) {
+					partials = {};
 
-							dirname = path.join( destDir, slugify( tutorial.title ), '' + ( i + 1 ) );
-							filename = path.join( dirname, 'index.html' );
-							content = generateTutorial( tutorial, step );
+					for ( key in result ) {
+						if ( result.hasOwnProperty( key ) ) {
+							partials[ key ] = _.template( result[ key ], config );
+						}
+					}
+				});
 
-							return mkdirp( dirname ).then( function () {
-								return writeFile( filename, content );
+				return partialPromise.then( function () {
+					return readFile( path.join( srcDir, 'templates', 'tutorial.html' ) ).then( function ( template ) {
+						var promises;
+
+						promises = tutorialData.map( function ( tutorial, tutorialIndex ) {
+							var promises = tutorial.steps.map( function ( step, stepIndex ) {
+								var dirname, filename, content;
+
+								dirname = path.join( destDir, slugify( tutorial.title ), '' + ( stepIndex + 1 ) );
+								filename = path.join( dirname, 'index.html' );
+								content = generateTutorial( tutorial, step );
+
+								return mkdirp( dirname ).then( function () {
+									return writeFile( filename, content );
+								});
+
+								function generateTutorial () {
+									return _.template( template, {
+										partials: partials,
+										tutorialData: tutorialData,
+										tutorialIndex: tutorialIndex,
+										stepIndex: stepIndex,
+										tutorial: tutorial,
+										step: step,
+										ractive: 'http://cdn.ractivejs.org/0.5.4/ractive-legacy.js'
+									});
+								}
 							});
+
+							return Promise.all( promises );
 						});
 
 						return Promise.all( promises );
 					});
-
-					return Promise.all( promises );
-
-					function generateTutorial ( tutorial, step ) {
-						return template;
-					}
 				});
 			}
 

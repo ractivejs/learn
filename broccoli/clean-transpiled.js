@@ -37,8 +37,8 @@ CleanTranspileFilter.prototype.processString = function ( src ) {
 		})
 
 		// replace dependency names
-		.replace( /__dependency(\d+)__,/g, function ( match, num ) {
-			return ( dependencies[ num ] ? dependencies[ num ] + ',' : '' );
+		.replace( /__dependency(\d+)__(,)?/g, function ( match, num, comma ) {
+			return ( dependencies[ num ] ? dependencies[ num ] + ( comma || '' ) : '' );
 		})
 
 		// remove __exports__

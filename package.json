@@ -14,6 +14,11 @@
     "broccoli-writer": "~0.1.1",
     "promo": "~0.1.0",
     "mkdirp": "~0.5.0",
-    "spelunk": "~0.1.1"
+    "spelunk": "~0.1.1",
+    "lodash": "~2.4.1",
+    "broccoli-sass": "~0.2.1",
+    "broccoli-ractive": "~0.2.0",
+    "broccoli-requirejs": "0.0.2",
+    "amdclean": "~2.2.3"
   }
 }

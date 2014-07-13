@@ -1,1 +1,52 @@
-yeah!
+<!DOCTYPE html>
+<head>
+	<meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1'>
+
+	<title>Ractive.js tutorials | <%= tutorial.title %> | part <%= stepIndex + 1 %></title>
+
+	<link rel='icon' type='image/png' href='../../assets/favicon.png'>
+	<link rel='stylesheet' href='../../min.css'>
+
+	<!--[if lte IE 8]>
+		<script src='../../assets/respond.min.js'></script>
+		<script src='../../assets/html5shiv.min.js'></script>
+	<![endif]-->
+</head>
+
+<body>
+	<%= partials.nav %>
+
+	<div class='app-container'>
+
+		<div class='app'>
+			<p class='loading'>loading...</p>
+		</div>
+
+
+	</div>
+
+	<%= partials.footer %>
+
+	<%= partials.analytics %>
+
+	<script>
+		window.TUTORIAL_DATA = {
+			manifest: <%=
+				JSON.stringify( tutorialData.map( function ( tutorial ) {
+					return {
+						title: tutorial.title,
+						numSteps: tutorial.steps.length
+					};
+				}) )
+			%>,
+
+			// initial tutorial on page load
+			title: <%= JSON.stringify( tutorial.title ) %>,
+			index: <%= tutorialIndex %>,
+			step: <%= JSON.stringify( step ) %>
+		};
+	</script>
+
+	<script src='<%= ractive %>'></script>
+	<script src='../../app.js'></script>
+</body>

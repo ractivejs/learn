@@ -6,12 +6,16 @@
 
 	<div class='nav-options'>
 		{{#each manifest :i}}
-			<div class='nav-option' style='min-height: {{ 100 / manifest.length }}%'>
+			<a
+				class='nav-option'
+				style='min-height: {{ 100 / manifest.length }}%'
+				href='../../{{slugify(title)}}/1'
+			>
 				<div class='nav-option-contents'>
 					{{title}}
-					<span class='number {{i === index ? "selected" : ""}}'>{{i + 1 }}</span>
+					<span class='number {{i === currentStep.tutorialIndex ? "selected" : ""}}'>{{i + 1 }}</span>
 				</div>
-			</div>
+			</a>
 		{{/each}}
 	</div>
 </div>
@@ -93,6 +97,7 @@
 
 	.nav-option {
 		position: relative;
+		display: block;
 		padding: 0.5em 0;
 		border-bottom: 1px solid #fcfcfc;
 		-webkit-box-sizing: border-box;
@@ -102,6 +107,10 @@
 
 	.nav-option:hover {
 		background-color: #fcfcfc;
+	}
+
+	.nav-option:hover .nav-option-contents {
+		text-decoration: underline;
 	}
 
 	.nav-option-contents {
@@ -125,7 +134,7 @@
 		position: absolute;
 		top: 0;
 		right: 1.2rem;
-		border: 1px solid #eee;
+		border: 1px solid #f9f9f9;
 		border-radius: 50%;
 		display: block;
 		text-align: center;
@@ -133,10 +142,12 @@
 		height: 1.6em;
 		font-size: .8em;
 		line-height: 1.7;
+		color: #999;
 	}
 
 	.number.selected {
 		background-color: #729d34;
+		border-color: #729d34;
 		color: white;
 	}
 </style>
@@ -149,6 +160,15 @@
 					this.toggle( 'open' );
 				}
 			});
+		},
+
+		data: {
+			slugify: function ( string ) {
+				if ( !string ) {
+					return '';
+				}
+				return string.toLowerCase().replace( /[^a-z]/g, '-' ).replace( /-{2,}/g, '-' ).replace( /^-/, '' ).replace( /-$/, '' );
+			}
 		}
 	};
 </script>

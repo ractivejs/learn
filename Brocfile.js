@@ -6,11 +6,12 @@ var pick = require( 'broccoli-static-compiler' ),
 	transpileES6Modules = require( 'broccoli-es6-module-transpiler' ),
 	compileSass = require( 'broccoli-sass' ),
 	requirejs = require( 'broccoli-requirejs' ),
+	concat = require( 'broccoli-concat' ),
 	cleanTranspiled = require( './broccoli/clean-transpiled' ),
 	compileTutorials = require( './broccoli/compile-tutorials' ),
 	compileRactive = require( 'broccoli-ractive' ),
 
-	shared, app, css, tutorials, tree;
+	shared, app, bundle, css, tutorials, tree;
 
 	shared = pick( 'shared', {
 		srcDir: '/',
@@ -73,6 +74,11 @@ var pick = require( 'broccoli-static-compiler' ),
 		return app;
 	}());
 
+	bundle = concat( 'src/bundle', {
+		inputFiles: [ '**/*.js' ],
+		outputFile: '/bundle.js'
+	});
+
 	css = compileSass( [ 'src/styles', shared ], 'main.scss', 'min.css', {
 		outputStyle: 'compressed'
 	});
@@ -101,4 +107,4 @@ var pick = require( 'broccoli-static-compiler' ),
 		return compileTutorials( merge([ templates, data, shared ]) );
 	}());
 
-module.exports = merge([ app, tutorials, shared, css ]);
+module.exports = merge([ app, bundle, css, shared, tutorials ]);

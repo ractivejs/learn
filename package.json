@@ -19,6 +19,7 @@
     "broccoli-sass": "~0.2.1",
     "broccoli-ractive": "~0.2.0",
     "broccoli-requirejs": "0.0.2",
-    "amdclean": "~2.2.3"
+    "amdclean": "~2.2.3",
+    "broccoli-concat": "0.0.7"
   }
 }

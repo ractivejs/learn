@@ -69,14 +69,23 @@ TutorialCompiler.prototype.write = function ( readTree, destDir ) {
 
 						promises = tutorialData.map( function ( tutorial, tutorialIndex ) {
 							var promises = tutorial.steps.map( function ( step, stepIndex ) {
-								var dirname, filename, content;
+								var dirname, htmlFilename, jsonFilename, content;
+
+								step = _.extend( {}, step, {
+									tutorialTitle: tutorial.title,
+									tutorialIndex: tutorialIndex
+								});
 
 								dirname = path.join( destDir, slugify( tutorial.title ), '' + ( stepIndex + 1 ) );
-								filename = path.join( dirname, 'index.html' );
+								htmlFilename = path.join( dirname, 'index.html' );
+								jsonFilename = path.join( dirname, 'index.json' );
 								content = generateTutorial( tutorial, step );
 
 								return mkdirp( dirname ).then( function () {
-									return writeFile( filename, content );
+									return Promise.all([
+										writeFile( htmlFilename, content ),
+										writeFile( jsonFilename, JSON.stringify( step ) )
+									]);
 								});
 
 								function generateTutorial () {
@@ -85,7 +94,6 @@ TutorialCompiler.prototype.write = function ( readTree, destDir ) {
 										tutorialData: tutorialData,
 										tutorialIndex: tutorialIndex,
 										stepIndex: stepIndex,
-										tutorial: tutorial,
 										step: step,
 										ractive: 'http://cdn.ractivejs.org/0.5.4/ractive-legacy.js'
 									});

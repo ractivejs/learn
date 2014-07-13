@@ -2,7 +2,7 @@
 <head>
 	<meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1'>
 
-	<title>Ractive.js tutorials | <%= tutorial.title %> | part <%= stepIndex + 1 %></title>
+	<title>Ractive.js tutorials | <%= step.tutorialTitle %> | part <%= stepIndex + 1 %></title>
 
 	<link rel='icon' type='image/png' href='../../assets/favicon.png'>
 	<link rel='stylesheet' href='../../min.css'>
@@ -41,12 +41,11 @@
 			%>,
 
 			// initial tutorial on page load
-			title: <%= JSON.stringify( tutorial.title ) %>,
-			index: <%= tutorialIndex %>,
 			step: <%= JSON.stringify( step ) %>
 		};
 	</script>
 
-	<script src='<%= ractive %>'></script>
+	<script src='http://cdn.ractivejs.org/0.5.4/ractive-legacy.min.js'></script>
+	<script src='../../bundle.js'></script>
 	<script src='../../app.js'></script>
 </body>

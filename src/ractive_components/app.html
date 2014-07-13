@@ -1,8 +1,8 @@
 <link rel='ractive' href='./left-nav.html'>
 
-<div class='app' style='{{style}}'>
+<div class='app' style='{{style}}' on-tap='tapped'>
 	<header>
-		<h1>{{index + 1}}. {{title}}</h1>
+		<h1>{{currentStep.tutorialIndex + 1}}. {{currentStep.tutorialTitle}}</h1>
 	</header>
 
 	<left-nav open='{{navOpen}}'/>
@@ -37,6 +37,53 @@
 
 <script>
 	component.exports = {
+		init: function () {
+			var container = this.find( '.app' ), baseUrl, pattern;
+
+			baseUrl = window.location.origin;
+			pattern = /\/([^\/]+)\/(\d+)/;
+
+			if ( window.history !== undefined && typeof window.history.pushState === 'function' ) {
+				this.on({
+					tapped: function ( event ) {
+						var target = event.original.target, href, match;
+
+						if ( target === container ) {
+							return;
+						}
+
+						// need to see if we're navigating to another tutorial,
+						// and if so navigate without reloading the page
+						do {
+							if ( target.tagName === 'A' ) {
+								href = target.href;
+
+								if ( href.indexOf( baseUrl ) ) {
+									continue;
+								}
+
+								href = href.substring( baseUrl.length );
+								if ( match = pattern.exec( href ) ) {
+									event.original.preventDefault();
+									this.fire( 'navigate', match[1], match[2] );
+									break;
+								}
+							}
+
+							target = target.parentNode;
+						} while ( target !== container );
+					}
+				});
+			}
+
+			this.observe({
+				currentStep: function () {
+					// whenever this changes, shut the nav
+					this.set( 'navOpen', false );
+				}
+			});
+		},
+
 		computed: {
 			style: function () {
 				var open = this.get( 'navOpen' );

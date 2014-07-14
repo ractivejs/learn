@@ -1,5 +1,3 @@
-<h2>A multiple choice question</h2>
-
 <p>In some situations you you need to make it possible to select several values simultaneously. HTML has us covered &ndash; we use the <code>&lt;select multiple&gt;</code> attribute.</p>
 
 <p>Unfortunately that's as helpful as it gets &ndash; <code>selectElement.value</code> returns the value of the <em>most recently selected</em> option, which is just mad, frankly. In almost all cases, if you're using a select element with the <code>multiple</code> attribute, what you really want is an array of the selected values. This is what <span class='logo'>Ractive.js</span> provides.</p>

@@ -3,11 +3,11 @@
 </div>
 
 <script>
-	var Divvy = require( 'divvy' );
+	var Divvy = require( 'divvy' ), forceRedraw = require( 'utils/forceRedraw' );
 
 	component.exports = {
 		init: function () {
-			var self = this, divvy;
+			var self = this, divvy, timeout;
 
 			// Create divvy layout helper
 			divvy = new Divvy({
@@ -19,13 +19,18 @@
 			divvy.restore();
 
 			divvy.on( 'resize', function ( changed ) {
-				this.save();
+				clearTimeout( timeout );
 
-				if ( !changed[ 'output-block' ] ) {
-					return;
+				//this.save();
+
+				if ( changed[ 'output-block' ] ) {
+					self.fire( 'resize' );
 				}
 
-				self.fire( 'resize' );
+				timeout = setTimeout( function () {
+					divvy.save();
+					forceRedraw();
+				}, 50 );
 			});
 		}
 	};

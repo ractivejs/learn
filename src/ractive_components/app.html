@@ -19,7 +19,7 @@
 		>
 			<!-- copy -->
 			<div id='copy-block'>
-				{{{currentStep.copy}}}
+				{{{copy}}}
 
 				{{#if next}}
 					<a class='next' href='{{next}}'>next &raquo;</a>
@@ -172,6 +172,8 @@
 	};
 
 	component.exports = {
+		debug: true,
+
 		init: function () {
 			var self = this,
 				container,
@@ -271,10 +273,11 @@
 			});
 
 			this.observe({
-				currentStep: function ( step ) {
+				currentStep: function ( step, oldStep ) {
 
 					// Teardown existing instances
 					teardownQueue.forEach( r => r.teardown() );
+					teardownQueue = [];
 
 					// Destroy any old interactive codemirror components
 					if ( interactives ) {
@@ -294,27 +297,13 @@
 						navOpen: false,
 
 						// clone step data
+						copy: step.copy,
 						template: step.template,
 						javascript: step.javascript
 					});
 
 					copyBlock.scrollTop = 0;
 
-					if ( step.init ) {
-						execute();
-					}
-				},
-				navOpen: function () {
-					// ugh...
-					clearTimeout( redrawTimeout );
-
-					redrawTimeout = setTimeout( forceRedraw, 200 );
-				}
-			});
-
-			// separate deferred observer, for post-render actions
-			this.observe({
-				currentStep: function ( step ) {
 					prettyPrint( null, copyBlock );
 
 					interactives = this.findAll( '.interactive' ).map( textarea => {
@@ -351,6 +340,23 @@
 
 						return cm;
 					});
+
+					if ( step.init ) {
+						execute();
+					}
+				},
+				navOpen: function () {
+					// ugh...
+					clearTimeout( redrawTimeout );
+
+					redrawTimeout = setTimeout( forceRedraw, 200 );
+				}
+			});
+
+			// separate deferred observer, for post-render actions
+			this.observe({
+				currentStep: function ( step ) {
+
 				}
 			}, { defer: true });
 

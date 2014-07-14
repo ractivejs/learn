@@ -31,6 +31,7 @@
 		border-right: 1px solid #eee;
 		padding: 3.4em 0 0 0;
 		cursor: pointer;
+		box-shadow: 1px 0 3px rgba(0,0,0,.05);
 
 		-webkit-user-select: none;
 		-moz-user-select: none;
@@ -163,12 +164,7 @@
 		},
 
 		data: {
-			slugify: function ( string ) {
-				if ( !string ) {
-					return '';
-				}
-				return string.toLowerCase().replace( /[^a-z]/g, '-' ).replace( /-{2,}/g, '-' ).replace( /^-/, '' ).replace( /-$/, '' );
-			}
+			slugify: require( 'utils/slugify' )
 		}
 	};
 </script>

@@ -9,7 +9,7 @@ html, body {
 	height: 100%;
 	left: 0;
 	top: 0;
-	padding: 2.6em 0 3em 0;
+	padding: 2.6em 0 0 0;
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
@@ -25,10 +25,13 @@ nav {
 	z-index: 10;
 }
 
-footer {
-	position: absolute;
-	width: 100%;
-	bottom: 0;
-	background-color: white;
-	z-index: 10;
+#template, #javascript {
+	.cm-s-ractive.CodeMirror, .cm-s-ractive .CodeMirror-scroll {
+		height: 100%;
+	}
+
+	.cm-s-ractive.CodeMirror {
+		line-height: 1.2;
+		font-size: 14px;
+	}
 }

@@ -1,0 +1,114 @@
+<header>
+	<h1>{{step.tutorialIndex + 1}}. {{step.tutorialTitle}}</h1>
+
+	<div class='controls'>
+		<div class='steps'>
+			{{#each siblingProxies :i}}
+				<a
+					class='step-number {{i === step.index ? "selected" : "" }}'
+					href='/{{slugify(step.tutorialTitle)}}/{{i+1}}'>
+					<span>{{i+1}}</span>
+				</a>
+			{{/each}}
+		</div>
+
+		<button on-tap='resetStep'>Reset</button>
+		<button on-tap='fix'>Fix code</button>
+	</div>
+</header>
+
+<style>
+	header {
+		position: relative;
+		top: -3.5em;
+		padding: 0;
+		margin: 0;
+	}
+
+	h1 {
+		margin: 0.2em 0 0 0;
+		font-size: 2em;
+		float: left;
+	}
+
+	.controls {
+		float: right;
+	}
+
+	.steps {
+		position: relative;
+		top: 0.1em;
+		float: left;
+		margin: 0 1.5em 0 0;
+	}
+
+	button {
+
+	}
+
+	.step-number {
+		position: relative;
+		display: inline-block;
+		width: 1em;
+		height: 1em;
+		border: 1px solid #eee;
+		background-color: #f4f4f4;
+		border-radius: 50%;
+		margin: 0 0.6em 0 0;
+		text-align: center;
+		width: 1.8em;
+		height: 1.8em;
+		font-size: 1.2em;
+		line-height: 1.8;
+		color: #999;
+		z-index: 3;
+		-webkit-box-sizing: border-box;
+		-moz-box-sizing: border-box;
+		box-sizing: border-box;
+	}
+
+	.step-number.selected {
+		background-color: #729d34;
+		border-color: #729d34;
+		color: white;
+	}
+
+	.step-number:last-child {
+		margin: 0;
+	}
+
+	.steps:after {
+		content: '';
+		position: absolute;
+		width: 100%;
+		border-bottom: 1px solid #eee;
+		top: 50%;
+		left: 0%;
+		z-index: 2;
+	}
+
+	.step-number span {
+		position: relative;
+		z-index: 3;
+	}
+</style>
+
+<script>
+	component.exports = {
+		computed: {
+			siblingProxies: function () {
+				var array = [], i = this.get( 'step.numSiblings' );
+
+				while ( i-- ) {
+					array[i] = i;
+				}
+
+				return array;
+			}
+		},
+
+		data: {
+			slugify: require( 'utils/slugify' )
+		}
+	};
+</script>

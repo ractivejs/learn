@@ -33,7 +33,7 @@ var pick = require( 'broccoli-static-compiler' ),
 			destDir: '/ractive_components',
 			type: 'amd'
 		});
-		ractive_components = transpileES6( ractive_components, { globals: { define: true } });
+		ractive_components = transpileES6( ractive_components, { globals: { define: true, CodeMirror: true } });
 
 		//app = merge([ app, ractive_components ]);
 		app = transpileES6Modules( app, { type: 'amd' });
@@ -54,7 +54,8 @@ var pick = require( 'broccoli-static-compiler' ),
 				optimize: 'none',
 
 				paths: {
-					divvy: 'vendor/divvy/divvy'
+					divvy: 'vendor/divvy/divvy',
+					codemirror: 'vendor/codemirror/lib/codemirror'
 				},
 
 				onModuleBundleComplete: function ( data ) {

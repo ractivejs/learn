@@ -65,13 +65,17 @@ TutorialCompiler.prototype.write = function ( readTree, destDir ) {
 
 				return partialPromise.then( function () {
 					return readFile( path.join( srcDir, 'templates', 'tutorial.html' ) ).then( function ( template ) {
-						var promises;
+						var compiledTemplate, promises;
+
+						compiledTemplate = _.template( template );
 
 						promises = tutorialData.map( function ( tutorial, tutorialIndex ) {
 							var promises = tutorial.steps.map( function ( step, stepIndex ) {
 								var dirname, htmlFilename, jsonFilename, content;
 
 								step = _.extend( {}, step, {
+									index: stepIndex,
+									numSiblings: tutorial.steps.length,
 									tutorialTitle: tutorial.title,
 									tutorialIndex: tutorialIndex
 								});
@@ -89,13 +93,12 @@ TutorialCompiler.prototype.write = function ( readTree, destDir ) {
 								});
 
 								function generateTutorial () {
-									return _.template( template, {
+									return compiledTemplate({
 										partials: partials,
 										tutorialData: tutorialData,
 										tutorialIndex: tutorialIndex,
 										stepIndex: stepIndex,
-										step: step,
-										ractive: 'http://cdn.ractivejs.org/0.5.4/ractive-legacy.js'
+										step: step
 									});
 								}
 							});

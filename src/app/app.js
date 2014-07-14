@@ -1,12 +1,9 @@
 import AppView from 'ractive_components/app';
 import getStep from 'getStep';
 
-var view, data, tutorialIndexByTitle;
+var view, data;
 
 data = window.TUTORIAL_DATA;
-
-tutorialIndexByTitle = {};
-data.manifest.forEach( ( tutorial, i ) => tutorialIndexByTitle[ tutorial.title ] = i );
 
 view = new AppView({
 	el: '.app-container',

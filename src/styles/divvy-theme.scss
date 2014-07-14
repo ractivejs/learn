@@ -1,37 +1,8 @@
-.divvy-inner.block {
+.divvy-inner {
 	position: relative;
-	padding: 2em 0 0 0;
+	padding: 0.5em;
 	border: 1px solid #e9e9e9;
 	@include border-box;
-
-	.info {
-		position: absolute;
-		left: 0;
-		top: 0;
-		width: 100%;
-		height: 2em;
-		padding: 0.5em;
-		@include border-box;
-		overflow: hidden;
-		@include no-select;
-
-		strong {
-			font-family: 'Voltaire';
-			position: relative;
-			top: 0.1em;
-			line-height: 0;
-		}
-
-		.buttons {
-			float: right;
-			text-align: right;
-		}
-
-		.buttons-left {
-			float: left;
-			text-align: left;
-		}
-	}
 
 	.content {
 		position: relative;
@@ -41,6 +12,22 @@
 		overflow: auto;
 		@include border-box;
 	}
+}
+
+.divvy-top > .divvy-inner {
+	border-top: none;
+}
+
+.divvy-left > .divvy-inner {
+	border-left: none;
+}
+
+.divvy-bottom > .divvy-inner {
+	border-bottom: none;
+}
+
+.divvy-right > .divvy-inner {
+	border-right: none;
 }
 
 .divvy-inner.copy-block {

@@ -1,6 +1,5 @@
 .divvy-inner {
 	position: relative;
-	padding: 0.5em;
 	@include border-box;
 }
 
@@ -23,6 +22,7 @@
 .divvy-vertical-control {
 	width: 10px;
 	background-color: transparent;
+	z-index: 10;
 }
 
 .divvy-vertical-control:after {
@@ -34,10 +34,15 @@
 .divvy-horizontal-control {
 	height: 10px;
 	background-color: transparent;
+	z-index: 10;
 }
 
 .divvy-horizontal-control:after {
 	border-bottom: 1px solid #eee;
 	border-top: none;
 	top: -10px;
+}
+
+.divvy-leaf {
+	padding: 0;
 }

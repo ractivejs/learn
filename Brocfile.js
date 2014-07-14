@@ -11,12 +11,24 @@ var pick = require( 'broccoli-static-compiler' ),
 	compileTutorials = require( './broccoli/compile-tutorials' ),
 	compileRactive = require( 'broccoli-ractive' ),
 
-	shared, app, bundle, css, tutorials, tree;
+	globals = {
+		define: true,
+		CodeMirror: true,
+		prettyPrint: true
+	},
+
+	shared, assets, app, bundle, css, tutorials, tree;
 
 	shared = pick( 'shared', {
 		srcDir: '/',
 		files: [ '**/*.*' ],
 		destDir: '/'
+	});
+
+	assets = pick( 'src/assets', {
+		srcDir: '/',
+		files: [ '**/*.*' ],
+		destDir: '/assets'
 	});
 
 	app = (function () {
@@ -33,12 +45,12 @@ var pick = require( 'broccoli-static-compiler' ),
 			destDir: '/ractive_components',
 			type: 'amd'
 		});
-		ractive_components = transpileES6( ractive_components, { globals: { define: true, CodeMirror: true } });
+		ractive_components = transpileES6( ractive_components, { globals: globals });
 
 		//app = merge([ app, ractive_components ]);
 		app = transpileES6Modules( app, { type: 'amd' });
 		app = cleanTranspiled( app );
-		app = transpileES6( app, { globals: { define: true } });
+		app = transpileES6( app, { globals: globals });
 
 		// external libs
 		vendor = pick( 'vendor', {
@@ -113,4 +125,4 @@ var pick = require( 'broccoli-static-compiler' ),
 		return compileTutorials( merge([ templates, data, shared ]) );
 	}());
 
-module.exports = merge([ app, bundle, css, shared, tutorials ]);
+module.exports = merge([ assets, app, bundle, css, shared, tutorials ]);

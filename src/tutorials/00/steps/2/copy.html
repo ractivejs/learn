@@ -1,28 +1,28 @@
-<p>Here's where <span class='logo'>Ractive.js</span> separates from other templating libraries. Normally, if you wanted to change the data, you would have to re-render the entire view, which would have the effect of discarding the DOM nodes you'd already created. That's wasteful.</p>
+<p>Here's where Ractive differs from other templating libraries. Normally, if you wanted to change the data, you would have to re-render the entire view, which would have the effect of discarding the DOM nodes you'd already created. That's wasteful.</p>
 
-<p>Instead, we can manipulate views we've already created. Try running this in the <strong>#console</strong> block (lower right):</p>
+<p>Instead, we can manipulate views we've already created. Try running this code - click on it and hit <kbd>Shift-Space</kbd>:</p>
 
-<pre class='prettyprint lang-js'>
-ractive.set( 'greeting', 'Bonjour' );
-</pre>
+<textarea class='interactive'>
+ractive.set('greeting', 'Bonjour');
+</textarea>
 
 <p>And now this:</p>
 
-<pre class='prettyprint lang-js'>
-ractive.set( 'recipient', 'tout le monde' );
-</pre>
+<textarea class='interactive'>
+ractive.set('name', 'tout le monde');
+</textarea>
 
 <p>Ooh la la! Even better, we could set both properties in one go. Let's do it in Mandarin this time:</p>
 
-<pre class='prettyprint lang-js'>
+<textarea class='interactive'>
 ractive.set({
   greeting: '你好',
-  recipient: '世界'
+  name: '世界'
 });
-</pre>
+</textarea>
 
-<div class='hint'>
-	<p>What's happening here is that the contents of the <code>&lt;p&gt;</code> element are split into four text nodes &ndash; one for <code>{{greeting}}</code>, one for the space character, one for <code>{{recipient}}</code>, and one for the <code>!</code>. Ractive stores references to the nodes that correspond to the variables, and updates them when the data changes, leaving everything else untouched.</p>
+<aside>
+	<p>What's happening here is that the contents of the <code>&lt;p&gt;</code> element are split into four text nodes &ndash; one for <code>{{greeting}}</code>, one for the space character, one for <code>{{name}}</code>, and one for the <code>!</code>. Ractive stores references to the nodes that correspond to the variables, and updates them when the data changes, leaving everything else untouched.</p>
 
 	<p>Surgically updating text nodes is much faster than replacing elements, particularly when you only need to change part of your ractive.</p>
-</div>
+</aside>

@@ -3,7 +3,7 @@ var ractive = new Ractive({
   template: template,
   data: {
   	greeting: 'Hello',
-  	recipient: 'world',
+  	name: 'world',
   	color: 'purple',
   	size: 2,
   	font: 'Arial'

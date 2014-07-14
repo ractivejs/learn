@@ -13,17 +13,21 @@
 		</div>
 
 		<button on-tap='resetStep'>Reset</button>
-		<button on-tap='fix'>Fix code</button>
+		<button on-tap='fix' disabled='{{!step.fixed}}'>Fix code</button>
 	</div>
 </header>
 
 <style>
 	header {
-		position: relative;
+		position: absolute;
 		top: -3.5em;
 		padding: 0;
 		margin: 0;
 		max-width: 100%;
+		z-index: 10;
+		border-bottom: 1px solid #eee;
+		height: 3.5em;
+		width: 100%;
 	}
 
 	h1 {

@@ -1,15 +1,15 @@
-<p>That's not very exciting. Let's make our <strong>#template</strong> more templatey &ndash; replace the hard-coded text with some variables:</p>
+<p>That's not very exciting. Let's make our template more templatey &ndash; replace the hard-coded text in the top-right box with some variables:</p>
 
-<pre class='prettyprint lang-html'>&lt;p&gt;{{greeting}} {{recipient}}!&lt;/p&gt;</pre>
+<pre class='prettyprint lang-html'>&lt;p&gt;{{greeting}} {{name}}!&lt;/p&gt;</pre>
 
-<p>Then, add some data to it, by adding a <code>data</code> initialisation option to our <strong>#javascript</strong> so that the code looks like this:</p>
+<p>Then, add some data to it, by adding a <code>data</code> initialisation option to our code (below right) so that it looks like this:</p>
 
 <pre class='prettyprint lang-js'>
 var ractive = new Ractive({
   el: output,
   template: template,
-  data: { greeting: 'Hello', recipient: 'world' }
+  data: { greeting: 'Hello', name: 'world' }
 });
 </pre>
 
-<p>Execute the code (click in the <strong>#javascript</strong> box, hit <kbd>Shift-Enter</kbd>). It should look exactly as it did before.</p>
+<p>Execute the code (hit <kbd>Shift-Enter</kbd>). It should look exactly as it did before.</p>

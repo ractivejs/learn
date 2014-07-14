@@ -32,3 +32,5 @@ if ( window.history && typeof window.history.replaceState === 'function' ) {
 window.addEventListener( 'popstate', function ( event ) {
 	view.set( 'currentStep', event.state );
 });
+
+window.view = view;

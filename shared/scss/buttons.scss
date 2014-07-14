@@ -21,4 +21,14 @@ button {
 		border: 1px solid $green;
 		outline: none;
 	}
+
+	&:disabled {
+		color: #999;
+		cursor: default;
+	}
+
+	&:disabled:hover {
+		color: #999;
+		background-color: #888;
+	}
 }

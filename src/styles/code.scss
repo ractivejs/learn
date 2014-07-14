@@ -1,7 +1,35 @@
+.CodeMirror {
+
+}
+
 .CodeMirror-selected {
 	background: #eee;
 }
 
 .CodeMirror-focused .CodeMirror-selected {
 	background: #729d34;
+}
+
+pre {
+	white-space: pre;
+	font-family: 'Source Code Pro', monospace;
+	font-size: 14px;
+	background-color: #fbfbfb;
+	display: block;
+	padding: 0.5em;
+	overflow-x: auto;
+	margin: 0 0 1em 0;
+
+	// TODO should these styles be in shared in the first place?
+	&:before {
+		display: none;
+	}
+
+	/* &.lang-html:before {
+		content: 'html';
+	}
+
+	&.lang-js:before {
+		content: 'javascript';
+	} */
 }

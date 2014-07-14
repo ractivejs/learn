@@ -1,0 +1,54 @@
+aside, .hint {
+	padding: 0.5em;
+	border-left: 2px solid #729d34;
+	background-color: #f9fcf6;
+	margin: 0 0 1em 0;
+
+	& > p:last-child {
+		margin: 0;
+	}
+}
+
+code {
+	font-family: 'Source Code Pro';
+}
+
+kbd {
+	background-color: #f9f9f9;
+	border: 1px solid #eee;
+	border-right-width: 2px;
+	border-bottom-width: 2px;
+	border-radius: 0.2em;
+	font-family: 'Source Code Pro';
+	font-size: 0.8em;
+	padding: 0.1em 0.3em;
+	white-space: pre;
+}
+
+.interactive-helper {
+	position: absolute;
+	right: 1em;
+	width: 100%;
+
+	p {
+		position: absolute;
+		top: -1.4em;
+		right: 0;
+		text-align: right;
+		font-size: 0.8em;
+		padding: 0.2em 0.2em 0.4em 0.2em;
+		border: 1px solid #eee;
+		border-top: none;
+		border-right: none;
+		background-color: #f9f9f9;
+	}
+}
+
+#copy-block .CodeMirror {
+	border-top: 1px solid #eee;
+	border-bottom: 2px solid #eee;
+	margin: 0 0 1em 0;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}

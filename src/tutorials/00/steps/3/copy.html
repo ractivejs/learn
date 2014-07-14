@@ -4,7 +4,7 @@
 
 <pre class='prettyprint lang-html'>
 &lt;p style='color: {{color}}; font-size: {{size}}em; font-family: {{font}};'&gt;
-  {{greeting}} {{recipient}}!
+  {{greeting}} {{name}}!
 &lt;/p&gt;
 </pre>
 
@@ -16,7 +16,7 @@ var ractive = new Ractive({
   template: template,
   data: {
     greeting: 'Hello',
-    recipient: 'world',
+    name: 'world',
     color: 'purple',
     size: 2,
     font: 'Arial'
@@ -26,15 +26,15 @@ var ractive = new Ractive({
 
 <p>Execute this code. You should see a large purple 'Hello world!' message written in Arial.</p>
 
-<p>And, of course, we can update this attribute. Try running this in the console:</p>
+<p>And, of course, we can update this attribute. Try running this code:</p>
 
-<pre class='prettyprint lang-js'>
+<textarea class='interactive'>
 ractive.set({
   color: 'red',
   size: 3,
   font: 'Comic Sans MS'
 });
-</pre>
+</textarea>
 
 <div class='hint'>
 	<p>Note that even though we're changing three properties, Ractive recognises that they all belong to the same attribute, and only touches the DOM once.</p>

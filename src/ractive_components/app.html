@@ -5,15 +5,25 @@
 
 <div class='app' style='{{style}}' on-tap='tapped'>
 	<div class='content {{navOpen ? "obscured" : "" }}' on-tap='hideNav'>
-		<tutorial-header step='{{currentStep}}'/>
+		<tutorial-header step='{{currentStep}}' on-resetStep='resetStep' on-fix='fix'/>
 
-		<divvy columns='[
-			{ size: 45, children: [{ id: "copy-block", size: 3 }, { id: "output-block", size: 2 }] },
-			{ size: 55, children: [{ id: "template", size: 3 }, { id: "javascript", size: 5 }] }
-		]'>
+		<!-- TODO events shouldn't need to pass through parent component! -->
+		<divvy
+			columns='[
+				{ size: 45, children: [{ id: "copy-block", size: 3 }, { id: "output-block", size: 2 }] },
+				{ size: 55, children: [{ id: "template", size: 3 }, { id: "javascript", size: 5 }] }
+			]'
+			on-resize='resize'
+			on-enter='enter'
+			on-execute='execute'
+		>
 			<!-- copy -->
 			<div id='copy-block'>
 				{{{currentStep.copy}}}
+
+				{{#if next}}
+					<a class='next' href='{{next}}'>next &raquo;</a>
+				{{/if}}
 			</div>
 
 			<!-- output -->
@@ -21,12 +31,14 @@
 
 			<!-- template -->
 			<div id='template'>
-				<codemirror mode='htmlmixed' value='{{template}}' height='100%'/>
+				<codemirror on-enter='enter' mode='htmlmixed' value='{{template}}' height='100%'/>
 			</div>
 
 			<!-- js -->
 			<div id='javascript'>
-				<codemirror mode='javascript' value='{{javascript}}' height='100%'/>
+				<codemirror on-enter='enter' mode='javascript' value='{{javascript}}' height='100%'/>
+
+				<button class='execute' on-tap='execute'>Execute (Shift-Enter)</button>
 			</div>
 		</divvy>
 	</div>
@@ -34,10 +46,14 @@
 	<left-nav open='{{navOpen}}'/>
 </div>
 
+<div class='interactive-helper'>
+	<p><kbd>Shift-Space</kbd> to run this code</p>
+</div>
+
 <style>
 	.app {
 		position: relative;
-		padding: 5em 0.5em 0.5em 4.7em;
+		padding: 5em 1em 1em 5em;
 
 		-webkit-transition: all 0.2s cubic-bezier(.02,.91,.29,1);
 		-moz-transition: all 0.2s cubic-bezier(.02,.91,.29,1);
@@ -71,19 +87,112 @@
 		width: 100%;
 		height: 100%;
 	}
+
+	#copy-block {
+		padding: 1em 1em 0 0;
+	}
+
+	#output-block {
+		padding: 1em 1em 0 0;
+	}
+
+	.execute {
+		position: absolute;
+		bottom: 0.2em;
+		right: 0.1em;
+		margin: 0;
+	}
+
+	.next {
+		float: right;
+		font-size: 1.6em;
+		padding: 0.5rem 1rem 1rem 1rem;
+	}
 </style>
 
 <script>
-	var forceRedraw = require( 'utils/forceRedraw' );
+	var forceRedraw = require( 'utils/forceRedraw' ),
+		slugify = require( 'utils/slugify' ),
+		globalEval = eval,
+
+		_Ractive,
+		timeouts = [],
+		teardownQueue = [],
+		resizeHandlers = [],
+		_setTimeout,
+		_clearTimeout,
+		prop;
+
+	_Ractive = Ractive;
+
+	window.Ractive = function () {
+		// we need to override the constructor so we can keep track of
+		// which views need to be torn down during the tutorial
+		_Ractive.apply( this, arguments );
+		teardownQueue[ teardownQueue.length ] = this;
+	};
+
+	// copy static methods and properties from the real Ractive to the fake one
+	for ( prop in _Ractive ) {
+		if ( _Ractive.hasOwnProperty( prop ) ) {
+			window.Ractive[ prop ] = _Ractive[ prop ];
+		}
+	}
+
+	// Ditto for the non-enumerable ones
+	[ 'prototype', 'partials', 'adaptors', 'components', 'decorators', 'easing', 'events', 'interpolators', 'transitions', 'svg', 'VERSION' ].forEach( function ( prop ) {
+		var descriptor = Object.getOwnPropertyDescriptor( _Ractive, prop );
+		Object.defineProperty( window.Ractive, prop, descriptor );
+	});
+
+	window.Ractive.prototype.constructor = window.Ractive;
+
+	// setTimeout and clearTimeout
+	_setTimeout = window.setTimeout;
+	_clearTimeout = window.clearTimeout;
+
+	window.setTimeout = function () {
+		var timeout = _setTimeout.apply( window, arguments );
+		timeouts[ timeouts.length ] = timeout;
+	};
+
+	window.clearTimeout = function ( timeout ) {
+		var index = timeouts.indexOf( timeout );
+		if ( index !== -1 ) {
+			timeouts.splice( index, 1 );
+		}
+
+		_clearTimeout( timeout );
+	};
+
+	// resize handlers
+	window.onResize = function ( handler ) {
+		resizeHandlers[ resizeHandlers.length ] = handler;
+	};
 
 	component.exports = {
 		init: function () {
-			var self = this, container, divvy, baseUrl, pattern, redrawTimeout;
+			var self = this,
+				container,
+				baseUrl,
+				pattern,
+				redrawTimeout,
+				copyBlock,
+				outputBlock,
+				interactives,
+				interactiveHelper;
 
 			container = this.find( '.app' );
 
 			baseUrl = window.location.origin;
 			pattern = /\/([^\/]+)\/(\d+)/;
+
+			copyBlock = this.find( '#copy-block' );
+			outputBlock = this.find( '#output-block' );
+
+			interactiveHelper = this.find( '.interactive-helper' );
+			interactiveHelper.parentNode.removeChild( interactiveHelper );
+
 
 			if ( window.history !== undefined && typeof window.history.pushState === 'function' ) {
 				this.on({
@@ -128,11 +237,52 @@
 			}
 
 			this.on({
-				hideNav: () => this.set( 'navOpen', false )
+				hideNav: () => this.set( 'navOpen', false ),
+				execute: execute,
+				resize: function () {
+					resizeHandlers.forEach( call );
+				},
+				enter: function ( event, data ) {
+					if ( event.original.shiftKey ) {
+						event.original.preventDefault();
+					}
+
+					execute();
+				},
+				resetStep: function () {
+					var step = this.get( 'currentStep' );
+
+					this.set({
+						template: step.template,
+						javascript: step.javascript
+					});
+				},
+				fix: function () {
+					var step = this.get( 'currentStep' ), fixed = step.fixed;
+
+					this.set({
+						template: fixed.template || step.template,
+						javascript: fixed.javascript || step.javascript
+					});
+
+					execute();
+				}
 			});
 
 			this.observe({
 				currentStep: function ( step ) {
+
+					// Teardown existing instances
+					teardownQueue.forEach( r => r.teardown() );
+
+					// Destroy any old interactive codemirror components
+					if ( interactives ) {
+						interactives.forEach( cm => cm.toTextArea() );
+
+						if ( interactiveHelper.parentNode ) {
+							interactiveHelper.parentNode.removeChild( interactiveHelper );
+						}
+					}
 
 					// force a redraw... the use of transforms seems
 					// to bork things up a bit
@@ -147,9 +297,11 @@
 						javascript: step.javascript
 					});
 
-					// force a redraw... the use of transforms seems
-					// to bork things up a bit
-					//forceRedraw();
+					copyBlock.scrollTop = 0;
+
+					if ( step.init ) {
+						execute();
+					}
 				},
 				navOpen: function () {
 					// ugh...
@@ -158,6 +310,64 @@
 					redrawTimeout = setTimeout( forceRedraw, 200 );
 				}
 			});
+
+			// separate deferred observer, for post-render actions
+			this.observe({
+				currentStep: function ( step ) {
+					prettyPrint( null, copyBlock );
+
+					interactives = this.findAll( '.interactive' ).map( textarea => {
+						var cm;
+
+						textarea.value = textarea.value.trim();
+
+						cm = CodeMirror.fromTextArea( textarea, {
+							mode: 'javascript',
+							theme: 'ractive',
+							lineWrapping: true,
+							lineNumbers: true,
+							keyMap: 'sublime'
+						});
+
+						cm.on( 'keydown', function ( cm, event ) {
+							if ( event.which === 32 && event.shiftKey ) {
+								// run code
+								event.preventDefault();
+								globalEval( cm.getValue() );
+							}
+						});
+
+						cm.on( 'focus', function ( cm, event ) {
+							var wrapper = cm.display.wrapper, parentNode = wrapper.parentNode;
+							parentNode.insertBefore( interactiveHelper, wrapper.nextSibling );
+						});
+
+						cm.on( 'blur', function ( cm, event ) {
+							if ( interactiveHelper.parentNode ) {
+								interactiveHelper.parentNode.removeChild( interactiveHelper );
+							}
+						});
+
+						return cm;
+					});
+				}
+			}, { defer: true });
+
+			window.addEventListener( 'keypress', function ( event ) {
+				if ( event.which === 13 && event.shiftKey ) {
+					execute();
+				}
+			});
+
+			function execute () {
+				var code;
+
+				window.template = self.get( 'template' );
+				window.output = outputBlock;
+
+				code = self.get( 'javascript' );
+				globalEval( code );
+			}
 		},
 
 		computed: {
@@ -168,7 +378,24 @@
 				return [ '-webkit-', '-moz-', '-ms-', '-o-', '' ].map( prefix => {
 					return prefix + 'transform: translate(' + ( open ? 12 : 0 ) + 'em,0)';
 				}).join( ';' );
+			},
+
+			next: function () {
+				var step = this.get( 'currentStep' ), tutorial;
+
+				if ( step.index >= step.numSiblings - 1 ) {
+					// next tutorial
+					tutorial = this.get( 'manifest' )[ step.tutorialIndex + 1 ];
+
+					return '/' + slugify( tutorial.title ) + '/1';
+				}
+
+				return '/' + slugify( step.tutorialTitle ) + '/' + ( step.index + 2 );
 			}
 		}
 	};
+
+	function call ( fn ) {
+		fn();
+	}
 </script>

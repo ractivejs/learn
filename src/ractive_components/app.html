@@ -116,6 +116,7 @@
 		globalEval = eval,
 
 		_Ractive,
+		FakeRactive,
 		timeouts = [],
 		teardownQueue = [],
 		resizeHandlers = [],
@@ -125,7 +126,7 @@
 
 	_Ractive = Ractive;
 
-	window.Ractive = function () {
+	FakeRactive = function () {
 		// we need to override the constructor so we can keep track of
 		// which views need to be torn down during the tutorial
 		_Ractive.apply( this, arguments );
@@ -135,17 +136,17 @@
 	// copy static methods and properties from the real Ractive to the fake one
 	for ( prop in _Ractive ) {
 		if ( _Ractive.hasOwnProperty( prop ) ) {
-			window.Ractive[ prop ] = _Ractive[ prop ];
+			FakeRactive[ prop ] = _Ractive[ prop ];
 		}
 	}
 
 	// Ditto for the non-enumerable ones
 	[ 'prototype', 'partials', 'adaptors', 'components', 'decorators', 'easing', 'events', 'interpolators', 'transitions', 'svg', 'VERSION' ].forEach( function ( prop ) {
 		var descriptor = Object.getOwnPropertyDescriptor( _Ractive, prop );
-		Object.defineProperty( window.Ractive, prop, descriptor );
+		Object.defineProperty( FakeRactive, prop, descriptor );
 	});
 
-	window.Ractive.prototype.constructor = window.Ractive;
+	FakeRactive.prototype.constructor = FakeRactive;
 
 	// setTimeout and clearTimeout
 	_setTimeout = window.setTimeout;
@@ -364,9 +365,12 @@
 
 				window.template = self.get( 'template' );
 				window.output = outputBlock;
+				window.Ractive = FakeRactive;
 
 				code = self.get( 'javascript' );
 				globalEval( code );
+
+				window.Ractive = _Ractive;
 			}
 		},
 

@@ -1,17 +1,28 @@
 <table class='superheroes'>
   <tr>
     <th>#</th>
-    <th class='sortable {{ sortColumn === "name"     ? "sorted" : "" }}' on-tap='sort:name'>Superhero name</th>
-    <th class='sortable {{ sortColumn === "realname" ? "sorted" : "" }}' on-tap='sort:realname'>Real name</th>
-    <th class='sortable {{ sortColumn === "power"    ? "sorted" : "" }}' on-tap='sort:power'>Superpower</th>
+    <th class='sortable {{ sortColumn === "name"     ? "sorted" : "" }}'
+        on-tap='sort:name'>
+      Superhero name
+    </th>
+
+    <th class='sortable {{ sortColumn === "realname" ? "sorted" : "" }}'
+        on-tap='sort:realname'>
+      Real name
+    </th>
+
+    <th class='sortable {{ sortColumn === "power"    ? "sorted" : "" }}'
+        on-tap='sort:power'>
+      Superpower
+    </th>
   </tr>
 
-  {{# sort( superheroes, sortColumn ) :num}}
+  {{#each sort( superheroes, sortColumn ) :num}}
     <tr>
       <td>{{ num + 1 }}</td>
       <td><a href='{{info}}'>{{name}}</a></td>
       <td>{{realname}}</td>
       <td>{{power}}</td>
     </tr>
-  {{/ end of superheroes list }}
+  {{/each}}
 </table>

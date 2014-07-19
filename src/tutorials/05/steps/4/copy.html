@@ -5,14 +5,12 @@
 <p>Update the template:</p>
 
 <pre class='prettyprint lang-html'>
-{{# sort(superheroes, sortColumn) :num}}
+{{#each sort(superheroes, sortColumn) :num}}
   &lt;tr&gt;
    &lt;!-- row contents --&gt;
   &lt;/tr&gt;
-{{/ end of superheroes list }}
+{{/each}}
 </pre>
-
-<p>Notice that we can use any text we like to close an expression section &ndash; in thise case <code>{{/ end of superheroes list }}</code>.</p>
 
 <p>Now we need to add the <code>sort</code> function. Here's one (if you're not sure why this works, <a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Array/sort'>here's an MDN page</a> that will help explain):</p>
 
@@ -34,12 +32,24 @@ ractive.on( 'sort', function ( event, column ) {
 });
 </pre>
 
-<p>Try executing this code and clicking different headers to sort the table. (You could specify an initial sort column by adding e.g. `sortColumn: 'name'` to `data`.)</p>
+<p>Try executing this code and clicking different headers to sort the table. (You could specify an initial sort column by adding e.g. <code>sortColumn: 'name'</code> to <code>data</code>.)</p>
 
 <p>The last job is to add a <code>sorted</code> class to the header of the currently sorted column. There are several ways we could do this &ndash; you could use a bit of jQuery inside the <code>sort</code> proxy event handler, for example. But for this demonstration we'll put the logic in the template, using the conditional operator:</p>
 
 <pre class='prettyprint lang-html'>
-&lt;th class='sortable {{ sortColumn === "name" ? "sorted" : "" }}' on-tap='sort' data-column='name'&gt;Superhero name&lt;/th&gt;
+&lt;th class='sortable {{ sortColumn === "name" ? "sorted" : "" }}'
+    on-tap='sort'&gt;
+  Superhero name
+&lt;/th&gt;
 </pre>
 
-<p>Do this for each of the headers, then execute the code. Congratulations! You've built a sortable table in just a few steps. Now comes the fun part &ndash; add Storm back to the table via the console. The table will maintain its sort order.</p>
+<p>Do this for each of the headers, then execute the code. Congratulations! You've built a sortable table in just a few steps. Now comes the fun part &ndash; add Storm back to the table. The table will maintain its sort order.</p>
+
+<textarea class='interactive'>
+xmen.push({
+  name: 'Storm',
+  realname: 'Monroe, Ororo',
+  power: 'Controlling the weather',
+  info: 'http://www.superherodb.com/Storm/10-135/'
+});
+</textarea>

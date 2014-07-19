@@ -1,11 +1,13 @@
 <p>If you've used Backbone Views in the past, you'll be familiar with the basic concept of <em>extending</em> the <em>base class</em> to create a new <em>subclass</em> with default data and additional methods.</p>
 
-<p>In this tutorial we're going to learn about <code>Ractive.extend</code> and use it to create an image slideshow, using the <a href='http://devopsreactions.tumblr.com/'>devopsreactions.tumblr.com</a> gifs from the <a href='../../event-proxies/5'>final step of the Event Proxies tutorial</a>. </p>
+<p>In this tutorial we're going to learn about <code>Ractive.extend</code> and use it to create an image slideshow, using gifs from <a href='http://devopsreactions.tumblr.com/'>devopsreactions.tumblr.com</a>.</p>
 
 <p>We've got our basic template set up &ndash; we just need to make a few additions. First, we need to add a mustache for the image URL:</p>
 
 <pre class='prettyprint lang-html'>
-&lt;div class='main-image' style='background-image: url({{image.src}});'&gt;&lt;/div&gt;
+&lt;div class='main-image'
+     style='background-image: url({{image.src}});'&gt;
+&lt;/div&gt;
 </pre>
 
 <aside>
@@ -23,9 +25,9 @@
 <p>Finally, let's add some proxy events that we can wire up later:</p>
 
 <pre class='prettyprint lang-html'>
-&lt;a class='prev' on-tap='prev'&gt;&lt;span&gt;&amp;laquo;&lt;/span&gt;&lt;/a&gt;
+&lt;a class='prev' on-tap='goto:{{current-1}}'&gt;&lt;span&gt;&amp;laquo;&lt;/span&gt;&lt;/a&gt;
 &lt;!-- ... --&gt;
-&lt;a class='next' on-tap='next'&gt;&lt;span&gt;&amp;raquo;&lt;/span&gt;&lt;/a&gt;
+&lt;a class='next' on-tap='goto:{{current+1}}'&gt;&lt;span&gt;&amp;raquo;&lt;/span&gt;&lt;/a&gt;
 </pre>
 
-<p>Execute the JavaScript to redraw the view, with some placeholder data.</p>
+<p>Execute the JavaScript to redraw the view, with the placeholder data that's already there.</p>

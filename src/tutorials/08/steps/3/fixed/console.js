@@ -1,1 +1,0 @@
-ractive.set( 'selectedColors', [ 'green', 'purple' ]);

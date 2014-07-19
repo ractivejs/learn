@@ -1,11 +1,13 @@
-var item = "<li data-index='{{i}}' class='{{ done ? \"done\" : \"pending\" }}'>" +
+var item = "<li class='{{ done ? \"done\" : \"pending\" }}'>" +
              "<input type='checkbox' checked='{{done}}'>" +
              "<span on-tap='edit'>" +
                "{{description}}" +
 
-               "{{#.editing}}" +
-                 "<input id='editTodo' class='edit' value='{{description}}' on-blur='stop_editing'>" +
-               "{{/.editing}}" +
+               "{{#if editing}}" +
+                 "<input class='edit' " +
+                        "value='{{description}}' " +
+                        "on-blur='stop_editing'>" +
+               "{{/if}}" +
              "</span>" +
              "<a class='button' on-tap='remove'>x</a>" +
            "</li>";
@@ -16,14 +18,14 @@ var TodoList = Ractive.extend({
   partials: { item: item },
 
   addItem: function ( description ) {
-    this.items.push({
+    this.push( 'items', {
       description: description,
       done: false
     });
   },
 
   removeItem: function ( index ) {
-    this.items.splice( index, 1 );
+    this.splice( 'items', index, 1 );
   },
 
   editItem: function ( index ) {
@@ -32,7 +34,7 @@ var TodoList = Ractive.extend({
     currentDescription = this.get( 'items.' + index + '.description' );
     this.set( 'items.' + index + '.editing', true );
 
-    input = this.nodes.editTodo;
+    input = this.find( '.edit' );
     input.select();
 
     window.addEventListener( 'keydown', keydownHandler = function ( event ) {
@@ -59,17 +61,12 @@ var TodoList = Ractive.extend({
       window.removeEventListener( 'keydown', keydownHandler );
       input.removeEventListener( 'blur', blurHandler );
     });
-    
+
     this.set( 'items.' + index + '.editing', true );
   },
 
   init: function ( options ) {
     var self = this;
-
-    this.items = options.items;
-
-    // initialise
-    this.set( 'items', this.items );
 
     // proxy event handlers
     this.on({
@@ -97,7 +94,7 @@ var TodoList = Ractive.extend({
 
   // sadly this is necessary for IE - other browsers fire the change event
   // when you hit enter
-  eventDefinitions: {
+  events: {
     enter: function ( node, fire ) {
       var keydownHandler = function ( event ) {
         var which = event.which || event.keyCode;
@@ -117,9 +114,11 @@ var TodoList = Ractive.extend({
 
 var ractive = new TodoList({
   el: output,
-  items: [
-    { done: true,  description: 'Add a todo item' },
-    { done: false, description: 'Add some more todo items' },
-    { done: false, description: 'Complete all the Ractive tutorials' }
-  ]
+  data: {
+    items: [
+      { done: true,  description: 'Add a todo item' },
+      { done: false, description: 'Add some more todo items' },
+      { done: false, description: 'Complete all the Ractive tutorials' }
+    ]
+  }
 });

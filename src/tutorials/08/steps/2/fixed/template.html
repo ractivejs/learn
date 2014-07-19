@@ -1,7 +1,7 @@
 <select value='{{color}}'>
-  {{#colors}}
-    <option value='{{.}}'>{{.}}</option>
-  {{/colors}}
+  {{#each colors}}
+    <option>{{this}}</option>
+  {{/each}}
 </select>
 
 <p>The selected colour is <span style='color: {{color}};'>{{color}}</span>.</p>

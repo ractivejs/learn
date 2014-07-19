@@ -1,4 +1,4 @@
-.slideshow {
+#output-block .slideshow {
 	position: relative;
 	width: 100%;
 	height: 100%;
@@ -9,7 +9,7 @@
 	background-color: #f4f4f4;
 }
 
-.main {
+#output-block .main {
 	position: relative;
 	width: 100%;
 	height: 100%;
@@ -19,29 +19,31 @@
 	box-sizing: border-box;
 }
 
-.prev, .next {
+#output-block .prev, #output-block .next {
 	position: absolute;
 	top: 0;
 	width: 2em;
 	height: 100%;
 	text-align: center;
 	cursor: pointer;
-	
+	font-size: 1em;
+	padding: 0;
+
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
-	
+
 	-webkit-user-select: none;
 	-moz-user-select: none;
 	-ms-user-select: none;
 	user-select: none;
 }
 
-.prev:hover, .next:hover {
+#output-block .prev:hover, #output-block .next:hover {
 	background-color: #eee;
 }
 
-.prev span, .next span {
+#output-block .prev span, #output-block .next span {
 	position: absolute;
 	top: 50%;
 	width: 100%;
@@ -52,24 +54,25 @@
 	font-family: Arial;
 	color: #aaa;
 }
-.prev {
+
+#output-block .prev {
 	left: 0;
 	border-right: 1px solid #ddd;
 }
 
-.next {
+#output-block .next {
 	right: 0;
 	border-left: 1px solid #ddd;
 }
 
-.main-image {
+#output-block .main-image {
 	width: 100%;
 	height: 100%;
 	background: #f4f4f4 no-repeat 50% 50%;
 	background-size: contain;
 }
 
-.caption {
+#output-block .caption {
 	position: absolute;
 	width: 100%;
 	height: 3em;

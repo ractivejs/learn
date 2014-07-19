@@ -1,11 +1,15 @@
 <p>You can control whether checkboxes are checked or not like so:</p>
 
 <pre class='prettyprint lang-html'>
-&lt;input type='checkbox' checked='{{checked}}'&gt;
-&lt;p&gt;The checkbox is {{^checked}}not{{/checked}} checked.&lt;/p&gt;
+&lt;label&gt;
+  &lt;input type='checkbox' checked='{{checked}}'&gt;
+  {{#if checked}}checked!{{else}}not checked{{/if}}
+&lt;/label&gt;
 </pre>
 
-<p>If you have a group of radio buttons, you can do this:</p>
+<p>Update the template and try toggling the checkbox.</p>
+
+<p>If you have a group of radio buttons, whose values are mutually exclusive, you can do this:</p>
 
 <pre class='prettyprint lang-html'>
 &lt;label&gt;&lt;input type='radio' name='{{color}}' value='red' checked&gt; red&lt;/label&gt;
@@ -14,7 +18,9 @@
 &lt;p&gt;The selected colour is &lt;span style='color: {{color}};'&gt;{{color}}&lt;/span&gt;.&lt;/p&gt;
 </pre>
 
-<p>Here, because we've set the <code>name</code> attribute to <code>{{color}}</code>, the value of <code>color</code> is set to the <code>value</code> attribute of whichever radio button is currently checked. (If you need to read that sentence a couple of times, I don't blame you.) Notice that the value is initialised to <code>red</code>, because that option is checked.</p>
+<p>Here, because we've set the <code>name</code> attribute to <code>{{color}}</code>, the value of <code>color</code> is set to the <code>value</code> attribute of whichever radio button is currently checked. (If you need to read that sentence a couple of times, I don't blame you.) Notice that the value is initialised to <code>red</code>, because that option is initially checked.</p>
+
+<p>Add <code>name='{{color}}'</code> to each of the options in the template and run the code.</p>
 
 <aside>
 	<p>Front-end über nerds will notice that this isn't how these attributes normally work. For example, a checkbox with <code>checked='false'</code> is the same as one with <code>checked='true'</code>, because it's a <em>boolean attribute</em> which either exists on the element or doesn't &ndash; its <em>value</em> is completely irrelevant.</p>
@@ -26,4 +32,19 @@
 	<p>So <span class='logo'>Ractive.js</span> makes no apology for using <code>checked='{{checked}}'</code> to mean 'checked if <code>checked</code> is <code>true</code>, unchecked if it's <code>false</code>'. We're bringing sanity to the process of gathering user input.</p>
 </aside>
 
-<p>Try changing the values of <code>checked</code> and <code>color</code> via the console.</p>
+<p>Needless to say, you can continue to interact with the values programmatically:</p>
+
+<textarea class='interactive'>
+ractive.set( 'checked', true );
+ractive.set( 'color', 'green' );
+</textarea>
+
+<p>This is as good a time as any to introduce the <code>ractive.toggle()</code> method:</p>
+
+<textarea class='interactive'>
+ractive.toggle( 'checked' );
+
+// Equivalent to:
+//   var checked = ractive.get( 'checked' );
+//   ractive.set( 'checked', !checked );
+</textarea>

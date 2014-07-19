@@ -4,14 +4,16 @@
 
 <pre class='prettyprint lang-html'>
 &lt;script id='item' type='text/ractive'&gt;
-&lt;li data-index='{{i}}' class='{{ done ? "done" : "pending" }}'&gt;
+&lt;li class='{{ done ? "done" : "pending" }}'&gt;
   &lt;input type='checkbox' checked='{{done}}'&gt;
   &lt;span on-tap='edit'&gt;
     {{description}}
 
-    {{#.editing}}
-      &lt;input id='editTodo' class='edit' value='{{description}}' on-blur='stop_editing'&gt;
-    {{/.editing}}
+    {{#if editing}}
+      &lt;input class='edit'
+             value='{{description}}'
+             on-blur='stop_editing'&gt;
+    {{/if}}
   &lt;/span&gt;
   &lt;a class='button' on-tap='remove'&gt;x&lt;/a&gt;
 &lt;/li&gt;
@@ -26,18 +28,18 @@
 
 <pre class='prettyprint lang-html'>
 &lt;!-- {{>item}} --&gt;
-&lt;li data-index='{{i}}' class='{{ done ? "done" : "pending" }}'&gt;
+&lt;li class='{{ done ? "done" : "pending" }}'&gt;
   &lt;input type='checkbox' checked='{{done}}'&gt;
   &lt;span on-tap='edit'&gt;
     {{description}}
 
-    {{#.editing}}
-      &lt;input id='editTodo' class='edit' value='{{description}}' on-blur='stop_editing'&gt;
-    {{/.editing}}
+    {{#if editing}}
+      &lt;input class='edit' value='{{description}}' on-blur='stop_editing'&gt;
+    {{/if}}
   &lt;/span&gt;
   &lt;a class='button' on-tap='remove'&gt;x&lt;/a&gt;
 &lt;/li&gt;
 &lt;!-- {{/item}} --&gt;
 </pre>
 
-<p>Add the partial to the <strong>#template</strong>, and remove it (and the <code>var item = ...</code> bit) from the <strong>#javascript</strong> code.</p>
+<p>Add the partial to the template, and remove it (and the <code>var item = ...</code> bit) from the javascript code.</p>

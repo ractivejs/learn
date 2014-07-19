@@ -1,11 +1,13 @@
 <div class='slideshow'>
-	<div class='main'>
-		<a class='prev' on-tap='prev'><span>&laquo;</span></a>
-		<div class='main-image' style='background-image: url({{image.src}});'></div>
-		<a class='next' on-tap='next'><span>&raquo;</span></a>
-	</div>
+  <div class='main'>
+    <a class='prev' on-tap='goto:{{current-1}}'><span>&laquo;</span></a>
+    <div class='main-image'
+         style='background-image: url({{image.src}});'>
+    </div>
+    <a class='next' on-tap='goto:{{current+1}}'><span>&raquo;</span></a>
+  </div>
 
-	<div class='caption'>
-		<p>{{image.caption}}</p>
-	</div>
+  <div class='caption'>
+    <p>{{image.caption}}</p>
+  </div>
 </div>

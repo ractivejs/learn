@@ -3,14 +3,16 @@
 <p>Well, we can. Add this above the rest of the JavaScript:</p>
 
 <pre class='prettyprint lang-js'>
-var item = "&lt;li data-index='{{i}}' class='{{ done ? \"done\" : \"pending\" }}'&gt;" +
+var item = "&lt;li class='{{ done ? \"done\" : \"pending\" }}'&gt;" +
              "&lt;input type='checkbox' checked='{{done}}'&gt;" +
              "&lt;span on-tap='edit'&gt;" +
                "{{description}}" +
 
-               "{{#.editing}}" +
-                 "&lt;input id='editTodo' class='edit' value='{{description}}' on-blur='stop_editing'&gt;" +
-               "{{/.editing}}" +
+               "{{#if editing}}" +
+                 "&lt;input class='edit' " +
+                          "value='{{description}}' " +
+                          "on-blur='stop_editing'&gt;" +
+               "{{/if}}" +
              "&lt;/span&gt;" +
              "&lt;a class='button' on-tap='remove'&gt;x&lt;/a&gt;" +
            "&lt;/li&gt;";

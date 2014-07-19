@@ -1,7 +1,11 @@
 <p>The 'Hello world!' of two-way data binding looks like this:</p>
 
 <pre class='prettyprint lang-html'>
-&lt;label&gt;Enter your name: &lt;input value='{{name}}'&gt;&lt;/label&gt;
+&lt;label&gt;
+  Enter your name:
+  &lt;input value='{{name}}'&gt;
+&lt;/label&gt;
+
 &lt;p&gt;Hello, {{name}}!&lt;/p&gt;
 </pre>
 
@@ -19,6 +23,6 @@
 
 <pre class='prettyprint lang-js'>
 ractive.observe( 'name', function ( newValue, oldValue ) {
-  app.user.name = newValue; // or whatever
+  doSomethingWith( newValue );
 });
 </pre>

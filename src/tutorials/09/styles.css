@@ -1,65 +1,83 @@
-.newTodo {
+#output-block input {
 	width: 100%;
 	max-width: 20em;
-	@include border-box;
+	font-size: inherit;
+	font-family: inherit;
+	padding: 0.4em;
+	outline: none;
+	border: 1px solid #ccc;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
 }
 
-.todos {
+#output-block input:focus {
+	box-shadow: inset 1px 1px rgba(0,0,0,0.08);
+	background-color: #f4f4f4;
+}
+
+#output-block li .edit {
+	position: absolute;
+	width: 100%;
+	left: -0.2em;
+	top: -0.2em;
+	padding: 0.2em;
+	border: none;
+}
+
+#output-block li input[type="checkbox"] {
+	position: absolute;
 	padding: 0;
-	border-top: 1px solid #eee;
+	margin: 0;
+	left: 0.5em;
+	top: 0.7em;
+	border: none;
+	width: auto;
+}
+
+#output-block .todos {
+	padding: 0;
+	border-top: 1px solid #f0f0f0;
 	max-width: 20em;
 }
 
-.todos li {
+#output-block .todos li {
 	position: relative;
 	padding: 0.5em 3em 0.5em 2em;
 	list-style: none;
 	border-bottom: 1px solid #eee;
+	margin: 0;
 	min-height: 1em;
 }
 
-.todos li input {
-	position: absolute;
-	margin: 0;
-	left: 0.5em;
-	top: 0.6em;
-}
-
-.todos span {
+#output-block .todos span {
 	position: relative;
 	display: block;
 	cursor: pointer;
 }
 
-.todos li.done span {
+#output-block li.done .description {
 	opacity: 0.5;
 	text-decoration: line-through;
 }
 
-.todos .button {
+#output-block .todos .button {
 	position: absolute;
 	right: 0.5em;
 	width: 1em;
 	text-align: center;
-	top: 0.4em;
+	top: 0.7em;
 	background-color: #d00;
 	border: none;
 	opacity: 0.3;
+	line-height: 1;
+	color: white;
 }
 
-.todos .edit {
-	position: absolute;
-	width: 100%;
-	height: 100%;
-	top: -0.3em;
-	left: -0.3em;
-	padding: 0.2em;
-}
-
-.todos li:hover {
+#output-block .todos li:hover {
 	background-color: #f9f9f9;
 }
 
-.todos li:hover .button {
+#output-block .todos li:hover .button {
 	opacity: 1;
 }

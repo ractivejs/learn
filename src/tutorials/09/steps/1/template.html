@@ -3,11 +3,9 @@
 <input on-change='newTodo' on-enter='blur' class='newTodo' placeholder='What needs to be done?'>
 
 <ul class='todos'>
-  {{#items:i}}
+  {{#each items:i}}
     {{>item}}
-  {{/items}}
+  {{/each}}
 </ul>
 
-<!-- {{>item}} -->
- <!-- add the partial here -->
-<!-- {{/item}} -->
+<!-- add the inline partial here -->

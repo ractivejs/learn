@@ -1,7 +1,11 @@
-<input type='checkbox' checked='{{checked}}'>
-<p>The checkbox is {{^checked}}not{{/checked}} checked.</p>
+<label>
+  <input type='checkbox'>
+  {{#if checked}}checked!{{else}}not checked{{/if}}
+</label>
 
-<label><input type='radio' name='{{color}}' value='red' checked> red</label>
-<label><input type='radio' name='{{color}}' value='green'> green</label>
-<label><input type='radio' name='{{color}}' value='blue'> blue</label>
-<p>The selected colour is <span style='color: {{color}};'>{{color}}</span>.</p>
+<fieldset>
+  <label><input type='radio' value='red' checked> red</label>
+  <label><input type='radio' value='green'> green</label>
+  <label><input type='radio' value='blue'> blue</label>
+  <p>The selected colour is <span style='color: {{color}};'>{{color}}</span>.</p>
+</fieldset>

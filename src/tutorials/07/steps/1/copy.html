@@ -2,7 +2,8 @@
 
 <pre class='prettyprint lang-js'>
 var Slideshow = Ractive.extend({
-  template: template, // this will be applied to all Slideshow instances
+  // this will be applied to all Slideshow instances
+  template: template,
 
   // method for changing the currently displayed image
   goto: function ( imageNum ) {
@@ -22,50 +23,43 @@ var Slideshow = Ractive.extend({
 
 <pre class='prettyprint lang-js'>
 function ( imageNum ) {
-  // make sure the image number is between 0...
+  var images = this.get( 'images' );
+
+  // Make sure the image number is between 0...
   while ( imageNum < 0 ) {
-    imageNum += this.images.length;
+    imageNum += images.length;
   }
 
-  // and the maximum
-  imageNum = imageNum % this.images.length;
+  // ...and the maximum
+  imageNum %= images.length;
 
-  // update the view
-  this.set( 'image', this.images[ imageNum ] );
-  this.currentImage = imageNum;
+  // Then, update the view
+  this.set({
+    image: images[ imageNum ],
+    current: imageNum
+  });
 }
 </pre>
 
-<p>This method presupposes the existence of <code>this.images</code>. We can add this property, as well as the proxy event handling code, in our <code>init</code> method:</p>
+<p>Next, we need to listen for the <code>goto</code> event, so that we can call <code>this.goto()</code>. We wire it up inside our <code>init</code> method:</p>
 
 <pre class='prettyprint lang-js'>
 function ( options ) {
-  var self = this;
-
-  this.images = options.images;
-
-  this.on({
-    prev: function () { self.goto( self.currentImage - 1 ); },
-    next: function () { self.goto( self.currentImage + 1 ); }
+  this.on( 'goto', function ( event, index ) {
+    this.goto( index );
   });
 
-  this.goto( 0 ); // start with the first image
+  // start with the first image
+  this.goto( 0 );
 }
 </pre>
 
-<p>Let's add some code to instantiate the slideshow with our gifs:</p>
+<p>Let's add some code to instantiate the slideshow with our gifs. There's a ready-made <code>images</code> variable you can use for this step:</p>
 
 <pre class='prettyprint lang-js'>
 var slideshow = new Slideshow({
   el: output,
-  images: [
-    { src: '../../gifs/problem.gif', caption: 'Trying to work out a problem after the 5th hour' },
-    { src: '../../gifs/css.gif',     caption: 'Trying to fix someone else\'s CSS' },
-    { src: '../../gifs/ie.gif',      caption: 'Testing interface on Internet Explorer' },
-    { src: '../../gifs/w3c.gif',     caption: 'Trying to code to W3C standards' },
-    { src: '../../gifs/build.gif',   caption: 'Visiting the guy that wrote the build scripts' },
-    { src: '../../gifs/test.gif',    caption: 'I don\'t need to test that. What can possibly go wrong?' }
-  ]
+  data: { images: images }
 });
 </pre>
 

@@ -1,20 +1,18 @@
-<p>Use Shift and {{meta}} to select multiple options:</p>
+<p>Use <kbd>Shift</kbd> and <kbd>{{meta}}</kbd> to select multiple options:</p>
 
 <select value='{{selectedColors}}' multiple>
-  {{#colors}}
-    <option value='{{.}}'>{{.}}</option>
-  {{/colors}}
+  {{#each colors}}
+    <option>{{this}}</option>
+  {{/each}}
 </select>
 
-{{#selectedColors.length}}
+{{#if selectedColors.length}}
   <p>The selected colours are:</p>
   <ul>
-    {{#selectedColors}}
-      <li style='background-color: {{.}};'>{{.}}</li>
-    {{/selectedColors}}
+    {{#each selectedColors}}
+      <li style='background-color: {{this}};'>{{this}}</li>
+    {{/each}}
   </ul>
-{{/selectedColors.length}}
-
-{{^selectedColors.length}}
+{{else}}
   <p>No colours are selected.</p>
-{{/selectedColors.length}}
+{{/if}}

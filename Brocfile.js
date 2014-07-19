@@ -14,7 +14,8 @@ var pick = require( 'broccoli-static-compiler' ),
 	globals = {
 		define: true,
 		CodeMirror: true,
-		prettyPrint: true
+		prettyPrint: true,
+		JSHINT: true
 	},
 
 	shared, assets, app, bundle, css, tutorials, tree;

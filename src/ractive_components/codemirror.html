@@ -2,42 +2,141 @@
 	<textarea></textarea>
 </div>
 
+<style>
+	.errors {
+		width: 0.8em;
+	}
+
+	.error-marker {
+		position: relative;
+	}
+
+	.error-marker:hover:after {
+		content: attr(data-errors);
+		position: absolute;
+		display: block;
+		background-color: white;
+		color: #d00;
+		width: 20em;
+		font-size: 0.8em;
+		line-height: 1;
+		left: 1em;
+		top: 1.5em;
+		padding: 0.5em;
+	}
+</style>
+
 <script>
-	var keyNames = {
+	var keyNames, changeHandlers, throttle = require( 'utils/throttle' );
+
+	keyNames = {
 		'13': 'enter'
 	};
 
+	changeHandlers = {
+		javascript: function ( component, editor, value ) {
+			var errorsByLine = [];
+
+			// remove any existing error annotations
+			editor.clearGutter( 'errors' );
+
+			JSHINT( value, {
+				asi: true,
+				undef: true
+			});
+
+			JSHINT.errors.forEach( error => {
+				var match;
+
+				if ( match = /^'([^']+)' is not defined/.exec( error.reason ) ) {
+					if ( window[ match[1] ] !== undefined ) {
+						return;
+					}
+				}
+
+
+				if ( !errorsByLine[ error.line ] ) {
+					errorsByLine[ error.line ] = [];
+				}
+
+				errorsByLine[ error.line ].push( error );
+			});
+
+			errorsByLine.forEach( ( errors, line ) => {
+				var marker = createMarker( errors.map( e => e.reason ).join( '\n\n' ) );
+				editor.setGutterMarker( line - 1, 'errors', marker );
+			});
+		},
+
+		ractive: function ( component, editor, value ) {
+			var marker;
+
+			try {
+				Ractive.parse( value );
+				editor.clearGutter( 'errors' );
+			} catch ( err ) {
+				marker = createMarker( err.shortMessage );
+				editor.setGutterMarker( err.line - 1, 'errors', marker );
+			}
+		}
+	};
+
+	function createMarker ( error ) {
+		var marker = document.createElement( 'span' );
+
+		marker.className = 'error-marker';
+		marker.style.color = '#d00';
+		marker.innerHTML = '●';
+
+		marker.setAttribute( 'data-errors', error );
+
+		return marker;
+	}
+
 	component.exports = {
 		init: function () {
-			var component = this, mode, editor, doc, updating;
+			var component = this, mode, altMode, editor, doc, updating;
+
+			this.lineWidgets = [];
 
 			mode = this.get( 'mode' );
 
 			if ( mode === 'json' ) {
-				mode = {
+				altMode = {
 					name: 'javascript',
 					json: true
 				};
+			} else if ( mode === 'ractive' ) {
+				altMode = 'htmlmixed';
 			}
 
 			editor = CodeMirror.fromTextArea( this.find( 'textarea' ), {
-				mode: mode,
+				mode: altMode || mode,
 				theme: this.get( 'theme' ) || 'ractive',
 				lineWrapping: true,
 				lineNumbers: true,
-				keyMap: 'sublime'
+				keyMap: 'sublime',
+				gutters: [ 'CodeMirror-linenumbers', 'errors' ]
 			});
 			doc = editor.getDoc();
 
-			window.editor = editor;
+			this.editor = editor;
 
 			editor.on( 'change', function () {
+				var value;
+
 				if ( updating ) {
 					return;
 				}
 
+				value = editor.getValue();
+
+				if ( changeHandlers[ mode ] ) {
+					changeHandlers[ mode ]( component, editor, value );
+				}
+
 				updating = true;
-				component.set( 'value', editor.getValue() );
+				component.set( 'value', value );
 				updating = false;
 			});
 

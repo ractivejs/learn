@@ -6,7 +6,8 @@
 			{{#each siblingProxies :i}}
 				<a
 					class='step-number {{i === step.index ? "selected" : "" }}'
-					href='/{{slugify(step.tutorialTitle)}}/{{i+1}}'>
+					href='/{{slugify(step.tutorialTitle)}}/{{i+1}}'
+					on-tap='ripple'>
 					<span>{{i+1}}</span>
 				</a>
 			{{/each}}
@@ -100,6 +101,16 @@
 
 <script>
 	component.exports = {
+		init: function () {
+			this.on({
+				ripple: function ( event ) {
+					if ( event.node.classList ) {
+						setTimeout( () => event.node.classList.add( 'tapped' ), 100 );
+					}
+				}
+			});
+		},
+
 		computed: {
 			siblingProxies: function () {
 				var array = [], i = this.get( 'step.numSiblings' );

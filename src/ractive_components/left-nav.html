@@ -13,7 +13,7 @@
 			>
 				<div class='nav-option-contents'>
 					{{title}}
-					<span class='number {{i === currentStep.tutorialIndex ? "selected" : ""}}'>{{i + 1 }}</span>
+					<span on-tap='ripple' class='number {{i === currentStep.tutorialIndex ? "selected" : ""}}'>{{i + 1 }}</span>
 				</div>
 			</a>
 		{{/each}}
@@ -168,12 +168,25 @@
 		font-size: .8em;
 		line-height: 1.7;
 		color: #999;
+		background-color: white;
+
+		/*-webkit-transition: all 0.2s ease-in-out;
+		-moz-transition: all 0.2s ease-in-out;
+		-ms-transition: all 0.2s ease-in-out;
+		-o-transition: all 0.2s ease-in-out;
+		transition: all 0.2s ease-in-out;*/
 	}
 
 	.number.selected {
 		background-color: #729d34;
 		border-color: #729d34;
 		color: white;
+
+		/*-webkit-transition: all 0.1s ease-in-out;
+		-moz-transition: all 0.1s ease-in-out;
+		-ms-transition: all 0.1s ease-in-out;
+		-o-transition: all 0.1s ease-in-out;
+		transition: all 0.1s ease-in-out;*/
 	}
 </style>
 
@@ -183,6 +196,11 @@
 			this.on({
 				toggle: function () {
 					this.toggle( 'open' );
+				},
+				ripple: function ( event ) {
+					if ( event.node.classList ) {
+						setTimeout( () => event.node.classList.add( 'tapped' ), 100 );
+					}
 				}
 			});
 		},

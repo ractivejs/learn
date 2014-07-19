@@ -1,0 +1,16 @@
+.number.selected.tapped, .step-number.selected.tapped {
+	-webkit-animation-delay: 0s;
+	-webkit-animation-duration: 0.4s;
+	-webkit-animation-name: bump;
+	-webkit-animation-timing-function: ease-out;
+}
+
+@-webkit-keyframes bump {
+	0% {
+		box-shadow: 0 0 0 0 rgba(114,157,52,0.3);
+	}
+
+	100% {
+		box-shadow: 0 0 0 10px rgba(114,157,52,0);
+	}
+}

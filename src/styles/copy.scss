@@ -7,10 +7,6 @@ aside, .hint {
 	& > p:last-child {
 		margin: 0;
 	}
-
-	pre {
-		margin: 0 -0.5em 1em -0.5em;
-	}
 }
 
 kbd {
@@ -77,6 +73,10 @@ kbd {
 		&.lang-js:before {
 			content: 'javascript';
 		} */
+	}
+
+	aside > pre {
+		margin: 0 -0.5em 1em -0.5em;
 	}
 
 	code {

@@ -34,7 +34,7 @@
 
 			<!-- template -->
 			<div id='template'>
-				<codemirror on-enter='enter' mode='htmlmixed' value='{{template}}' height='100%'/>
+				<codemirror on-enter='enter' mode='ractive' value='{{template}}' height='100%'/>
 			</div>
 
 			<!-- js -->
@@ -196,12 +196,23 @@
 				redrawTimeout,
 				copyBlock,
 				outputBlock,
+				templateEditor,
+				codeEditor,
 				interactives,
 				interactiveHelper,
 				interactiveHelperError,
-				activeInlineEditor;
+				activeInlineEditor,
+				lineWidgets = [];
 
 			container = this.find( '.app' );
+
+			// store references to editors...
+			(function () {
+				var editorComponents = self.findAllComponents( 'codemirror' );
+
+				templateEditor = editorComponents[0].editor;
+				codeEditor = editorComponents[1].editor;
+			}());
 
 			baseUrl = window.location.origin;
 			pattern = /\/([^\/]+)\/(\d+)/;
@@ -262,7 +273,7 @@
 			this.on({
 				hideNav: () => this.set( 'navOpen', false ),
 				execute: execute,
-				executeInline: () => globalEval( activeInlineEditor.getValue() ),
+				executeInline: executeInline,
 				resize: function () {
 					resizeHandlers.forEach( call );
 				},
@@ -325,7 +336,8 @@
 						copy: step.copy.trim(),
 						template: step.template.trim(),
 						javascript: step.javascript.trim(),
-						styles: step.styles
+						styles: step.styles,
+						setup: step.setup
 					});
 
 					copyBlock.scrollTop = 0;
@@ -395,14 +407,48 @@
 			});
 
 			function execute () {
-				var code;
+				var setup, code, line, pattern = /^(.+? at line (\d+) character (\d+))/, match, node;
 
-				window.template = self.get( 'template' );
+				if ( setup = self.get( 'setup' ) ) {
+					globalEval( setup );
+				}
+
+				try {
+					window.template = _Ractive.parse( self.get( 'template' ) );
+				} catch ( err ) {
+					// Parse error - display it above the template block
+					console.error( err.message );
+
+					// TODO store the location data on the error properly
+					console.log( err );
+
+					match = pattern.exec( err.message );
+					console.log( 'match', match );
+
+					node = document.createElement( 'span' );
+					node.innerHTML = match[0];
+
+					lineWidgets.push(
+						templateEditor.addLineWidget( +match[2], node )
+					);
+
+					return;
+				}
+
 				window.output = outputBlock;
 				window.Ractive = FakeRactive;
 
 				code = self.get( 'javascript' );
-				globalEval( code );
+
+				try {
+					globalEval( code );
+					lineWidgets.forEach( w => w.clear() );
+					lineWidgets = [];
+				} catch ( err ) {
+					console.error( err.message );
+
+
+				}
 
 				window.Ractive = _Ractive;
 			}

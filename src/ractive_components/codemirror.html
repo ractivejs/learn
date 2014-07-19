@@ -95,11 +95,12 @@
 
 	component.exports = {
 		init: function () {
-			var component = this, mode, altMode, editor, doc, updating;
+			var component = this, mode, altMode, editor, doc, updating, autoIndent;
 
 			this.lineWidgets = [];
 
 			mode = this.get( 'mode' );
+			autoIndent = this.get( 'autoIndent' ) !== false;
 
 			if ( mode === 'json' ) {
 				altMode = {
@@ -122,11 +123,21 @@
 
 			this.editor = editor;
 
-			editor.on( 'change', function () {
+			editor.on( 'change', function ( editor, change ) {
 				var value;
 
 				if ( updating ) {
 					return;
+				}
+
+				if ( autoIndent && change.origin === 'paste' ) {
+					editor.operation( () => {
+						var line, end;
+
+						for ( line = change.from.line, end = CodeMirror.changeEnd(change).line + 1; line < end; ++line ) {
+							editor.indentLine(line, "smart");
+						}
+					});
 				}
 
 				value = editor.getValue();

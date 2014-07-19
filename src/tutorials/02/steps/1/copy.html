@@ -15,12 +15,20 @@ function ( num ) {
 }
 </pre>
 
-<p>Add that, and use in the template it for both the price and the total. Try changing the price and the quantity via the console.</p>
+<p>Add that, and use in the template it for both the price and the total. Try changing the price and the quantity.</p>
 
-<div class='hint'>
-	<p>You might reasonably ask how this works. What happens is this: when the template is parsed, any <em>references</em> inside expressions (such as <code>price</code>, <code>quantity</code> or <code>format</code> in the example above) are identified. At render time, as soon as those references can be <em>resolved</em>, the expression is registered as a dependency of each of the <em>keypaths</em> that the references resolve to, and a function is created to evaluate the expression. (Whenever possible, <span class='logo'>Ractive.js</span> will re-use functions &ndash; for example <code>{{ a+b }}</code> and <code>{{ c+d }}</code> would share the same function.)</p>
+<textarea class='interactive'>
+ractive.set({
+  item: 'banana',
+  price: 0.19,
+  quantity: 7
+});
+</textarea>
 
-	<p>When the value of one or more of those dependencies change, the expression is re-evaluated. If the result changes, the DOM is updated.</p>
+<aside>
+	<p>You might reasonably ask how this works. What happens is this: when the template is parsed, any <em>references</em> inside expressions (such as <code>price</code>, <code>quantity</code> or <code>format</code> in the example above) are identified. At render time, the expression binds to those references and creates a function to calculate the result. (Whenever possible, <span class='logo'>Ractive.js</span> will re-use functions &ndash; for example <code>{{a+b}}</code> and <code>{{c+d}}</code> would share the same function.)</p>
 
-	<p>For the super-curious, there's more information on the <a href='https://github.com/RactiveJS/Ractive/wiki/Expressions'>wiki</a>.</p>
-</div>
+	<p>When the value of one or more of those references change, the expression is re-evaluated. If the result changes, the DOM is updated.</p>
+
+	<p>For the super-curious, there's more information on the <a href='http://docs.ractivejs.org/latest/expressions'>docs</a>.</p>
+</aside>

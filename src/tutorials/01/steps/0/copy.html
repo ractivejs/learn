@@ -1,4 +1,4 @@
-<p>Ractive uses the <a href='http://mustache.github.io/'>mustache syntax</a>, which supports <em>nested properties</em> &ndash; in JavaScript-land, that means properties that are objects with their own properties (which might be objects with their own properties...).</p>
+<p>Ractive uses the <a href='http://docs.ractivejs.org/latest/mustaches'>mustache syntax</a>, which supports <em>nested properties</em> &ndash; in JavaScript-land, that means properties that are objects with their own properties (which might be objects with their own properties...).</p>
 
 <p>Let's say we were building an app that displayed information about different countries. An object representing a country could look like this:</p>
 
@@ -6,7 +6,7 @@
 {
   name: 'The UK',
   climate: { temperature: 'cold', rainfall: 'excessive' },
-  population: 62641000,
+  population: 63230000,
   capital: { name: 'London', lat: 51.5171, lon: -0.1062 }
 }
 </pre>
@@ -17,4 +17,14 @@
 
 <p>Go ahead and replace the placeholders in the template with mustaches. Don't forget the <code>href</code> on the 'see map' link. If you get stuck, click the <strong>fix code</strong> button below.</p>
 
-<p>Execute the code. You should see a description of the UK. For extra credit, update the ractive from the console.</p>
+<p>Execute the code. You should see an accurate description of the UK.</p>
+
+<textarea class='interactive'>
+// Once we've rendered our view, we can change the country info
+ractive.set( 'country', {
+  name: 'Australia',
+  climate: { temperature: 'hot', rainfall: 'limited' },
+  population: 22620600,
+  capital: { name: 'Canberra', lat: -35.2828, lon: 149.1314 }
+});
+</textarea>

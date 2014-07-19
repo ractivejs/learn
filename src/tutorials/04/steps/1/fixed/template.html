@@ -1,9 +1,7 @@
-{{^signedIn}}
-  <!-- message for non-signed-in users -->
-  <p>Hi there! Please <a class='button' on-tap='signIn'>sign in</a></p>
-{{/signedIn}}
-
-{{#signedIn}}
+{{#if signedIn}}
   <!-- message for signed-in users -->
   <p>Welcome back, {{username}}!</p>
-{{/signedIn}}
+{{else}}
+  <!-- message for non-signed-in users -->
+  <p>Hi there! Please <a class='button' on-tap='signIn'>sign in</a></p>
+{{/if}}

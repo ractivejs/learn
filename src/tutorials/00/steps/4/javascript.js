@@ -5,8 +5,8 @@ var ractive = new Ractive({
   	greeting: 'Hello',
   	name: 'world',
   	color: 'purple',
-  	size: 2,
-  	font: 'Arial'
+  	size: 4,
+  	font: 'Georgia'
   } // add a 'counter' property...
 });
 

@@ -1,1 +1,0 @@
-ractive.set( 'country.climate.rainfall', 'very high' );

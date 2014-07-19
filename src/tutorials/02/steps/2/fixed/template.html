@@ -1,31 +1,18 @@
-<table class='color-mixer'>
-  <tr>
-    <th>Colour</th>
-    <th>Amount</th>
-  </tr>
+<p>red:</p>
+<div style='background-color: red;
+     width: {{red*100}}%;'></div>
 
-  <tr>
-    <td>red:</td>
-    <td><div style='background-color: red;
-    	            width: {{ red * 100 }}%;'></div></td>
-  </tr>
+<p>green:</p>
+<div style='background-color: green;
+     width: {{green*100}}%;'></div>
 
-  <tr>
-    <td>green:</td>
-    <td><div style='background-color: green;
-    	            width: {{ green * 100 }}%;'></div></td>
-  </tr>
+<p>blue:</p>
+<div style='background-color: blue;
+     width: {{blue*100}}%;'></div>
 
-  <tr>
-    <td>blue:</td>
-    <td><div style='background-color: blue;
-    	            width: {{ blue * 100 }}%;'></div></td>
-  </tr>
-
-  <tr>
-    <td><strong>result:</strong></td>
-    <td><div style='background-color: rgb({{ Math.round( red   * 255 ) }},
-    	                                    {{ Math.round( green * 255 ) }},
-    	                                    {{ Math.round( blue  * 255 ) }})'></div></td>
-  </tr>
-</table>
+<p><strong>result:</strong></p>
+<div style='background-color:
+  rgb({{Math.round(red   * 255)}},
+      {{Math.round(green * 255)}},
+      {{Math.round(blue  * 255)}})'>
+</div>

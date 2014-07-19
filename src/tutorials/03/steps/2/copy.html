@@ -10,8 +10,11 @@ ractive.off( 'select', selectHandler );
 <p>That's fine, as long as you stored a reference to <code>selectHandler</code> (i.e. you didn't just use an anonymous function). If you didn't, you can also do this:</p>
 
 <pre class='prettyprint lang-js'>
-ractive.off( 'select' ); // unsubscribes ALL 'select' handlers
-ractive.off(); // unsubscribes all handlers of any type
+// remove ALL 'select' handlers
+ractive.off( 'select' );
+
+// remove all handlers of ANY type
+ractive.off();
 </pre>
 
 <p>Alternatively, you can do this:</p>
@@ -32,5 +35,5 @@ otherListeners.cancel();
 <p>Try adding a 'silence' button which removes the 'activate' and 'deactivate' handlers.</p>
 
 <div class='hint'>
-	<p>We haven't yet covered <code>ractive.teardown()</code>, which removes your view from the DOM and cleans up after it. However as you'd expect this will remove any event handlers bound with <code>ractive.on()</code>.</p>
+	<p>If you remove your ractive from the DOM with <code>ractive.teardown()</code>, any event handlers will be automatically cleaned up.</p>
 </div>

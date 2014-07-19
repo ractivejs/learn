@@ -3,6 +3,6 @@ var ractive = new Ractive({
   template: template,
   data: {
     country: 'the UK',
-    population: 62641000
+    population: 63230000
   }
 });

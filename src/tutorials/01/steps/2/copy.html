@@ -2,10 +2,10 @@
 
 <pre class='prettyprint lang-js'>
 // we didn't store a reference, so let's do it now
-var country = ractive.get( 'country' );
+var country = ractive.get('country');
 
 country.climate.rainfall = 'very high';
-ractive.update( 'country' );
+ractive.update('country');
 </pre>
 
 <p><span class='logo'>Ractive</span> will recognise that only the <code>rainfall</code> property has changed, and leave everything else untouched.</p>
@@ -13,7 +13,11 @@ ractive.update( 'country' );
 <p>But there's an easier way to do it:</p>
 
 <pre class='prettyprint lang-js'>
-ractive.set( 'country.climate.rainfall', 'very high' );
+ractive.set('country.climate.rainfall', 'very high');
 </pre>
 
-<p>Try changing properties via the console. (If you're not from the UK, suitable values for <code>rainfall</code> include 'near-constant', 'unnecessarily high', or 'an unholy amount of'.)</p>
+<p>Try changing properties. (If you're not from the UK, suitable values for <code>rainfall</code> include 'near-constant', 'unnecessarily high', or 'an unholy amount of'.)</p>
+
+<textarea class='interactive'>
+ractive.set('country.climate.rainfall', 'very high');
+</textarea>

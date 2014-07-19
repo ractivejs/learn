@@ -4,13 +4,13 @@
 
 <p>All we need to do is hide the 'please sign in' message when we're signed in, and the 'welcome back!' message when we're not.</p>
 
-<p>Wrap the first block in a conditional section that uses the <code>notSignedIn</code> property:</p>
+<p>Wrap the first block in an <code>#if</code> section that uses the <code>signedIn</code> property:</p>
 
 <pre class='prettyprint lang-html'>
-{{#notSignedIn}}
-  &lt;!-- message for non-signed-in users --&gt;
-  &lt;p&gt;Hi there! Please &lt;a class='button' on-tap='signIn'&gt;sign in&lt;/a&gt;.&lt;/p&gt;
-{{/notSignedIn}}
+{{#if signedIn}}
+  &lt;!-- message for signed-in users --&gt;
+  &lt;p&gt;Welcome back, {{username}}!&lt;/p&gt;
+{{/if}}
 </pre>
 
-<p>Now do the same for the other block, except with the <code>signedIn</code> property. Execute the code.</p>
+<p>Now do the same for the other block, except with the <code>notSignedIn</code> property. Execute the code.</p>

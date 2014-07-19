@@ -1,3 +1,14 @@
+#output-block p {
+	font-size: 0.8em;
+	margin: 0 0 0.2em 0;
+}
+
+#output-block div {
+	height: 1.6em;
+	margin: 0 0 0.5em 0;
+	background-color: #f4f4f4;
+}
+
 .color-mixer {
 	height: 100%;
 }

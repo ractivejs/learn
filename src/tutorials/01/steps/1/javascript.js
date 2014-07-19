@@ -5,7 +5,7 @@ var ractive = new Ractive({
     country: {
       name: 'The UK',
       climate: { temperature: 'cold', rainfall: 'excessive' },
-      population: 62641000,
+      population: 63230000,
       capital: { name: 'London', lat: 51.5171, lon: -0.1062 }
     }
   }

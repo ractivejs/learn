@@ -7,10 +7,10 @@ aside, .hint {
 	& > p:last-child {
 		margin: 0;
 	}
-}
 
-code {
-	font-family: 'Source Code Pro';
+	pre {
+		margin: 0 -0.5em 1em -0.5em;
+	}
 }
 
 kbd {
@@ -29,6 +29,7 @@ kbd {
 	position: absolute;
 	right: 1em;
 	width: 100%;
+	cursor: pointer;
 
 	p {
 		position: absolute;
@@ -41,14 +42,56 @@ kbd {
 		border-top: none;
 		border-right: none;
 		background-color: #f9f9f9;
+		box-shadow: -1px 1px 1px white;
 	}
 }
 
-#copy-block .CodeMirror {
-	border-top: 1px solid #eee;
-	border-bottom: 2px solid #eee;
-	margin: 0 0 1em 0;
-	-webkit-box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	box-sizing: border-box;
+.interactive-helper-error {
+	color: #d00;
+	font-size: 0.8em;
+	background-color: #fee;
+	padding: 0.2em;
+	margin: -1em 0 1em 0;
+}
+
+#copy-block {
+	& > pre, aside > pre {
+		white-space: pre;
+		font-family: 'Source Code Pro', monospace;
+		font-size: 14px;
+		background-color: rgba(0,0,0,0.03);
+		display: block;
+		padding: 0.5em;
+		margin: 0 0 1em 0;
+		overflow-x: auto;
+
+		// TODO should these styles be in shared in the first place?
+		&:before {
+			display: none;
+		}
+
+		/* &.lang-html:before {
+			content: 'html';
+		}
+
+		&.lang-js:before {
+			content: 'javascript';
+		} */
+	}
+
+	code {
+		font-family: 'Source Code Pro';
+		background-color: rgba(0,0,0,0.03);
+		border: 1px solid rgba(0,0,0,0.08);
+		white-space: pre;
+	}
+
+	.CodeMirror {
+		border-top: 1px solid #eee;
+		border-bottom: 1px solid #eee;
+		margin: 0 0 1em 0;
+		-webkit-box-sizing: border-box;
+		-moz-box-sizing: border-box;
+		box-sizing: border-box;
+	}
 }

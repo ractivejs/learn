@@ -3,7 +3,7 @@
 <link rel='ractive' href='./divvy.html'>
 <link rel='ractive' href='./codemirror.html'>
 
-<div class='app' style='{{style}}' on-tap='tapped'>
+<div class='app' on-tap='tapped'>
 	<div class='content {{navOpen ? "obscured" : "" }}' on-tap='hideNav'>
 		<tutorial-header step='{{currentStep}}' on-resetStep='resetStep' on-fix='fix'/>
 
@@ -27,6 +27,9 @@
 			</div>
 
 			<!-- output -->
+			{{#if styles}}
+				<style type='text/css'>{{styles}}</style>
+			{{/if}}
 			<div id='output-block'></div>
 
 			<!-- template -->
@@ -46,20 +49,18 @@
 	<left-nav open='{{navOpen}}'/>
 </div>
 
-<div class='interactive-helper'>
-	<p><kbd>Shift-Space</kbd> to run this code</p>
+<div class='interactive-helper' on-mousedown-touchstart='executeInline'>
+	<p><kbd>Shift-Space</kbd> or tap to run this code</p>
+</div>
+
+<div class='interactive-helper-error'>
+	{{inlineError}}
 </div>
 
 <style>
 	.app {
 		position: relative;
 		padding: 5em 1em 1em 5em;
-
-		-webkit-transition: all 0.2s cubic-bezier(.02,.91,.29,1);
-		-moz-transition: all 0.2s cubic-bezier(.02,.91,.29,1);
-		-ms-transition: all 0.2s cubic-bezier(.02,.91,.29,1);
-		-o-transition: all 0.2s cubic-bezier(.02,.91,.29,1);
-		transition: all 0.2s cubic-bezier(.02,.91,.29,1);
 
 		-webkit-box-sizing: border-box;
 		-moz-box-sizing: border-box;
@@ -71,11 +72,11 @@
 		width: 100%;
 		height: 100%;
 
-		-webkit-transition: all 0.2s cubic-bezier(.02,.91,.29,1);
-		-moz-transition: all 0.2s cubic-bezier(.02,.91,.29,1);
-		-ms-transition: all 0.2s cubic-bezier(.02,.91,.29,1);
-		-o-transition: all 0.2s cubic-bezier(.02,.91,.29,1);
-		transition: all 0.2s cubic-bezier(.02,.91,.29,1);
+		-webkit-transition: opacity 0.2s cubic-bezier(.02,.91,.29,1);
+		-moz-transition: opacity 0.2s cubic-bezier(.02,.91,.29,1);
+		-ms-transition: opacity 0.2s cubic-bezier(.02,.91,.29,1);
+		-o-transition: opacity 0.2s cubic-bezier(.02,.91,.29,1);
+		transition: opacity 0.2s cubic-bezier(.02,.91,.29,1);
 	}
 
 	.content.obscured {
@@ -118,6 +119,7 @@
 		_Ractive,
 		FakeRactive,
 		timeouts = [],
+		teardown,
 		teardownQueue = [],
 		resizeHandlers = [],
 		_setTimeout,
@@ -147,6 +149,18 @@
 	});
 
 	FakeRactive.prototype.constructor = FakeRactive;
+
+	// override teardown method...
+	teardown = _Ractive.prototype.teardown;
+	FakeRactive.prototype.teardown = function () {
+		var index = teardownQueue.indexOf( this );
+
+		if ( ~index ) {
+			teardownQueue.splice( index, 1 );
+		}
+
+		teardown.call( this );
+	};
 
 	// setTimeout and clearTimeout
 	_setTimeout = window.setTimeout;
@@ -183,7 +197,9 @@
 				copyBlock,
 				outputBlock,
 				interactives,
-				interactiveHelper;
+				interactiveHelper,
+				interactiveHelperError,
+				activeInlineEditor;
 
 			container = this.find( '.app' );
 
@@ -195,6 +211,9 @@
 
 			interactiveHelper = this.find( '.interactive-helper' );
 			interactiveHelper.parentNode.removeChild( interactiveHelper );
+
+			interactiveHelperError = this.find( '.interactive-helper-error' );
+			interactiveHelperError.parentNode.removeChild( interactiveHelperError );
 
 
 			if ( window.history !== undefined && typeof window.history.pushState === 'function' ) {
@@ -222,6 +241,7 @@
 								href = target.href;
 
 								if ( href.indexOf( baseUrl ) ) {
+									target = target.parentNode;
 									continue;
 								}
 
@@ -234,7 +254,7 @@
 							}
 
 							target = target.parentNode;
-						} while ( target !== container );
+						} while ( target && target !== container );
 					}
 				});
 			}
@@ -242,23 +262,29 @@
 			this.on({
 				hideNav: () => this.set( 'navOpen', false ),
 				execute: execute,
+				executeInline: () => globalEval( activeInlineEditor.getValue() ),
 				resize: function () {
 					resizeHandlers.forEach( call );
 				},
 				enter: function ( event, data ) {
 					if ( event.original.shiftKey ) {
 						event.original.preventDefault();
+						execute();
 					}
-
-					execute();
 				},
 				resetStep: function () {
 					var step = this.get( 'currentStep' );
+
+					teardownQueue.forEach( r => r.teardown() );
 
 					this.set({
 						template: step.template,
 						javascript: step.javascript
 					});
+
+					if ( step.init ) {
+						execute();
+					}
 				},
 				fix: function () {
 					var step = this.get( 'currentStep' ), fixed = step.fixed;
@@ -277,7 +303,6 @@
 
 					// Teardown existing instances
 					teardownQueue.forEach( r => r.teardown() );
-					teardownQueue = [];
 
 					// Destroy any old interactive codemirror components
 					if ( interactives ) {
@@ -297,9 +322,10 @@
 						navOpen: false,
 
 						// clone step data
-						copy: step.copy,
-						template: step.template,
-						javascript: step.javascript
+						copy: step.copy.trim(),
+						template: step.template.trim(),
+						javascript: step.javascript.trim(),
+						styles: step.styles
 					});
 
 					copyBlock.scrollTop = 0;
@@ -323,13 +349,15 @@
 							if ( event.which === 32 && event.shiftKey ) {
 								// run code
 								event.preventDefault();
-								globalEval( cm.getValue() );
+								executeInline();
 							}
 						});
 
 						cm.on( 'focus', function ( cm, event ) {
-							var wrapper = cm.display.wrapper, parentNode = wrapper.parentNode;
-							parentNode.insertBefore( interactiveHelper, wrapper.nextSibling );
+							var wrapper = cm.display.wrapper;
+							wrapper.parentNode.insertBefore( interactiveHelper, wrapper.nextSibling );
+
+							activeInlineEditor = cm;
 						});
 
 						cm.on( 'blur', function ( cm, event ) {
@@ -378,18 +406,31 @@
 
 				window.Ractive = _Ractive;
 			}
+
+			function executeInline () {
+				var wrapper;
+
+				try {
+					globalEval( activeInlineEditor.getValue() );
+
+					if ( interactiveHelperError.parentNode ) {
+						interactiveHelperError.parentNode.removeChild( interactiveHelperError );
+					}
+					self.set( 'inlineError', null );
+				} catch ( err ) {
+					self.set( 'inlineError', err.message );
+
+					wrapper = activeInlineEditor.display.wrapper;
+					wrapper.parentNode.insertBefore( interactiveHelperError, wrapper.nextSibling );
+
+					if ( interactiveHelper.parentNode ) {
+						interactiveHelper.parentNode.removeChild( interactiveHelper );
+					}
+				}
+			}
 		},
 
 		computed: {
-			style: function () {
-				var open = this.get( 'navOpen' );
-
-				// TODO accommodate shit browsers...
-				return [ '-webkit-', '-moz-', '-ms-', '-o-', '' ].map( prefix => {
-					return prefix + 'transform: translate(' + ( open ? 12 : 0 ) + 'em,0)';
-				}).join( ';' );
-			},
-
 			next: function () {
 				var step = this.get( 'currentStep' ), tutorial;
 

@@ -80,6 +80,10 @@ TutorialCompiler.prototype.write = function ( readTree, destDir ) {
 									tutorialIndex: tutorialIndex
 								});
 
+								if ( tutorial.styles && !step.styles ) {
+									step.styles = tutorial.styles;
+								}
+
 								dirname = path.join( destDir, slugify( tutorial.title ), '' + ( stepIndex + 1 ) );
 								htmlFilename = path.join( dirname, 'index.html' );
 								jsonFilename = path.join( dirname, 'index.json' );

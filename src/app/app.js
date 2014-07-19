@@ -1,5 +1,6 @@
 import AppView from 'ractive_components/app';
 import getStep from 'getStep';
+import handleError from 'utils/handleError';
 
 var view, data;
 
@@ -20,7 +21,7 @@ view.on({
 		getStep( tutorialTitle, stepNumber ).then( function ( step ) {
 			view.set( 'currentStep', step );
 			window.history.pushState( step, null, '/' + tutorialTitle + '/' + stepNumber );
-		});
+		}).catch( handleError );
 	}
 });
 

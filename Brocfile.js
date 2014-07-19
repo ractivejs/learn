@@ -28,7 +28,7 @@ var pick = require( 'broccoli-static-compiler' ),
 	assets = pick( 'src/assets', {
 		srcDir: '/',
 		files: [ '**/*.*' ],
-		destDir: '/assets'
+		destDir: '/'
 	});
 
 	app = (function () {

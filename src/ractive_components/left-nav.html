@@ -1,5 +1,5 @@
-<div class='left-nav'>
-	<div class='toggle {{open ? "open" : ""}}' on-click='toggle'>
+<div class='left-nav {{open ? "open" : ""}}'>
+	<div class='toggle' on-click='toggle'>
 		<strong>Tutorials</strong>
 		<span class='cross'>+</span>
 	</div>
@@ -24,7 +24,7 @@
 	.left-nav {
 		position: absolute;
 		top: 0;
-		left: -12em;
+		left: 0;
 		width: 16em;
 		height: 100%;
 		background-color: white;
@@ -32,6 +32,20 @@
 		padding: 3.4em 0 0 0;
 		cursor: pointer;
 		box-shadow: 1px 0 3px rgba(0,0,0,.05);
+
+		-webkit-transition: all 0.2s cubic-bezier(.02,.91,.29,1);
+		-moz-transition: all 0.2s cubic-bezier(.02,.91,.29,1);
+		-ms-transition: all 0.2s cubic-bezier(.02,.91,.29,1);
+		-o-transition: all 0.2s cubic-bezier(.02,.91,.29,1);
+		transition: all 0.2s cubic-bezier(.02,.91,.29,1);
+
+		-webkit-transform: translate3d(-12em,0,0);
+		-moz-transform: translate3d(-12em,0,0);
+		-ms-transform: translate3d(-12em,0,0);
+		-o-transform: translate3d(-12em,0,0);
+		transform: translate3d(-12em,0,0);
+
+		-webkit-backface-visibility: hidden;
 
 		-webkit-user-select: none;
 		-moz-user-select: none;
@@ -42,6 +56,16 @@
 		-webkit-box-sizing: border-box;
 		-moz-box-sizing: border-box;
 		box-sizing: border-box;
+
+		will-change: -webkit-transform, -moz-transform, -ms-transform, -o-transform, transform;
+	}
+
+	.open {
+		-webkit-transform: translate3d(0,0,0);
+		-moz-transform: translate3d(0,0,0);
+		-ms-transform: translate3d(0,0,0);
+		-o-transform: translate3d(0,0,0);
+		transform: translate3d(0,0,0);
 	}
 
 	.toggle {

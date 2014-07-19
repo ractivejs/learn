@@ -2,16 +2,28 @@
 
 <p>We've already got an array of objects representing four of the X-Men, over there on the right. We just need to update the template.</p>
 
-<p>Begin by wrapping the second <code>&lt;tr&gt;</code> in a section:</p>
+<p>Begin by wrapping the second <code>&lt;tr&gt;</code> in an <code>#each</code> section:</p>
 
 <pre class='prettyprint lang-html'>
-{{#superheroes}}
-&lt;tr&gt;
-  &lt;!-- row content --&gt;
-&lt;/tr&gt;
-{{/superheroes}}
+{{#each superheroes}}
+  &lt;tr&gt;
+    &lt;!-- row content --&gt;
+  &lt;/tr&gt;
+{{/each}}
 </pre>
+
+<aside>
+	<p>As with <code>#with</code> and <code>#if</code> sections, you could just do <code>{{#superheroes}}...{{/superheroes}}</code> and it would work the same way, as long as <code>superheroes</code> is an array.</p>
+</aside>
 
 <p>Then, insert mustaches representing each of the three properties in the table &ndash; <code>name</code>, <code>realname</code> and <code>power</code>. For extra credit, wrap the name in a link pointing to the <code>info</code> URL.</p>
 
-<p>Execute the code. As ever, you can interact with the result via the console.</p>
+<p>Execute the code with <kbd>Shift-Enter</kbd>.</p>
+
+<textarea class='interactive'>
+// You can use array notation to update the data:
+ractive.set( 'superheroes[1].power', 'Martial arts' );
+
+// Or, you can use dot notation. Whichever you prefer:
+ractive.set( 'superheroes.3.power', 'Enhanced senses' );
+</textarea>

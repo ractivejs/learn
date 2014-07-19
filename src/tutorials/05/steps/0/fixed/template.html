@@ -5,11 +5,11 @@
     <th>Superpower</th>
   </tr>
 
-  {{#superheroes}}
+  {{#each superheroes}}
     <tr>
       <td><a href='{{info}}'>{{name}}</a></td>
       <td>{{realname}}</td>
       <td>{{power}}</td>
     </tr>
-  {{/superheroes}}
+  {{/each}}
 </table>

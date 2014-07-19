@@ -7,13 +7,13 @@
 
 <p>Update the template and re-render it, then type your name in the box.</p>
 
-<div class='hint'>
+<aside>
 	<p>Internally, we're binding to <code>input</code> events (and <code>keyup</code> for IE, since it doesn't fire <code>input</code> correctly) alongside <code>change</code> and <code>blur</code> events &ndash; this ensures instantaneous feedback for a slick experience.</p>
 
 	<p>If you'd rather the updates only happened on <code>change</code> and <code>blur</code>, pass in <code>lazy: true</code> as an initialisation option.</p>
 
 	<p>If you'd rather disable two-way binding altogether, you can do so with <code>twoway: false</code>.</p>
-</div>
+</aside>
 
 <p>That's a cute demo, but it doesn't have much real world use. In all likelihood we want to do something with the data when it changes. For that, we use <code>ractive.observe()</code>:</p>
 

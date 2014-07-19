@@ -6,8 +6,8 @@
 
 <p>...and that's it! We now have a smooth transition between cities &ndash; not just the bar height, but the labels and colours as well.</p>
 
-<div class='hint'>
+<aside>
 	<p><span class='logo'>Ractive.js</span> is efficient about how it handles animations. Even though there are a total of 72 properties being animated each time (height, colour and label text for two bars for each of twelve months), there is a single animation loop which uses <code>requestAnimationFrame</code> where possible, and which runs as long as there are one or more sets of animations in progress.</p>
 
 	<p>If a second animation on a keypath were to start before the first had completed, the first would be cancelled.</p>
-</div>
+</aside>

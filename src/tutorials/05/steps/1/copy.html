@@ -3,9 +3,9 @@
 <p>Mustache doesn't have a good way of doing this, so <span class='logo'>Ractive.js</span> introduces the <em>index reference</em>:</p>
 
 <pre class='prettyprint lang-html'>
-{{#list:num}}
+{{#each list:num}}
   &lt;!-- inside here, {{num}} is the index --&gt;
-{{/list}}
+{{/each}}
 </pre>
 
 <p>By declaring <code>num</code> to be an index reference, we can use it the same way we'd use any other variable. Let's add a number column to our table &ndash; first add the column to the header row:</p>
@@ -21,14 +21,14 @@
 <p>Then to the list row:</p>
 
 <pre class='prettyprint lang-html'>
-{{#superheroes:num}}
+{{#each superheroes:num}}
   &lt;tr&gt;
     &lt;td&gt;{{num}}&lt;/td&gt;
     &lt;td&gt;&lt;a href='{{info}}'&gt;{{name}}&lt;/a&gt;&lt;/td&gt;
     &lt;td&gt;{{realname}}&lt;/td&gt;
     &lt;td&gt;{{power}}&lt;/td&gt;
   &lt;/tr&gt;
-{{/superheroes}}
+{{/each}}
 </pre>
 
 <p>Execute the code.</p>

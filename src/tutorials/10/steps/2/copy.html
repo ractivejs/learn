@@ -23,8 +23,8 @@ this.animate( 'selectedCity', cities[ index ], {
 
 <p>Try using <code>ractive.animate()</code> to cycle the bar chart through a loop &ndash; each city's data is displayed for a couple of seconds before transitioning to the next one. To make it simple, the <code>&lt;select&gt;</code> has been removed. If you get stuck, use the 'fix code' button to see one possible solution.</p>
 
-<div class='hint'>
+<aside>
 	<p>You can animate between numerical properties, and arrays or objects that contain numerical properties (nested however deep &ndash; though be aware that <span class='logo'>Ractive.js</span> doesn't check for cyclical data structures which will cause infinite loops!).</p>
 
 	<p>Strings, such as the city's <code>name</code> in this example, are ignored, or rather set immediately on the first animation tick. (Future versions may include clever string interpolators à la <a href='http://d3js.org/'>D3</a>.</p>
-</div>
+</aside>

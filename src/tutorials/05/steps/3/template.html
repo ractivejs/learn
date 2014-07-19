@@ -6,12 +6,12 @@
     <th class='sortable'>Superpower</th>
   </tr>
 
-  {{#superheroes:num}}
+  {{#each superheroes:num}}
     <tr>
-      <td>{{ num + 1 }}</td>
+      <td>{{num+1}}</td>
       <td><a href='{{info}}'>{{name}}</a></td>
       <td>{{realname}}</td>
       <td>{{power}}</td>
     </tr>
-  {{/superheroes}}
+  {{/each}}
 </table>

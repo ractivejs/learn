@@ -8,7 +8,7 @@ this.animate( 'selectedCity', cities[ index ], {
 
 <p>Execute this code, then try changing the city via the drop-down.</p>
 
-<div class='hint'>
+<aside>
 	<p><span class='logo'>Ractive.js</span> has four easing functions built in &ndash; <code>linear</code> (the default), <code>easeIn</code>, <code>easeOut</code> and <code>easeInOut</code>. I personally find <code>easeOut</code> and <code>easeInOut</code> meet 95% of my needs.</p>
 
 	<p>However you can add more easing functions to <code>Ractive.easing</code>, and they will become globally available. Here's an elastic easing function, for example:</p>
@@ -22,4 +22,4 @@ Ractive.easing.elastic = function( pos ) {
 	<p>This was taken from <a href='https://github.com/danro/easing-js/blob/master/easing.js'>danro's easing.js</a>, which contains just about every easing function you could imagine. Or you could create your own &ndash; all it is is a function that takes an x value between 0 (animation start) and 1 (animation end) and returns a y value (usually between 0 and 1, but sometimes just outside as in the <code>elastic</code> example).</p>
 
 	<p>As an alternative to making easing functions globally available, you can pass a function in as the <code>easing</code> parameter rather than a string.</p>
-</div>
+</aside>

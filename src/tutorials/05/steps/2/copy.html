@@ -5,16 +5,16 @@ var index = ractive.get( 'superheroes' ).length;
 ractive.set( 'superheroes[' + index + ']', newSuperhero );
 </pre>
 
-<p>That's not ideal. We <em>could</em> use <code>ractive.update( 'superheroes' )</code> instead, which will make sure that the table is up to date:</p>
+<p>That's not ideal. We <em>could</em> use <code>ractive.update('superheroes')</code> instead, which will make sure that the table is up to date:</p>
 
 <pre class='prettyprint lang-js'>
 xmen[ xmen.length ] = newSuperhero;
 ractive.update( 'superheroes' );
 </pre>
 
-<div class='hint'>
+<aside>
 	<p>If you don't pass a keypath argument to <code>ractive.update()</code>, <span class='logo'>Ractive.js</span> will update everything that has changed since the last set or update.</p>
-</div>
+</aside>
 
 <p>But there's a more convenient way. <span class='logo'>Ractive.js</span> wraps the <em>mutator methods</em> of arrays (<code>push</code>, <code>pop</code>, <code>shift</code>, <code>unshift</code>, <code>splice</code>, <code>sort</code> and <code>reverse</code>) so that they trigger updates automatically:</p>
 
@@ -22,8 +22,25 @@ ractive.update( 'superheroes' );
 xmen.push( newSuperhero );
 </pre>
 
-<p>Try running this code in the console &ndash; we've already defined our new superhero.</p>
+<p>Try adding Storm to the list by pushing to the array:</p>
 
-<div class='hint'>
-	<p>If you'd rather <span class='logo'>Ractive.js</span> didn't modify arrays like this, you can disable the behaviour by passing in <code>modifyArrays: false</code> at initialisation. But don't worry &ndash; we're not touching the Array prototype.</p>
-</div>
+<textarea class='interactive'>
+var newSuperhero = {
+  name: 'Storm',
+  realname: 'Monroe, Ororo',
+  power: 'Controlling the weather',
+  info: 'http://www.superherodb.com/Storm/10-135/'
+};
+
+// add the code here...
+</textarea>
+
+<aside>
+	<p>If you'd rather <span class='logo'>Ractive.js</span> didn't modify arrays like this, you can disable the behaviour by passing in <code>modifyArrays: false</code> at initialisation. But don't worry &ndash; we're not touching the Array prototype, only individual arrays &ndash; and the changes are automatically reversed if the array is removed from the viewmodel.</p>
+
+	<p>An alternative to <code>xmen.push(newSuperhero)</code> is this:
+
+	<pre class='prettyprint lang-js'>ractive.push('superheroes', newSuperhero);</pre>
+
+	<p>The same goes for all the other array mutator methods &ndash; there's a <code>ractive.pop()</code> and <code>ractive.splice()</code> method, and so on.</p>
+</aside>

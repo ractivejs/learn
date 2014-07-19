@@ -8,9 +8,9 @@
 &lt;/select&gt;
 </pre>
 
-<div class='hint'>
+<aside>
 	<p>I apologise to my fellow Brits, and other English-speaking non-Americans, for the repeated use of <code>color</code> instead of <code>colour</code>. Occupational hazard.</div>
-</div>
+</aside>
 
 <p>Re-render the ractive. Notice that once again, the data is initialised to the value of the selected <code>&lt;option&gt;</code> &ndash; in this case, blue.</p>
 
@@ -24,11 +24,11 @@
 &lt;/select&gt;
 </pre>
 
-<div class='hint'>
+<aside>
 	<p>We haven't seen <code>{{.}}</code> before. It's called the <em>implicit iterator</em>, and it basically points to the current list item. Previously, whenever we've used lists, they've been lists of objects. The implicit iterator allows us to use lists of <em>primitives</em> (in this case, strings) instead.</p>
 
   <p>In the Ractive variant of Mustache, you can use <code>{{this}}</code> as an alternative to <code>{{.}}</code> if you prefer.</p>
-</div>
+</aside>
 
 <p>And add some data to our view:</p>
 
@@ -45,8 +45,8 @@ var ractive = new Ractive({
 });
 </pre>
 
-<div class='hint'>
+<aside>
 	<p>The template no longer has an <code>&lt;option&gt;</code> with a <code>selected</code> attribute, so we need to specify an initial value of <code>color</code>.</p>
-</div>
+</aside>
 
 <p>Execute this code. You can add more colours to the menu via the console.</p>

@@ -20,6 +20,8 @@
     "broccoli-ractive": "~0.2.0",
     "broccoli-requirejs": "0.0.2",
     "amdclean": "~2.2.3",
-    "broccoli-concat": "0.0.7"
+    "broccoli-concat": "0.0.7",
+    "broccoli-env": "0.0.1",
+    "broccoli-uglify-js": "~0.1.3"
   }
 }

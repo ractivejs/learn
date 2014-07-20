@@ -7,9 +7,12 @@ var pick = require( 'broccoli-static-compiler' ),
 	compileSass = require( 'broccoli-sass' ),
 	requirejs = require( 'broccoli-requirejs' ),
 	concat = require( 'broccoli-concat' ),
+	uglify = require( 'broccoli-uglify-js' ),
 	cleanTranspiled = require( './broccoli/clean-transpiled' ),
 	compileTutorials = require( './broccoli/compile-tutorials' ),
 	compileRactive = require( 'broccoli-ractive' ),
+
+	prod = require( 'broccoli-env' ).getEnv() === 'production',
 
 	globals = {
 		define: true,
@@ -94,7 +97,7 @@ var pick = require( 'broccoli-static-compiler' ),
 			}
 		});
 
-		return app;
+		return prod ? uglify( app ) : app;
 	}());
 
 	bundle = concat( 'vendor', {
@@ -110,6 +113,10 @@ var pick = require( 'broccoli-static-compiler' ),
 		],
 		outputFile: '/bundle.js'
 	});
+
+	if ( prod ) {
+		bundle = uglify( bundle );
+	}
 
 	css = compileSass( [ 'src/styles', shared ], 'main.scss', 'min.css', {
 		outputStyle: 'compressed'

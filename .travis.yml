@@ -2,7 +2,7 @@ language: node_js
 node_js:
 - '0.10'
 before_script:
-- chmod u+x scripts/deploy-to-gh-pages.sh; BROCCOLI_ENV=production broccoli build build
+- npm i -g broccoli; chmod u+x scripts/deploy-to-gh-pages.sh; BROCCOLI_ENV=production broccoli build build
 script: ./scripts/deploy-to-gh-pages.sh
 env:
   global:

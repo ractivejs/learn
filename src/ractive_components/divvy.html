@@ -3,7 +3,7 @@
 </div>
 
 <script>
-	var Divvy = require( 'divvy' ), forceRedraw = require( 'utils/forceRedraw' );
+	var Divvy = require( 'divvy' );
 
 	component.exports = {
 		init: function () {
@@ -16,20 +16,17 @@
 				rows: this.get( 'rows' )
 			});
 
-			divvy.restore();
+			divvy.restore( 'learn_ractivejs' );
 
 			divvy.on( 'resize', function ( changed ) {
 				clearTimeout( timeout );
-
-				//this.save();
 
 				if ( changed[ 'output-block' ] ) {
 					self.fire( 'resize' );
 				}
 
 				timeout = setTimeout( function () {
-					divvy.save();
-					forceRedraw();
+					divvy.save( 'learn_ractivejs' );
 				}, 50 );
 			});
 		}

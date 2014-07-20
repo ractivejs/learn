@@ -1,6 +1,6 @@
 /*
 	ractive-legacy.js v0.5.5
-	2014-07-13 - commit 8b1d34ef 
+	2014-07-20 - commit e9501cb4
 
 	http://ractivejs.org
 	http://twitter.com/RactiveJS
@@ -188,31 +188,6 @@
 						intermediate[ prop ] = interpolators[ prop ]( t );
 					}
 					return intermediate;
-				};
-			},
-			cssLength: function( from, to ) {
-				var fromMatch, toMatch, fromUnit, toUnit, fromValue, toValue, unit, delta;
-				if ( from !== 0 && typeof from !== 'string' || to !== 0 && typeof to !== 'string' ) {
-					return null;
-				}
-				fromMatch = cssLengthPattern.exec( from );
-				toMatch = cssLengthPattern.exec( to );
-				fromUnit = fromMatch ? fromMatch[ 2 ] : '';
-				toUnit = toMatch ? toMatch[ 2 ] : '';
-				if ( fromUnit && toUnit && fromUnit !== toUnit ) {
-					return null;
-				}
-				unit = fromUnit || toUnit;
-				fromValue = fromMatch ? +fromMatch[ 1 ] : 0;
-				toValue = toMatch ? +toMatch[ 1 ] : 0;
-				delta = toValue - fromValue;
-				if ( !delta ) {
-					return function() {
-						return fromValue + unit;
-					};
-				}
-				return function( t ) {
-					return fromValue + t * delta + unit;
 				};
 			}
 		};
@@ -2377,37 +2352,42 @@
 			},
 			flattenExpression: flattenExpression,
 			getLinePos: function() {
-				var lines, currentLine, currentLineEnd, nextLineEnd, lineNum, columnNum;
+				var lines, currentLine, currentLineEnd, nextLineEnd, lineNum, charNum, annotation;
 				lines = this.str.split( '\n' );
-				lineNum = -1;
+				lineNum = 0;
 				nextLineEnd = 0;
 				do {
 					currentLineEnd = nextLineEnd;
 					lineNum++;
-					currentLine = lines[ lineNum ];
+					currentLine = lines[ lineNum - 1 ];
 					nextLineEnd += currentLine.length + 1;
 				} while ( nextLineEnd <= this.pos );
-				columnNum = this.pos - currentLineEnd;
+				charNum = this.pos - currentLineEnd + 1;
+				annotation = currentLine + '\n' + new Array( charNum ).join( ' ' ) + '^----';
 				return {
-					line: lineNum + 1,
-					ch: columnNum + 1,
+					line: lineNum,
+					ch: charNum,
 					text: currentLine,
+					annotation: annotation,
 					toJSON: function() {
 						return [
-							this.line,
-							this.ch
+							lineNum,
+							charNum
 						];
 					},
 					toString: function() {
-						return 'line ' + this.line + ' character ' + this.ch + ':\n' + this.text + '\n' + this.text.substr( 0, this.ch - 1 ).replace( /[\S]/g, ' ' ) + '^----';
+						return 'line ' + lineNum + ( ' character ' + charNum ) + '';
 					}
 				};
 			},
-			error: function( err ) {
-				var pos, message;
+			error: function( message ) {
+				var pos, error;
 				pos = this.getLinePos();
-				message = err + ' at ' + pos;
-				throw new ParseError( message );
+				error = new ParseError( message + ' at ' + pos + ':\n' + pos.annotation );
+				error.line = pos.line;
+				error.character = pos.ch;
+				error.shortMessage = message;
+				throw error;
 			},
 			matchString: function( string ) {
 				if ( this.str.substr( this.pos, string.length ) === string ) {
@@ -2730,7 +2710,7 @@
             		var length = list.length >>> 0;
             		var thisArg = arguments[1];
             		var value;
-        
+
             		for (var i = 0; i < length; i++) {
             			if (i in list) {
             				value = list[i];
@@ -4272,8 +4252,17 @@
 		}
 	}( types );
 
+	/* utils/escapeRegExp.js */
+	var escapeRegExp = function() {
+
+		var pattern = /[-/\\^$*+?.()|[\]{}]/g;
+		return function escapeRegExp( str ) {
+			return str.replace( pattern, '\\$&' );
+		};
+	}();
+
 	/* parse/_parse.js */
-	var parse = function( types, Parser, mustache, comment, element, text, trimWhitespace, stripStandalones ) {
+	var parse = function( types, Parser, mustache, comment, element, text, trimWhitespace, stripStandalones, escapeRegExp ) {
 
 		// Ractive.parse
 		// ===============
@@ -4305,30 +4294,13 @@
 		// * c - is Content (e.g. of a comment node)
 		// * p - line Position information - array with line number and character position of each node
 		var StandardParser, parse, contiguousWhitespace = /[ \t\f\r\n]+/g,
-			inlinePartialStart = /<!--\s*\{\{\s*>\s*([a-zA-Z_$][a-zA-Z_$0-9]*)\s*}\}\s*-->/,
-			inlinePartialEnd = /<!--\s*\{\{\s*\/\s*([a-zA-Z_$][a-zA-Z_$0-9]*)\s*}\}\s*-->/,
 			preserveWhitespaceElements = /^(?:pre|script|style|textarea)$/i,
 			leadingWhitespace = /^\s+/,
 			trailingWhitespace = /\s+$/;
 		StandardParser = Parser.extend( {
 			init: function( str, options ) {
 				// config
-				this.delimiters = options.delimiters || [
-					'{{',
-					'}}'
-				];
-				this.tripleDelimiters = options.tripleDelimiters || [
-					'{{{',
-					'}}}'
-				];
-				this.staticDelimiters = options.staticDelimiters || [
-					'[[',
-					']]'
-				];
-				this.staticTripleDelimiters = options.staticTripleDelimiters || [
-					'[[[',
-					']]]'
-				];
+				setDelimiters( options, this );
 				this.sectionDepth = 0;
 				this.interpolate = {
 					script: !options.interpolate || options.interpolate.script !== false,
@@ -4363,7 +4335,10 @@
 			var options = arguments[ 1 ];
 			if ( options === void 0 )
 				options = {};
-			var result, remaining, partials, name, startMatch, endMatch;
+			var result, remaining, partials, name, startMatch, endMatch, inlinePartialStart, inlinePartialEnd;
+			setDelimiters( options );
+			inlinePartialStart = new RegExp( '<!--\\s*' + escapeRegExp( options.delimiters[ 0 ] ) + '\\s*>\\s*([a-zA-Z_$][a-zA-Z_$0-9]*)\\s*' + escapeRegExp( options.delimiters[ 1 ] ) + '\\s*-->' );
+			inlinePartialEnd = new RegExp( '<!--\\s*' + escapeRegExp( options.delimiters[ 0 ] ) + '\\s*\\/\\s*([a-zA-Z_$][a-zA-Z_$0-9]*)\\s*' + escapeRegExp( options.delimiters[ 1 ] ) + '\\s*-->' );
 			result = {
 				v: 1
 			};
@@ -4474,7 +4449,29 @@
 				}
 			}
 		}
-	}( types, Parser, mustache, comment, element, text, trimWhitespace, stripStandalones );
+
+		function setDelimiters( source ) {
+			var target = arguments[ 1 ];
+			if ( target === void 0 )
+				target = source;
+			target.delimiters = source.delimiters || [
+				'{{',
+				'}}'
+			];
+			target.tripleDelimiters = source.tripleDelimiters || [
+				'{{{',
+				'}}}'
+			];
+			target.staticDelimiters = source.staticDelimiters || [
+				'[[',
+				']]'
+			];
+			target.staticTripleDelimiters = source.staticTripleDelimiters || [
+				'[[[',
+				']]]'
+			];
+		}
+	}( types, Parser, mustache, comment, element, text, trimWhitespace, stripStandalones, escapeRegExp );
 
 	/* config/options/groups/optionGroup.js */
 	var optionGroup = function() {
@@ -4942,7 +4939,7 @@
 				}
 				warn( 'Missing "' + type + '" interpolator. You may need to download a plugin from [TODO]' );
 			}
-			return interpolators.number( from, to ) || interpolators.array( from, to ) || interpolators.object( from, to ) || interpolators.cssLength( from, to ) || snap( to );
+			return interpolators.number( from, to ) || interpolators.array( from, to ) || interpolators.object( from, to ) || snap( to );
 		};
 		circular.interpolate = interpolate;
 		return interpolate;
@@ -4968,6 +4965,7 @@
 			}
 			this.interpolator = interpolate( this.from, this.to, this.root, this.interpolator );
 			this.running = true;
+			this.tick();
 		};
 		Animation.prototype = {
 			tick: function() {
@@ -8119,6 +8117,10 @@
 			// TODO this can register the attribute multiple times (see render test
 			// 'Attribute with nested mustaches')
 			if ( value !== this.value ) {
+				// Need to clear old id from ractive.nodes
+				if ( this.name === 'id' && this.value ) {
+					delete this.root.nodes[ this.value ];
+				}
 				this.value = value;
 				if ( this.name === 'value' && this.node ) {
 					// We need to store the value on the DOM like this so we
@@ -8131,6 +8133,14 @@
 			}
 		};
 	}( runloop );
+
+	/* config/booleanAttributes.js */
+	var booleanAttributes = function() {
+
+		// https://github.com/kangax/html-minifier/issues/63#issuecomment-37763316
+		var booleanAttributes = /allowFullscreen|async|autofocus|autoplay|checked|compact|controls|declare|default|defaultChecked|defaultMuted|defaultSelected|defer|disabled|draggable|enabled|formNoValidate|hidden|indeterminate|inert|isMap|itemScope|loop|multiple|muted|noHref|noResize|noShade|noValidate|noWrap|open|pauseOnExit|readOnly|required|reversed|scoped|seamless|selected|sortable|spellcheck|translate|trueSpeed|typeMustMatch|visible/;
+		return booleanAttributes;
+	}();
 
 	/* virtualdom/items/Element/Attribute/helpers/determineNameAndNamespace.js */
 	var determineNameAndNamespace = function( namespaces, enforceCase ) {
@@ -8216,7 +8226,7 @@
 	}( namespaces );
 
 	/* virtualdom/items/Element/Attribute/prototype/init.js */
-	var virtualdom_items_Element_Attribute$init = function( types, determineNameAndNamespace, getInterpolator, determinePropertyName, circular ) {
+	var virtualdom_items_Element_Attribute$init = function( types, booleanAttributes, determineNameAndNamespace, getInterpolator, determinePropertyName, circular ) {
 
 		var Fragment;
 		circular.push( function() {
@@ -8230,7 +8240,7 @@
 			// if it's an empty attribute, or just a straight key-value pair, with no
 			// mustache shenanigans, set the attribute accordingly and go home
 			if ( !options.value || typeof options.value === 'string' ) {
-				this.value = options.value || true;
+				this.value = booleanAttributes.test( this.name ) ? true : options.value || '';
 				return;
 			}
 			// otherwise we need to do some work
@@ -8252,7 +8262,7 @@
 			// mark as ready
 			this.ready = true;
 		};
-	}( types, determineNameAndNamespace, getInterpolator, determinePropertyName, circular );
+	}( types, booleanAttributes, determineNameAndNamespace, getInterpolator, determinePropertyName, circular );
 
 	/* virtualdom/items/Element/Attribute/prototype/rebind.js */
 	var virtualdom_items_Element_Attribute$rebind = function Attribute$rebind( indexRef, newIndex, oldKeypath, newKeypath ) {
@@ -8312,7 +8322,7 @@
 	}( namespaces );
 
 	/* virtualdom/items/Element/Attribute/prototype/toString.js */
-	var virtualdom_items_Element_Attribute$toString = function() {
+	var virtualdom_items_Element_Attribute$toString = function( booleanAttributes ) {
 
 		return function Attribute$toString() {
 			var name, value, interpolator;
@@ -8326,22 +8336,22 @@
 			if ( name === 'name' && this.element.name === 'input' && ( interpolator = this.interpolator ) ) {
 				return 'name={{' + ( interpolator.keypath || interpolator.ref ) + '}}';
 			}
-			// Numbers
-			if ( typeof value === 'number' ) {
-				return name + '="' + value + '"';
+			// Boolean attributes
+			if ( booleanAttributes.test( name ) ) {
+				return value ? name : '';
 			}
 			// Strings
 			if ( typeof value === 'string' ) {
-				return name + '="' + escape( value ) + '"';
+				return value ? name + '="' + escape( value ) + '"' : name;
 			}
 			// Everything else
-			return value ? name : '';
+			return name + '="' + value + '"';
 		};
 
 		function escape( value ) {
 			return value.replace( /&/g, '&amp;' ).replace( /"/g, '&quot;' ).replace( /'/g, '&#39;' );
 		}
-	}();
+	}( booleanAttributes );
 
 	/* virtualdom/items/Element/Attribute/prototype/unbind.js */
 	var virtualdom_items_Element_Attribute$unbind = function Attribute$unbind() {
@@ -8520,23 +8530,26 @@
 	};
 
 	/* virtualdom/items/Element/Attribute/prototype/update/updateEverythingElse.js */
-	var virtualdom_items_Element_Attribute$update_updateEverythingElse = function Attribute$updateEverythingElse() {
-		var node, name, value;
-		node = this.node;
-		name = this.name;
-		value = this.value;
-		if ( this.namespace ) {
-			node.setAttributeNS( this.namespace, name, value );
-		} else if ( typeof value === 'string' || typeof value === 'number' ) {
-			node.setAttribute( name, value );
-		} else {
-			if ( value ) {
-				node.setAttribute( name, '' );
+	var virtualdom_items_Element_Attribute$update_updateEverythingElse = function( booleanAttributes ) {
+
+		return function Attribute$updateEverythingElse() {
+			var node, name, value;
+			node = this.node;
+			name = this.name;
+			value = this.value;
+			if ( this.namespace ) {
+				node.setAttributeNS( this.namespace, name, value );
+			} else if ( !booleanAttributes.test( name ) ) {
+				node.setAttribute( name, value );
 			} else {
-				node.removeAttribute( name );
+				if ( value ) {
+					node.setAttribute( name, '' );
+				} else {
+					node.removeAttribute( name );
+				}
 			}
-		}
-	};
+		};
+	}( booleanAttributes );
 
 	/* virtualdom/items/Element/Attribute/prototype/update.js */
 	var virtualdom_items_Element_Attribute$update = function( namespaces, noop, updateSelectValue, updateMultipleSelectValue, updateRadioName, updateRadioValue, updateCheckboxName, updateClassName, updateIdAttribute, updateIEStyleAttribute, updateContentEditableValue, updateValue, updateBoolean, updateEverythingElse ) {
@@ -8555,7 +8568,7 @@
 			} else if ( name === 'value' ) {
 				// special case - selects
 				if ( element.name === 'select' && name === 'value' ) {
-					updateMethod = node.multiple ? updateMultipleSelectValue : updateSelectValue;
+					updateMethod = element.getAttribute( 'multiple' ) ? updateMultipleSelectValue : updateSelectValue;
 				} else if ( element.name === 'textarea' ) {
 					updateMethod = updateValue;
 				} else if ( node.getAttribute( 'contenteditable' ) ) {
@@ -9260,9 +9273,24 @@
 		}
 	}( log, ContentEditableBinding, RadioBinding, RadioNameBinding, CheckboxNameBinding, CheckboxBinding, SelectBinding, MultipleSelectBinding, FileListBinding, NumericBinding, GenericBinding );
 
+	/* virtualdom/items/Element/EventHandler/prototype/bubble.js */
+	var virtualdom_items_Element_EventHandler$bubble = function EventHandler$bubble() {
+		var hasAction = this.getAction();
+		if ( hasAction && !this.hasListener ) {
+			this.listen();
+		} else if ( !hasAction && this.hasListener ) {
+			this.unrender();
+		}
+	};
+
 	/* virtualdom/items/Element/EventHandler/prototype/fire.js */
 	var virtualdom_items_Element_EventHandler$fire = function EventHandler$fire( event ) {
-		this.root.fire( this.action.toString().trim(), event );
+		this.root.fire( this.getAction(), event );
+	};
+
+	/* virtualdom/items/Element/EventHandler/prototype/getAction.js */
+	var virtualdom_items_Element_EventHandler$getAction = function EventHandler$getAction() {
+		return this.action.toString().trim();
 	};
 
 	/* virtualdom/items/Element/EventHandler/prototype/init.js */
@@ -9286,7 +9314,7 @@
 				action = new Fragment( {
 					template: action,
 					root: this.root,
-					owner: this.element
+					owner: this
 				} );
 			}
 			this.action = action;
@@ -9306,7 +9334,7 @@
 
 		function fireEventWithParams( event ) {
 			this.root.fire.apply( this.root, [
-				this.action.toString().trim(),
+				this.getAction(),
 				event
 			].concat( this.params ) );
 		}
@@ -9318,21 +9346,11 @@
 				args = args.substr( 1, args.length - 2 );
 			}
 			this.root.fire.apply( this.root, [
-				this.action.toString().trim(),
+				this.getAction(),
 				event
 			].concat( args ) );
 		}
 	}( circular );
-
-	/* virtualdom/items/Element/EventHandler/prototype/rebind.js */
-	var virtualdom_items_Element_EventHandler$rebind = function EventHandler$rebind( indexRef, newIndex, oldKeypath, newKeypath ) {
-		if ( typeof this.action !== 'string' ) {
-			this.action.rebind( indexRef, newIndex, oldKeypath, newKeypath );
-		}
-		if ( this.dynamicParams ) {
-			this.dynamicParams.rebind( indexRef, newIndex, oldKeypath, newKeypath );
-		}
-	};
 
 	/* virtualdom/items/Element/EventHandler/shared/genericHandler.js */
 	var genericHandler = function genericHandler( event ) {
@@ -9348,14 +9366,12 @@
 		} );
 	};
 
-	/* virtualdom/items/Element/EventHandler/prototype/render.js */
-	var virtualdom_items_Element_EventHandler$render = function( warn, config, genericHandler ) {
+	/* virtualdom/items/Element/EventHandler/prototype/listen.js */
+	var virtualdom_items_Element_EventHandler$listen = function( warn, config, genericHandler ) {
 
 		var customHandlers = {};
-		return function EventHandler$render() {
-			var name = this.name,
-				definition;
-			this.node = this.element.node;
+		return function EventHandler$listen() {
+			var definition, name = this.name;
 			if ( definition = config.registries.events.find( this.root, name ) ) {
 				this.custom = definition( this.node, getCustomHandler( name ) );
 			} else {
@@ -9365,9 +9381,7 @@
 				}
 				this.node.addEventListener( name, genericHandler, false );
 			}
-			// store this on the node itself, so it can be retrieved by a
-			// universal handler
-			this.node._ractive.events[ name ] = this;
+			this.hasListener = true;
 		};
 
 		function getCustomHandler( name ) {
@@ -9383,6 +9397,27 @@
 			return customHandlers[ name ];
 		}
 	}( warn, config, genericHandler );
+
+	/* virtualdom/items/Element/EventHandler/prototype/rebind.js */
+	var virtualdom_items_Element_EventHandler$rebind = function EventHandler$rebind( indexRef, newIndex, oldKeypath, newKeypath ) {
+		if ( typeof this.action !== 'string' ) {
+			this.action.rebind( indexRef, newIndex, oldKeypath, newKeypath );
+		}
+		if ( this.dynamicParams ) {
+			this.dynamicParams.rebind( indexRef, newIndex, oldKeypath, newKeypath );
+		}
+	};
+
+	/* virtualdom/items/Element/EventHandler/prototype/render.js */
+	var virtualdom_items_Element_EventHandler$render = function EventHandler$render() {
+		this.node = this.element.node;
+		// store this on the node itself, so it can be retrieved by a
+		// universal handler
+		this.node._ractive.events[ this.name ] = this;
+		if ( this.getAction() ) {
+			this.listen();
+		}
+	};
 
 	/* virtualdom/items/Element/EventHandler/prototype/teardown.js */
 	var virtualdom_items_Element_EventHandler$teardown = function EventHandler$teardown() {
@@ -9405,25 +9440,29 @@
 			} else {
 				this.node.removeEventListener( this.name, genericHandler, false );
 			}
+			this.hasListener = false;
 		};
 	}( genericHandler );
 
 	/* virtualdom/items/Element/EventHandler/_EventHandler.js */
-	var EventHandler = function( fire, init, rebind, render, teardown, unrender ) {
+	var EventHandler = function( bubble, fire, getAction, init, listen, rebind, render, teardown, unrender ) {
 
 		var EventHandler = function( element, name, template ) {
 			this.init( element, name, template );
 		};
 		EventHandler.prototype = {
+			bubble: bubble,
 			fire: fire,
+			getAction: getAction,
 			init: init,
+			listen: listen,
 			rebind: rebind,
 			render: render,
 			teardown: teardown,
 			unrender: unrender
 		};
 		return EventHandler;
-	}( virtualdom_items_Element_EventHandler$fire, virtualdom_items_Element_EventHandler$init, virtualdom_items_Element_EventHandler$rebind, virtualdom_items_Element_EventHandler$render, virtualdom_items_Element_EventHandler$teardown, virtualdom_items_Element_EventHandler$unrender );
+	}( virtualdom_items_Element_EventHandler$bubble, virtualdom_items_Element_EventHandler$fire, virtualdom_items_Element_EventHandler$getAction, virtualdom_items_Element_EventHandler$init, virtualdom_items_Element_EventHandler$listen, virtualdom_items_Element_EventHandler$rebind, virtualdom_items_Element_EventHandler$render, virtualdom_items_Element_EventHandler$teardown, virtualdom_items_Element_EventHandler$unrender );
 
 	/* virtualdom/items/Element/prototype/init/createEventHandlers.js */
 	var virtualdom_items_Element$init_createEventHandlers = function( EventHandler ) {
@@ -10695,6 +10734,10 @@
 			// Remove this node from any live queries
 			if ( this.liveQueries ) {
 				removeFromLiveQueries( this );
+			}
+			// Remove from nodes
+			if ( this.node.id ) {
+				delete this.root.nodes[ this.node.id ];
 			}
 		};
 

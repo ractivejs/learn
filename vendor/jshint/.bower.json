@@ -9,8 +9,6 @@
     "commit": "6558c1e1eb5ba8f7ee371f5cf7dd824dab4b54d3"
   },
   "_source": "git://github.com/jshint/jshint.git",
-  "_target": "~2.5.2",
-  "_originalSource": "jshint",
-  "_direct": true,
-  "main": "dist/jshint.js"
+  "_target": "^2.5.2",
+  "_originalSource": "jshint"
 }

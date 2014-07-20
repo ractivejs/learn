@@ -1,0 +1,19 @@
+{
+  "name": "learn.ractivejs.org",
+  "dependencies": {
+    "ractive": "^0.5.5",
+    "ractive-transitions-fade": "^0.1.2",
+    "ractive-transitions-slide": "^0.1.2",
+    "ractive-transitions-fly": "^0.1.2",
+    "divvy": "^0.1.7",
+    "codemirror": "^4.3.0",
+    "jshint": "^2.5.2",
+    "google-code-prettify": "^1.0.1"
+  },
+  "resolutions": {
+    "ractive": "^0.5.5"
+  },
+  "devDependencies": {
+    "ractive-events-tap": "~0.1.1"
+  }
+}

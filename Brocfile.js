@@ -67,8 +67,12 @@ var pick = require( 'broccoli-static-compiler' ),
 				optimize: 'none',
 
 				paths: {
-					divvy: 'vendor/divvy/divvy',
-					codemirror: 'vendor/codemirror/lib/codemirror'
+					'ractive': 'vendor/ractive/ractive-legacy',
+					'ractive-events-tap': 'vendor/ractive-events-tap/ractive-events-tap',
+					'ractive-transitions-fade': 'vendor/ractive-transitions-fade/ractive-transitions-fade',
+					'ractive-transitions-fly': 'vendor/ractive-transitions-fly/ractive-transitions-fly',
+					'ractive-transitions-slide': 'vendor/ractive-transitions-slide/ractive-transitions-slide',
+					'divvy': 'vendor/divvy/divvy'
 				},
 
 				onModuleBundleComplete: function ( data ) {
@@ -93,8 +97,17 @@ var pick = require( 'broccoli-static-compiler' ),
 		return app;
 	}());
 
-	bundle = concat( 'src/bundle', {
-		inputFiles: [ '**/*.js' ],
+	bundle = concat( 'vendor', {
+		inputFiles: [
+			'codemirror/lib/codemirror.js',
+			'codemirror/mode/javascript/javascript.js',
+			'codemirror/mode/xml/xml.js',
+			'codemirror/mode/htmlmixed/htmlmixed.js',
+			'codemirror/keymap/sublime.js',
+			'codemirror/addon/search/search.js',
+			'jshint/dist/jshint.js',
+			'google-code-prettify/src/prettify.js'
+		],
 		outputFile: '/bundle.js'
 	});
 

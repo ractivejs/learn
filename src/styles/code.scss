@@ -1,11 +1,13 @@
-.CodeMirror {
-
-}
-
 .CodeMirror-selected {
 	background: #eee;
 }
 
 .CodeMirror-focused .CodeMirror-selected {
 	background: #729d34;
+}
+
+.error {
+	.CodeMirror, .CodeMirror-selected, .CodeMirror-focused .CodeMirror-selected {
+		background-color: rgba(200,0,0,0.1);
+	}
 }

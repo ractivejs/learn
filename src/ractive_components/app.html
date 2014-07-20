@@ -16,9 +16,10 @@
 			on-resize='resize'
 			on-enter='enter'
 			on-execute='execute'
+			on-selectCode='selectCode'
 		>
 			<!-- copy -->
-			<div id='copy-block'>
+			<div id='copy-block' on-tap='selectCode'>
 				{{{copy}}}
 
 				{{#if next}}
@@ -33,12 +34,12 @@
 			<div id='output-block'></div>
 
 			<!-- template -->
-			<div id='template'>
+			<div id='template' class='block {{templateError?"error":""}}'>
 				<codemirror on-enter='enter' mode='ractive' value='{{template}}' height='100%'/>
 			</div>
 
 			<!-- js -->
-			<div id='javascript'>
+			<div id='javascript' class='block {{codeError?"error":""}}'>
 				<codemirror on-enter='enter' mode='javascript' value='{{javascript}}' height='100%'/>
 
 				<button class='execute' on-tap='execute'>Execute (Shift-Enter)</button>
@@ -109,6 +110,11 @@
 		font-size: 1.6em;
 		padding: 0.5rem 1rem 1rem 1rem;
 	}
+
+	.block {
+		width: 100%;
+		height: 100%;
+	}
 </style>
 
 <script>
@@ -125,6 +131,11 @@
 		_setTimeout,
 		_clearTimeout,
 		prop;
+
+	require( 'ractive-events-tap' );
+	require( 'ractive-transitions-fade' );
+	require( 'ractive-transitions-fly' );
+	require( 'ractive-transitions-slide' );
 
 	_Ractive = Ractive;
 
@@ -143,7 +154,7 @@
 	}
 
 	// Ditto for the non-enumerable ones
-	[ 'prototype', 'partials', 'adaptors', 'components', 'decorators', 'easing', 'events', 'interpolators', 'transitions', 'svg', 'VERSION' ].forEach( function ( prop ) {
+	[ 'prototype', 'partials', 'adaptors', 'components', 'decorators', 'easing', 'events', 'interpolators', 'transitions', 'extend', 'svg', 'VERSION', 'Promise' ].forEach( function ( prop ) {
 		var descriptor = Object.getOwnPropertyDescriptor( _Ractive, prop );
 		Object.defineProperty( FakeRactive, prop, descriptor );
 	});
@@ -185,6 +196,8 @@
 		resizeHandlers[ resizeHandlers.length ] = handler;
 	};
 
+	window.Ractive = Ractive;
+
 	component.exports = {
 		debug: true,
 
@@ -218,7 +231,7 @@
 			pattern = /\/([^\/]+)\/(\d+)/;
 
 			copyBlock = this.find( '#copy-block' );
-			outputBlock = this.find( '#output-block' );
+			outputBlock = window.output = this.find( '#output-block' );
 
 			interactiveHelper = this.find( '.interactive-helper' );
 			interactiveHelper.parentNode.removeChild( interactiveHelper );
@@ -306,6 +319,29 @@
 					});
 
 					execute();
+				},
+				selectCode: function ( event ) {
+					var target = event.original.target, range;
+
+					while ( target !== event.node ) {
+						if ( target.tagName === 'PRE' && /prettyprint/.test( target.className ) ) {
+							// select contents
+							if ( window.getSelection ) {
+								range = document.createRange();
+								range.selectNodeContents( target );
+								range.setEnd( range.endContainer, range.endOffset );
+								window.getSelection().addRange( range );
+							} else if ( document.selection ) {
+								range = document.body.createTextRange();
+								range.moveToElementText( target );
+								range.select();
+							}
+
+							break;
+						}
+
+						target = target.parentNode;
+					}
 				}
 			});
 
@@ -324,6 +360,15 @@
 						}
 					}
 
+					// Do any other cleanup
+					if ( oldStep && oldStep.cleanup ) {
+						globalEval( oldStep.cleanup );
+					}
+
+					// Filthy hack... need to figure out how to make Ractive.extend
+					// work in this messed-up environment
+					outputBlock.innerHTML = '';
+
 					// force a redraw... the use of transforms seems
 					// to bork things up a bit
 					forceRedraw();
@@ -336,8 +381,7 @@
 						copy: step.copy.trim(),
 						template: step.template.trim(),
 						javascript: step.javascript.trim(),
-						styles: step.styles,
-						setup: step.setup
+						styles: step.styles
 					});
 
 					copyBlock.scrollTop = 0;
@@ -381,6 +425,10 @@
 						return cm;
 					});
 
+					if ( step.setup ) {
+						globalEval( step.setup );
+					}
+
 					if ( step.init ) {
 						execute();
 					}
@@ -414,40 +462,30 @@
 				}
 
 				try {
+					self.set( 'templateError', false );
 					window.template = _Ractive.parse( self.get( 'template' ) );
 				} catch ( err ) {
-					// Parse error - display it above the template block
-					console.error( err.message );
-
-					// TODO store the location data on the error properly
-					console.log( err );
-
-					match = pattern.exec( err.message );
-					console.log( 'match', match );
-
-					node = document.createElement( 'span' );
-					node.innerHTML = match[0];
-
-					lineWidgets.push(
-						templateEditor.addLineWidget( +match[2], node )
-					);
-
+					setTimeout( () => {
+						self.set( 'templateError', true );
+						throw err;
+					});
 					return;
 				}
 
+				// ensure these haven't been mucked about with
 				window.output = outputBlock;
 				window.Ractive = FakeRactive;
 
 				code = self.get( 'javascript' );
 
 				try {
+					self.set( 'codeError', false );
 					globalEval( code );
-					lineWidgets.forEach( w => w.clear() );
-					lineWidgets = [];
 				} catch ( err ) {
-					console.error( err.message );
-
-
+					setTimeout( () => {
+						self.set( 'codeError', true );
+						throw err;
+					});
 				}
 
 				window.Ractive = _Ractive;
@@ -483,6 +521,10 @@
 				if ( step.index >= step.numSiblings - 1 ) {
 					// next tutorial
 					tutorial = this.get( 'manifest' )[ step.tutorialIndex + 1 ];
+
+					if ( !tutorial ) {
+						return null;
+					}
 
 					return '/' + slugify( tutorial.title ) + '/1';
 				}

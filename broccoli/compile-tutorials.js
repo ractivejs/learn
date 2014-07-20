@@ -88,6 +88,10 @@ TutorialCompiler.prototype.write = function ( readTree, destDir ) {
 									step.setup = tutorial.setup;
 								}
 
+								if ( tutorial.cleanup && !step.cleanup ) {
+									step.cleanup = tutorial.cleanup;
+								}
+
 								dirname = path.join( destDir, slugify( tutorial.title ), '' + ( stepIndex + 1 ) );
 								htmlFilename = path.join( dirname, 'index.html' );
 								jsonFilename = path.join( dirname, 'index.json' );

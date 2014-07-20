@@ -8,7 +8,7 @@
 		{{#each manifest :i}}
 			<a
 				class='nav-option'
-				style='min-height: {{ 100 / manifest.length }}%'
+				style='height: {{ 100 / manifest.length }}%'
 				href='../../{{slugify(title)}}/1'
 			>
 				<div class='nav-option-contents'>
@@ -25,7 +25,7 @@
 		position: absolute;
 		top: 0;
 		left: 0;
-		width: 16em;
+		width: 17em;
 		height: 100%;
 		background-color: white;
 		border-right: 1px solid #eee;
@@ -39,11 +39,11 @@
 		-o-transition: all 0.2s cubic-bezier(.02,.91,.29,1);
 		transition: all 0.2s cubic-bezier(.02,.91,.29,1);
 
-		-webkit-transform: translate3d(-12em,0,0);
-		-moz-transform: translate3d(-12em,0,0);
-		-ms-transform: translate3d(-12em,0,0);
-		-o-transform: translate3d(-12em,0,0);
-		transform: translate3d(-12em,0,0);
+		-webkit-transform: translate3d(-13em,0,0);
+		-moz-transform: translate3d(-13em,0,0);
+		-ms-transform: translate3d(-13em,0,0);
+		-o-transform: translate3d(-13em,0,0);
+		transform: translate3d(-13em,0,0);
 
 		-webkit-backface-visibility: hidden;
 
@@ -124,6 +124,7 @@
 		position: relative;
 		display: block;
 		padding: 0.5em 0;
+		min-height: 2.5em;
 		border-bottom: 1px solid #fcfcfc;
 		-webkit-box-sizing: border-box;
 		-moz-box-sizing: border-box;

@@ -109,17 +109,13 @@
 					}
 				}
 			});
+
+			window.header = this;
 		},
 
 		computed: {
 			siblingProxies: function () {
-				var array = [], i = this.get( 'step.numSiblings' );
-
-				while ( i-- ) {
-					array[i] = i;
-				}
-
-				return array;
+				return getRange( this.get( 'step.numSiblings' ) );
 			}
 		},
 
@@ -127,4 +123,12 @@
 			slugify: require( 'utils/slugify' )
 		}
 	};
+
+	function getRange ( i ) {
+		var arr = [];
+		while ( i-- ) {
+			arr[i] = i;
+		}
+		return arr;
+	}
 </script>

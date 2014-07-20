@@ -219,6 +219,8 @@
 				activeInlineEditor,
 				lineWidgets = [];
 
+			window.app = this;
+
 			container = this.find( '.app' );
 
 			// store references to editors...
@@ -292,7 +294,7 @@
 				resize: function () {
 					resizeHandlers.forEach( call );
 				},
-				enter: function ( event, data ) {
+				enter: event => {
 					if ( event.original.shiftKey ) {
 						event.original.preventDefault();
 						execute();
@@ -351,7 +353,10 @@
 				currentStep: function ( step, oldStep ) {
 
 					// Teardown existing instances
-					teardownQueue.forEach( r => r.teardown() );
+					teardownQueue.forEach( r => {
+						r.transitionsEnabled = false; // otherwise outros will mess things up!
+						r.teardown();
+					});
 
 					// Destroy any old interactive codemirror components
 					if ( interactives ) {
@@ -434,21 +439,8 @@
 					if ( step.init ) {
 						execute();
 					}
-				},
-				navOpen: function () {
-					// ugh...
-					clearTimeout( redrawTimeout );
-
-					redrawTimeout = setTimeout( forceRedraw, 200 );
 				}
 			});
-
-			// separate deferred observer, for post-render actions
-			this.observe({
-				currentStep: function ( step ) {
-
-				}
-			}, { defer: true });
 
 			window.addEventListener( 'keypress', function ( event ) {
 				if ( event.which === 13 && event.shiftKey ) {
@@ -536,7 +528,5 @@
 		}
 	};
 
-	function call ( fn ) {
-		fn();
-	}
+	function call ( fn ) { fn(); }
 </script>

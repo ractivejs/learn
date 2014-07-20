@@ -1,5 +1,8 @@
-.large {
+#output-block button {
+	display: block;
+	position: relative;
 	padding: 1em;
 	font-size: 1.6em;
 	text-align: center;
+	margin: 0 auto;
 }

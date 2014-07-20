@@ -3,25 +3,29 @@
 <p>Try adding <code>outro</code> transitions to the three buttons;</p>
 
 <pre class='prettyprint lang-html'>
-&lt;div intro='fade' outro='fly' class='large button' on-tap='show:2'&gt;Click me!&lt;/div&gt;
+&lt;button intro='fade' outro='fly' on-tap='show:2'&gt;
+  Click me!
+&lt;/button&gt;
 </pre>
 
 <p>Execute the code. Aaargh! It looks horrible!</p>
 
-<p>That's because new elements are being rendered before the old ones get removed from the DOM. What we need to do is trigger the removal, wait, and then trigger rendering of the new element.</p>
+<p>That's because new elements are being rendered before the old ones get removed from the DOM. What we need to do is <em>chain</em> the transitions &ndash; trigger the removal, wait, and then trigger rendering of the new element.</p>
 
-<p>We do that by adding a callback to our proxy event handler:</p>
+<p>Calling <code>ractive.set()</code> returns a <a href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, which resolves on completion of any transitions that are caused by the change. So you can do this:</p>
 
 <pre class='prettyprint lang-js'>
 ractive.on({
   show: function ( event, which ) {
-    this.set( 'visible', null, function () {
-      this.set( 'visible', which );
+    ractive.set( 'visible', null ).then( function () {
+      ractive.set( 'visible', which );
     });
   }
 });
 </pre>
 
 <aside>
-	<p>You can pass a callback to <code>ractive.set()</code>, <code>ractive.update()</code> and <code>ractive.teardown()</code>, or as the <code>complete</code> property of your initialisation options. At present, promises are not implemented, and there is no way to specify a callback when using array mutation methods.</p>
+	<p>Several methods return a promise, not just <code>ractive.set()</code> &ndash; <code>ractive.update()</code>, <code>ractive.teardown()</code>, <code>ractive.render()</code>, and all of the array methods such as <code>ractive.push()</code>.</p>
+
+	<p>Because not all browsers implement promises, Ractive currently ships its own <a href='http://promisesaplus.com/'>spec-compliant</a> implementation, but will use native promises wherever possible. Whichever implementation it uses is exposed as <code>Ractive.Promise</code>.</p>
 </aside>

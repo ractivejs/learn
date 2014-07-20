@@ -2,6 +2,6 @@
 
 <p>There are some points worth noting here. Firstly, we're mixing HTML and SVG together in the same ractive - the two languages are treated as equals.</p>
 
-<p>Secondly, we haven't had to write a <code>render</code> or <code>update</code> function &ndash; our intentions are expressed <em>declaratively</em>. There's some custom logic to create the shape of the temperate band polygon, for example, but we don't need to specify when that logic should be invoked &ndash; the system simply reacts to new data and internal changes in state. The temperature labels don't need an event handler to tell them when to switch from °C to °F.</p>
+<p>Secondly, we haven't had to write a <code>render</code> or <code>update</code> function &ndash; our intentions are expressed <em>declaratively</em>. There's some custom logic to create the shape of the temperature band polygon, for example, but we don't need to specify when that logic should be invoked &ndash; the system simply reacts to new data and internal changes in state. The temperature labels don't need an event handler to tell them when to switch from °C to °F.</p>
 
 <p>Thirdly, because this is based on a template, it's much easier to understand and extend than we've come to expect data visualisations to be. Ordinarily, you'd have to maintain a complex mental model of the <em>flow</em> of your application in order to understand which bits of code affected the result in which ways &ndash; here, the link between code and result is much more obvious.</p>

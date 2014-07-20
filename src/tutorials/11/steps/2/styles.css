@@ -1,17 +1,16 @@
-.graphic {
+#output-block .graphic {
 	position: relative;
 	padding: 4em 0 6em 0;
 	width: 100%;
 	height: 100%;
-	
+
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
 }
 
-.header {
+#output-block .header {
 	position: absolute;
-	padding: 0.5em;
 	top: 0;
 	left: 0;
 	width: 100%;
@@ -22,15 +21,15 @@
 	box-sizing: border-box;
 }
 
-.header h3, .header p {
+#output-block .header h3, #output-block .header p {
 	margin: 0;
 }
 
-.header button {
+#output-block .header button {
 	float: right;
 }
 
-svg {
+#output-block svg {
 	width: 100%;
 	height: 100%;
 	border-top: 1px solid #eee;
@@ -41,7 +40,7 @@ svg {
 	box-sizing: border-box;
 }
 
-.detail {
+#output-block .detail {
 	position: absolute;
 	padding: 0.5em;
 	left: 0;
@@ -55,15 +54,15 @@ svg {
 	box-sizing: border-box;
 }
 
-.detail p {
+#output-block .detail p {
 	max-width: 32em;
 }
 
-.background {
+#output-block .background {
 	fill: #f9f9f9;
 }
 
-.tapcatcher {
+#output-block .tapcatcher {
 	fill: rgba(255,255,255,0.01);
 }
 
@@ -87,7 +86,7 @@ svg {
 	fill: white;
 }
 
-.visible {
+#output-block .visible {
 	opacity: 1;
 	pointer-events: normal;
 
@@ -98,10 +97,10 @@ svg {
 	transition: opacity 1s ease-in-out;
 }
 
-.hidden {
+#output-block .hidden {
 	opacity: 0;
 	pointer-events: none;
-	
+
 	-webkit-transition: opacity 0.2s ease-in-out;
 	-moz-transition: opacity 0.2s ease-in-out;
 	-ms-transition: opacity 0.2s ease-in-out;
@@ -113,7 +112,7 @@ svg {
 	cursor: pointer;
 }
 
-.detail {
+#output-block .detail {
 	-webkit-transition: opacity 1s ease-in-out;
 	-moz-transition: opacity 1s ease-in-out;
 	-ms-transition: opacity 1s ease-in-out;
@@ -121,17 +120,17 @@ svg {
 	transition: opacity 1s ease-in-out;
 }
 
-.detail.visible {
+#output-block .detail.visible {
 	opacity: 1;
 	pointer-events: normal;
 }
 
-.detail.hidden {
+#output-block .detail.hidden {
 	opacity: 0;
 	pointer-events: none;
 }
 
-.label {
+#output-block .label {
 	-webkit-transition: opacity 0.2s ease-in-out;
 	-moz-transition: opacity 0.2s ease-in-out;
 	-ms-transition: opacity 0.2s ease-in-out;
@@ -141,68 +140,68 @@ svg {
 	cursor: pointer;
 }
 
-.label-bg {
+#output-block .label-bg {
 	fill: #f9fcf6;
 }
 
-.selected .label-bg {
+#output-block .selected .label-bg {
 	fill: #729d34;
 }
 
-.label text {
+#output-block .label text {
 	font-family: 'Helvetica Neue', 'Arial';
 	font-size: 1.4em;
 	fill: #333;
 }
 
-.selected text {
+#output-block .selected text {
 	fill: white;
 }
 
-.label .small {
+#output-block .label .small {
 	font-size: 1em;
 }
 
-.label line, .label polyline, .label ellipse {
+#output-block .label line, #output-block .label polyline, #output-block .label ellipse {
 	stroke: #729d34;
 	stroke-width: 2;
 	fill: none;
 }
 
-.label path {
+#output-block .label path {
 	fill: #729d34;
 }
 
-.label line {
+#output-block .label line {
 	marker-end: url(#arrow-end);
 }
 
-.label .outline {
+#output-block .label .outline {
 	stroke: #f9f9f9;
 	stroke-width: 4;
 	marker-end: url(#arrow-end-outline);
 }
 
-.label .no-arrow {
+#output-block .label .no-arrow {
 	marker-end: none;
 }
 
-.label polyline {
+#output-block .label polyline {
 	marker-start: url(#arrow-start);
 	marker-end: url(#arrow-end);
 }
 
-.label polyline.outline {
+#output-block .label polyline.outline {
 	marker-start: url(#arrow-start-outline);
 }
 
-.label-bg {
+#output-block .label-bg {
 	fill: #f9fcf6;
 	stroke: #729d34;
 	stroke-width: 2;
 }
 
-.hint {
+#output-block .hint {
 	stroke-width: 4;
 	stroke: #333;
 	marker-end: url(#arrow-end-black);

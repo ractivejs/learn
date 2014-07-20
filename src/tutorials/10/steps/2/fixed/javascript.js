@@ -1,61 +1,29 @@
-var cities, ractive;
+getJSON( '/temperature.json' ).then( function ( cities ) {
+  ractive.set( 'cities', cities );
 
-ractive = new Ractive({
+  // when the user makes a selection from the drop-down, update the chart
+  ractive.observe( 'selectedIndex', function ( index ) {
+    this.animate( 'selectedCity', cities[ index ], {
+      easing: 'easeOut',
+      complete: function () {
+        setTimeout( function () {
+          ractive.set( 'selectedIndex', ( index + 1 ) % cities.length );
+        }, 1000 );
+      }
+    });
+  });
+});
+
+var ractive = new Ractive({
   el: output,
   template: template,
   data: {
-    scale: function ( val ) {
-      // quick and dirty...
-      return 2 * Math.abs( val );
-    },
-    format: function ( val ) {
-      // Pro-tip: we're using `this.get()` inside this function -
-      // as a result, Ractive knows that this computation depends
-      // on the value of `degreeType` as well as `val
-      if ( this.get( 'degreeType' ) === 'fahrenheit' ) {
-        // convert celsius to fahrenheit
-        val = ( val * 1.8 ) + 32;
-      }
-
-      return val.toFixed( 1 ) + '°';
-    },
-    getColor: function ( val ) {
-      // quick and dirty function to pick a colour - the higher the
-      // temperature, the warmer the colour
-      var r = Math.max( 0, Math.min( 255, Math.floor( 2.56 * ( val + 50 ) ) ) );
-      var g = 100;
-      var b = Math.max( 0, Math.min( 255, Math.floor( 2.56 * ( 50 - val ) ) ) );
-
-      return 'rgb(' + r + ',' + g + ',' + b + ')';
-    },
-    monthNames: [ 'J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D' ]
+    // For readability, these have been pre-defined.
+    // Refer to step 1 to see their implementations
+    scale: scale,
+    format: format,
+    getColor: getColor,
+    monthNames: monthNames,
+    selectedIndex: 0
   }
-});
-
-// animate to the next city, then to the next one after that, and so on...
-ractive.observe( 'selected', function ( index ) {
-  if ( index === undefined ) {
-    return;
-  }
-
-  this.animate( 'selectedCity', cities[ index ], {
-    easing: 'easeOut',
-    complete: function () {
-      setTimeout( function () {
-        ractive.set( 'selected', ( index + 1 ) % cities.length );
-      }, 2000 );
-    }
-  });
-});
-
-// load our data
-$.getJSON( '../../assets/temperature.json' ).then( function ( data ) {
-  cities = data;
-
-  ractive.set({
-    cities: cities
-  });
-
-  // kick off the loop
-  ractive.set( 'selected', 0 );
 });

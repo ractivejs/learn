@@ -11,19 +11,19 @@
     </div>
 
     <!-- dropdown menu -->
-    <select value='{{selected}}'>
-      {{#cities:i}}
-      <option value='{{i}}'>{{name}}</option>
-      {{/cities}}
+    <select value='{{selectedIndex}}'>
+      {{#each cities:i}}
+        <option value='{{i}}'>{{name}}</option>
+      {{/each}}
     </select>
   </div>
 
   <!-- the chart -->
   <div class='bar-chart'>
-    {{#selectedCity}}
+    {{#with selectedCity}}
 
       <!-- 12 sections, one for each month -->
-      {{#months:i}}
+      {{#each months:i}}
         <div class='bar-group' style='width: {{ 100 / months.length }}%;'>
 
           <!-- average high temperature -->
@@ -42,8 +42,8 @@
           <!-- month label (JFMAMJJASOND) -->
           <span class='month-label'>{{ monthNames[i] }}</span>
         </div>
-      {{/months}}
-    {{/selectedCity}}
+      {{/each}}
+    {{/with}}
 
     <!-- horizontal line representing freezing -->
     <div class='axis'></div>

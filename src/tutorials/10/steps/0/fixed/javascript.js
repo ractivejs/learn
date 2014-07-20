@@ -1,6 +1,13 @@
-var cities, ractive;
+getJSON( '/temperature.json' ).then( function ( cities ) {
+  ractive.set( 'cities', cities );
 
-ractive = new Ractive({
+  // when the user makes a selection from the drop-down, update the chart
+  ractive.observe( 'selectedIndex', function ( index ) {
+    this.animate( 'selectedCity', cities[ index ] );
+  });
+});
+
+var ractive = new Ractive({
   el: output,
   template: template,
   data: {
@@ -11,7 +18,7 @@ ractive = new Ractive({
     format: function ( val ) {
       // Pro-tip: we're using `this.get()` inside this function -
       // as a result, Ractive knows that this computation depends
-      // on the value of `degreeType` as well as `val
+      // on the value of `degreeType` as well as `val`
       if ( this.get( 'degreeType' ) === 'fahrenheit' ) {
         // convert celsius to fahrenheit
         val = ( val * 1.8 ) + 32;
@@ -30,19 +37,4 @@ ractive = new Ractive({
     },
     monthNames: [ 'J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D' ]
   }
-});
-
-// when the user makes a selection from the drop-down, update the chart
-ractive.observe( 'selected', function ( index ) {
-  this.animate( 'selectedCity', cities[ index ] );
-});
-
-// load our data
-$.getJSON( '../../assets/temperature.json' ).then( function ( data ) {
-  cities = data;
-
-  ractive.set({
-    cities: cities,
-    selectedCity: cities[0] // initialise to London
-  });
 });

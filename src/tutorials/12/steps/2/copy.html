@@ -1,7 +1,11 @@
 <p>You can pass in parameters to add fine-grained control over transitions:</p>
 
 <pre class='prettyprint lang-html'>
-&lt;div intro='fade:{duration:2000}' outro='fly' class='large button' on-tap='show:2'&gt;Click me!&lt;/div&gt;
+&lt;button intro='fade:{duration:2000}'
+        outro='fly'
+        on-tap='show:2'&gt;
+  Click me!
+&lt;/button&gt;
 </pre>
 
 <p>The transition function will receive an argument corresponding to these parameters. In this case, the default <code>duration</code> property will be overridden, so the <code>fade</code> transition will take 2000 milliseconds (more popularly known as '2 seconds').</p>
@@ -9,9 +13,13 @@
 <p>By convention, if you pass in a number, it will be treated as the duration property:</p>
 
 <pre class='prettyprint lang-html'>
-&lt;div intro='fade:2000' outro='fly' class='large button' on-tap='show:2'&gt;Click me!&lt;/div&gt;
+&lt;button intro='fade:2000'
+        outro='fly'
+        on-tap='show:2'&gt;
+  Click me!
+&lt;/button&gt;
 </pre>
 
 <p>In place of a number, you can use <code>fast</code> (200 milliseconds) or <code>slow</code> (600 milliseconds), just like jQuery.</p>
 
-<p>The parameters available to you depend on the transition. <a href='https://github.com/RactiveJS/Ractive/wiki/Plugins'>Visit the plugins page</a> to see which transitions are available and to create your own.</p>
+<p>The parameters available to you depend on the transition. <a href='http://docs.ractivejs.org/latest/plugins#transitions'>Visit the plugins page</a> to see which transitions are available or <a href='http://docs.ractivejs.org/latest/writing-transition-plugins'>read the docs</a> to create your own.</p>

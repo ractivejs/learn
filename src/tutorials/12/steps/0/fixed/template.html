@@ -1,11 +1,11 @@
-{{# visible === 1 }}
-  <div intro='fade' class='large button' on-tap='show:2'>Click me!</div>
-{{/ 1 }}
+{{#if visible === 1 }}
+  <button intro='fade' on-tap='show:2'>Click me!</button>
+{{/if}}
 
-{{# visible === 2 }}
-  <div intro='slide' class='large button' on-tap='show:3'>And me!</div>
-{{/ 2 }}
+{{#if visible === 2 }}
+  <button intro='slide' on-tap='show:3'>And me!</button>
+{{/if}}
 
-{{# visible === 3 }}
-  <div intro='fly' class='large button' on-tap='show:1'>Now click me!</div>
-{{/ 3 }}
+{{#if visible === 3 }}
+  <button intro='fly' on-tap='show:1'>Now click me!</button>
+{{/if}}

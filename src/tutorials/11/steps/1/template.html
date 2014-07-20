@@ -3,7 +3,7 @@
   <!-- header and options -->
   <div class='header'>
     <h2>Average high and low temperature</h2>
-    
+
     <!-- switch between celsius and fahrenheit -->
     <div class='radio-group'>
       <label>°C <input type='radio' name='{{degreeType}}' value='celsius' checked></label>
@@ -11,17 +11,17 @@
     </div>
 
     <!-- dropdown menu -->
-    <select value='{{selected}}'>
-      {{#cities:i}}
-      <option value='{{i}}'>{{name}}</option>
-      {{/cities}}
+    <select value='{{selectedIndex}}'>
+      {{#each cities:i}}
+        <option value='{{i}}'>{{name}}</option>
+      {{/each}}
     </select>
   </div>
 
   <!-- the chart -->
   <div class='bar-chart'>
-    <div id='svg_wrapper'> <!-- needed to determine size of SVG element in Firefox -->
-      <svg id='svg'>
+    <div class='svg-wrapper'> <!-- needed to determine size of SVG element in Firefox -->
+      <svg>
 
         <!-- gradient - higher temperatures are redder, lower temperatures are bluer -->
         <defs>
@@ -34,32 +34,32 @@
         <!-- horizontal line representing freezing -->
         <line class='freezing' x1='0' y1='{{ yScale(0) }}' x2='{{width}}' y2='{{ yScale(0) }}'/>
 
-        {{#selectedCity}}
-          
-          <!-- the band -->
-          <polygon fill='url(#gradient)' stroke='url(#gradient)' class='temperature-band' points='{{ getBand(months,xScale,yScale) }}'/>
+        {{#with selectedCity}}
 
-          {{#months:i}}
+          <!-- the band -->
+          <polygon fill='url(#gradient)' stroke='url(#gradient)' class='temperature-band' points='{{svgPath}}'/>
+
+          {{#each months:i}}
             <!-- point markers for average highs -->
             <g class='marker' transform='translate({{ xScale(i+0.5) }},{{ yScale(high) }})'>
               <circle r='2'/>
-              <text y='-10'>{{ format(high,degreeType) }}</text>
+              <text y='-10'>{{ format(high) }}</text>
             </g>
 
             <!-- point markers for average lows -->
             <g class='marker' transform='translate({{ xScale(i+0.5) }},{{ yScale(low) }})'>
               <circle r='2'/>
-              <text y='15'>{{ format(low,degreeType) }}</text>
+              <text y='15'>{{ format(low) }}</text>
             </g>
-          {{/months}}
-        {{/selectedCity}}
+          {{/each}}
+        {{/with}}
       </svg>
     </div>
 
     <div class='month-labels'>
-      {{#monthNames:i}}
-      <span style='width: {{ 100 / monthNames.length }}%;'>{{ monthNames[i] }}</span>
-      {{/monthNames}}
+      {{#each monthNames:i}}
+        <span style='width: {{ 100 / monthNames.length }}%;'>{{this}}</span>
+      {{/each}}
     </div>
   </div>
 </div>

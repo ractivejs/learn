@@ -1,9 +1,13 @@
-svg {
+#output-block h2 {
+	margin: 0 0 0.5em 0;
+}
+
+#output-block svg {
 	width: 100%;
 	height: 100%;
 }
 
-.temperatures {
+#output-block .temperatures {
 	position: relative;
 	width: 100%;
 	height: 100%;
@@ -14,7 +18,7 @@ svg {
 }
 
 
-.header {
+#output-block .header {
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -22,19 +26,19 @@ svg {
 	height: 2em;
 }
 
-.radio-group {
+#output-block .radio-group {
 	display: inline-block;
 	float: right;
 	text-align: right;
 	padding: 0.5em 0 0 0;
 }
 
-.header h2 {
+#output-block .header h2 {
 	float: left;
 	margin: 0;
 }
 
-.header select {
+#output-block .header select {
 	position: relative;
 	top: 0.1em;
 	float: left;
@@ -44,18 +48,18 @@ svg {
 	z-index: 7;
 }
 
-.header label {
+#output-block .header label {
 	position: relative;
 	z-index: 7;
 }
 
-.header p {
+#output-block .header p {
 	float: left;
 	clear: left;
 	margin: 0;
 }
 
-.bar-chart {
+#output-block .bar-chart {
 	position: relative;
 	padding: 0 0 3em 0;
 	width: 100%;
@@ -65,21 +69,21 @@ svg {
 	box-sizing: border-box;
 }
 
-.bar-group {
+#output-block .bar-group {
 	position: relative;
 	float: left;
 	height: 100%;
 	text-align: center;
 }
 
-.month-label {
+#output-block .month-label {
 	position: absolute;
 	bottom: -2em;
 	left: 0;
 	width: 100%;
 }
 
-.bar-outer {
+#output-block .bar-outer {
 	position: absolute;
 	width: 100%;
 	padding: 0 1px;
@@ -88,11 +92,11 @@ svg {
 	box-sizing: border-box;
 }
 
-.bar-outer.positive {
+#output-block .bar-outer.positive {
 	bottom: 20%;
 }
 
-.bar-outer.positive .bar-inner {
+#output-block .bar-outer.positive .bar-inner {
 	bottom: 0;
 	border-top: 1px solid #333;
 	border-left: 1px solid #333;
@@ -100,11 +104,11 @@ svg {
 	border-radius: 2px 2px 0 0;
 }
 
-.bar-outer.negative {
+#output-block .bar-outer.negative {
 	top: 80%;
 }
 
-.bar-outer.negative .bar-inner {
+#output-block .bar-outer.negative .bar-inner {
 	top: 0;
 	border-bottom: 1px solid #333;
 	border-left: 1px solid #333;
@@ -112,11 +116,11 @@ svg {
 	border-radius: 0 0 2px 2px;
 }
 
-.bar-outer.high.negative {
+#output-block .bar-outer.high.negative {
 	z-index: 6;
 }
 
-.bar-inner {
+#output-block .bar-inner {
 	position: relative;
 	width: 100%;
 	height: 100%;
@@ -125,29 +129,29 @@ svg {
 	box-sizing: border-box;
 }
 
-.high.positive span {
+#output-block .high.positive span {
 	top: -0.6em;
 	font-weight: bold;
 }
 
-.low.positive span {
+#output-block .low.positive span {
 	top: 0.8em;
 	color: white;
 	text-shadow: 0 0 3px rgba(0,0,0,1), 0 0 3px rgba(0,0,0,1), 0 0 3px rgba(0,0,0,1);
 }
 
-.high.negative span {
+#output-block .high.negative span {
 	bottom: 0.8em;
 	color: white;
 	text-shadow: 0 0 3px rgba(0,0,0,1), 0 0 3px rgba(0,0,0,1), 0 0 3px rgba(0,0,0,1);
 }
 
-.low.negative span {
+#output-block .low.negative span {
 	bottom: -0.6em;
 	font-weight: bold;
 }
 
-.bar-chart span {
+#output-block .bar-chart span {
 	position: absolute;
 	width: 100%;
 	left: 0;
@@ -157,7 +161,7 @@ svg {
 	z-index: 6;
 }
 
-.axis {
+#output-block .axis {
 	position: relative;
 	width: 100%;
 	height: 0;

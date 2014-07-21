@@ -139,6 +139,12 @@
 	require( 'ractive-transitions-fly' );
 	require( 'ractive-transitions-slide' );
 
+	if ( !String.prototype.trim ) {
+		String.prototype.trim = function () {
+			return this.replace( /^\s+/, '' ).replace( /\s+$/, '' );
+		};
+	}
+
 	_Ractive = Ractive;
 
 	FakeRactive = function () {
@@ -380,14 +386,18 @@
 					// to bork things up a bit
 					forceRedraw();
 
+					if ( !step ) {
+						return;
+					}
+
 					this.set({
 						// whenever this changes, shut the nav
 						navOpen: false,
 
 						// clone step data
-						copy: step.copy.trim(),
-						template: step.template.trim(),
-						javascript: step.javascript.trim(),
+						copy: ( step.copy || '' ).trim(),
+						template: ( step.template || '' ).trim(),
+						javascript: ( step.javascript || '' ).trim(),
 						styles: step.styles
 					});
 

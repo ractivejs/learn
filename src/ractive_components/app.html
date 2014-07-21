@@ -522,6 +522,10 @@
 			next: function () {
 				var step = this.get( 'currentStep' ), tutorial;
 
+				if ( !step ) {
+					return null;
+				}
+
 				if ( step.index >= step.numSiblings - 1 ) {
 					// next tutorial
 					tutorial = this.get( 'manifest' )[ step.tutorialIndex + 1 ];

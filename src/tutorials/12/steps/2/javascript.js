@@ -6,8 +6,8 @@ var ractive = new Ractive({
 
 ractive.on({
   show: function ( event, which ) {
-    this.set( 'visible', null, function () {
-      this.set( 'visible', which );
+    ractive.set( 'visible', null ).then( function () {
+      ractive.set( 'visible', which );
     });
   }
 });

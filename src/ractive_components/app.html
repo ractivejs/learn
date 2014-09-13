@@ -14,9 +14,6 @@
 				{ size: 55, children: [{ id: "template", size: 3 }, { id: "javascript", size: 5 }] }
 			]'
 			on-resize='resize'
-			on-enter='enter'
-			on-execute='execute'
-			on-selectCode='selectCode'
 		>
 			<!-- copy -->
 			<div id='copy-block' on-tap='selectCode'>
@@ -33,12 +30,12 @@
 
 			<!-- template -->
 			<div id='template' class='block {{templateError?"error":""}}'>
-				<codemirror on-enter='enter' mode='ractive' value='{{template}}' height='100%'/>
+				<codemirror mode='ractive' value='{{template}}' height='100%'/>
 			</div>
 
 			<!-- js -->
 			<div id='javascript' class='block {{codeError?"error":""}}'>
-				<codemirror on-enter='enter' mode='javascript' value='{{javascript}}' height='100%'/>
+				<codemirror mode='javascript' value='{{javascript}}' height='100%'/>
 
 				<button class='execute' on-tap='execute'>Execute (Shift-Enter)</button>
 			</div>
@@ -296,7 +293,7 @@
 				resize: function () {
 					resizeHandlers.forEach( call );
 				},
-				enter: event => {
+				'codemirror.enter': event => {
 					if ( event.original.shiftKey ) {
 						event.original.preventDefault();
 						execute();

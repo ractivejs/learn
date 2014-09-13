@@ -11,7 +11,7 @@
     "google-code-prettify": "^1.0.1"
   },
   "resolutions": {
-    "ractive": "^0.5.5"
+    "ractive": "~0.5.7"
   },
   "devDependencies": {
     "ractive-events-tap": "~0.1.1"

@@ -28,9 +28,7 @@
 			</div>
 
 			<!-- output -->
-			{{#if styles}}
-				<style type='text/css'>{{styles}}</style>
-			{{/if}}
+			<style id='output-styles' type='text/css'></style>
 			<div id='output-block'></div>
 
 			<!-- template -->
@@ -213,6 +211,7 @@
 				redrawTimeout,
 				copyBlock,
 				outputBlock,
+				outputStyles,
 				templateEditor,
 				codeEditor,
 				interactives,
@@ -238,6 +237,7 @@
 
 			copyBlock = this.find( '#copy-block' );
 			outputBlock = window.output = this.find( '#output-block' );
+			outputStyles = this.find( '#output-styles' );
 
 			interactiveHelper = this.find( '.interactive-helper' );
 			interactiveHelper.parentNode.removeChild( interactiveHelper );
@@ -393,9 +393,10 @@
 						// clone step data
 						copy: ( step.copy || '' ).trim(),
 						template: ( step.template || '' ).trim(),
-						javascript: ( step.javascript || '' ).trim(),
-						styles: step.styles
+						javascript: ( step.javascript || '' ).trim()
 					});
+
+					outputStyles.innerHTML = step.styles || '';
 
 					copyBlock.scrollTop = 0;
 

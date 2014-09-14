@@ -1,11 +1,11 @@
 import Ractive from 'ractive';
-import get from 'utils/get';
+import getUrl from 'utils/get';
 import slugify from 'utils/slugify';
+import baseUrl from 'baseUrl';
 
-var promises, baseUrl, data, step, indexByTitle = {}, queue = [];
+var promises, data, step, indexByTitle = {}, queue = [];
 
 promises = {};
-baseUrl = window.location.origin;
 
 // we already have some data...
 data = window.TUTORIAL_DATA;
@@ -38,7 +38,7 @@ function fetch ( title, number ) {
 	url = `${baseUrl}/${title}/${number}/index.json`;
 
 	if ( !promises[ url ] ) {
-		promise = promises[ url ] = get( url ).then( function ( json ) {
+		promise = promises[ url ] = getUrl( url ).then( function ( json ) {
 			return JSON.parse( json );
 		});
 

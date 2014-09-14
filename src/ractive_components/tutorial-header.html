@@ -6,7 +6,7 @@
 			{{#each siblingProxies :i}}
 				<a
 					class='step-number {{i === step.index ? "selected" : "" }}'
-					href='/{{slugify(step.tutorialTitle)}}/{{i+1}}'
+					href='{{baseUrl}}/{{slugify(step.tutorialTitle)}}/{{i+1}}'
 					on-tap='ripple'>
 					<span>{{i+1}}</span>
 				</a>
@@ -120,6 +120,7 @@
 		},
 
 		data: {
+			baseUrl: require( 'baseUrl' ),
 			slugify: require( 'utils/slugify' )
 		}
 	};

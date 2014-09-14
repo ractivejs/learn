@@ -1,6 +1,7 @@
 import AppView from 'ractive_components/app';
 import getStep from 'getStep';
 import handleError from 'utils/handleError';
+import baseUrl from 'baseUrl';
 
 var view, data;
 
@@ -20,7 +21,7 @@ view.on({
 
 		getStep( tutorialTitle, stepNumber ).then( function ( step ) {
 			view.set( 'currentStep', step );
-			window.history.pushState( step, null, '/' + tutorialTitle + '/' + stepNumber );
+			window.history.pushState( step, null, `${baseUrl}/${tutorialTitle}/${stepNumber}` );
 		}).catch( handleError );
 	}
 });

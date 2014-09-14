@@ -1,4 +1,4 @@
-export default function ( fn, options ) {
+export default function throttle ( fn, options ) {
 	var nextAllowed, scheduled;
 
 	if ( typeof options !== 'object' ) {

@@ -455,7 +455,7 @@
 			function execute () {
 				var setup, code, line, pattern = /^(.+? at line (\d+) character (\d+))/, match, node;
 
-				if ( setup = self.get( 'setup' ) ) {
+				if ( setup = self.get( 'currentStep.setup' ) ) {
 					globalEval( setup );
 				}
 

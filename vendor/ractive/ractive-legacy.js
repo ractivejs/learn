@@ -9840,7 +9840,6 @@
 				this.custom = definition( this.node, getCustomHandler( name ) );
 			} else {
 				// Looks like we're dealing with a standard DOM event... but let's check
-				console.log( 'checking for event ' + name );
 				if ( !( 'on' + name in this.node ) && !( window && 'on' + name in window ) ) {
 					log.error( {
 						debug: this.root.debug,

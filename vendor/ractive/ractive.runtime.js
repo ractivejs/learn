@@ -1,6 +1,6 @@
 /*
-	ractive.runtime.js v0.5.7
-	2014-09-11 - commit 8d64b14a 
+	ractive.runtime.js v0.5.8
+	2014-09-18 - commit 2e726021 
 
 	http://ractivejs.org
 	http://twitter.com/RactiveJS
@@ -3456,7 +3456,7 @@
 	/* virtualdom/Fragment/prototype/bubble.js */
 	var virtualdom_Fragment$bubble = function Fragment$bubble() {
 		this.dirtyValue = this.dirtyArgs = true;
-		if ( this.inited && typeof this.owner.bubble === 'function' ) {
+		if ( this.bound && typeof this.owner.bubble === 'function' ) {
 			this.owner.bubble();
 		}
 	};
@@ -4349,10 +4349,17 @@
 		};
 		ParseError.prototype = Error.prototype;
 		Parser = function( str, options ) {
-			var items, item;
+			var items, item, lineStart = 0;
 			this.str = str;
 			this.options = options || {};
 			this.pos = 0;
+			this.lines = this.str.split( '\n' );
+			this.lineEnds = this.lines.map( function( line ) {
+				var lineEnd = lineStart + line.length + 1;
+				// +1 for the newline
+				lineStart = lineEnd;
+				return lineEnd;
+			}, 0 );
 			// Custom init logic
 			if ( this.init )
 				this.init( str, options );
@@ -4389,41 +4396,30 @@
 				return getConditional( this );
 			},
 			flattenExpression: flattenExpression,
-			getLinePos: function() {
-				var lines, currentLine, currentLineEnd, nextLineEnd, lineNum, charNum, annotation;
-				lines = this.str.split( '\n' );
-				lineNum = 0;
-				nextLineEnd = 0;
-				do {
-					currentLineEnd = nextLineEnd;
-					lineNum++;
-					currentLine = lines[ lineNum - 1 ];
-					nextLineEnd += currentLine.length + 1;
-				} while ( nextLineEnd <= this.pos );
-				charNum = this.pos - currentLineEnd + 1;
-				annotation = currentLine + '\n' + new Array( charNum ).join( ' ' ) + '^----';
-				return {
-					line: lineNum,
-					ch: charNum,
-					text: currentLine,
-					annotation: annotation,
-					toJSON: function() {
-						return [
-							lineNum,
-							charNum
-						];
-					},
-					toString: function() {
-						return 'line ' + lineNum + ( ' character ' + charNum ) + '';
-					}
-				};
+			getLinePos: function( char ) {
+				var lineNum = 0,
+					lineStart = 0,
+					columnNum;
+				while ( char >= this.lineEnds[ lineNum ] ) {
+					lineStart = this.lineEnds[ lineNum ];
+					lineNum += 1;
+				}
+				columnNum = char - lineStart;
+				return [
+					lineNum + 1,
+					columnNum + 1
+				];
 			},
 			error: function( message ) {
-				var pos, error;
-				pos = this.getLinePos();
-				error = new ParseError( message + ' at ' + pos + ':\n' + pos.annotation );
-				error.line = pos.line;
-				error.character = pos.ch;
+				var pos, lineNum, columnNum, line, annotation, error;
+				pos = this.getLinePos( this.pos );
+				lineNum = pos[ 0 ];
+				columnNum = pos[ 1 ];
+				line = this.lines[ pos[ 0 ] - 1 ];
+				annotation = line + '\n' + new Array( pos[ 1 ] ).join( ' ' ) + '^----';
+				error = new ParseError( message + ' at line ' + lineNum + ' character ' + columnNum + ':\n' + annotation );
+				error.line = pos[ 0 ];
+				error.character = pos[ 1 ];
 				error.shortMessage = message;
 				throw error;
 			},
@@ -4703,8 +4699,359 @@
 		};
 	}( detachNode );
 
+	/* shared/decodeCharacterReferences.js */
+	var decodeCharacterReferences = function() {
+
+		var __export;
+		var htmlEntities, controlCharacters, entityPattern;
+		htmlEntities = {
+			quot: 34,
+			amp: 38,
+			apos: 39,
+			lt: 60,
+			gt: 62,
+			nbsp: 160,
+			iexcl: 161,
+			cent: 162,
+			pound: 163,
+			curren: 164,
+			yen: 165,
+			brvbar: 166,
+			sect: 167,
+			uml: 168,
+			copy: 169,
+			ordf: 170,
+			laquo: 171,
+			not: 172,
+			shy: 173,
+			reg: 174,
+			macr: 175,
+			deg: 176,
+			plusmn: 177,
+			sup2: 178,
+			sup3: 179,
+			acute: 180,
+			micro: 181,
+			para: 182,
+			middot: 183,
+			cedil: 184,
+			sup1: 185,
+			ordm: 186,
+			raquo: 187,
+			frac14: 188,
+			frac12: 189,
+			frac34: 190,
+			iquest: 191,
+			Agrave: 192,
+			Aacute: 193,
+			Acirc: 194,
+			Atilde: 195,
+			Auml: 196,
+			Aring: 197,
+			AElig: 198,
+			Ccedil: 199,
+			Egrave: 200,
+			Eacute: 201,
+			Ecirc: 202,
+			Euml: 203,
+			Igrave: 204,
+			Iacute: 205,
+			Icirc: 206,
+			Iuml: 207,
+			ETH: 208,
+			Ntilde: 209,
+			Ograve: 210,
+			Oacute: 211,
+			Ocirc: 212,
+			Otilde: 213,
+			Ouml: 214,
+			times: 215,
+			Oslash: 216,
+			Ugrave: 217,
+			Uacute: 218,
+			Ucirc: 219,
+			Uuml: 220,
+			Yacute: 221,
+			THORN: 222,
+			szlig: 223,
+			agrave: 224,
+			aacute: 225,
+			acirc: 226,
+			atilde: 227,
+			auml: 228,
+			aring: 229,
+			aelig: 230,
+			ccedil: 231,
+			egrave: 232,
+			eacute: 233,
+			ecirc: 234,
+			euml: 235,
+			igrave: 236,
+			iacute: 237,
+			icirc: 238,
+			iuml: 239,
+			eth: 240,
+			ntilde: 241,
+			ograve: 242,
+			oacute: 243,
+			ocirc: 244,
+			otilde: 245,
+			ouml: 246,
+			divide: 247,
+			oslash: 248,
+			ugrave: 249,
+			uacute: 250,
+			ucirc: 251,
+			uuml: 252,
+			yacute: 253,
+			thorn: 254,
+			yuml: 255,
+			OElig: 338,
+			oelig: 339,
+			Scaron: 352,
+			scaron: 353,
+			Yuml: 376,
+			fnof: 402,
+			circ: 710,
+			tilde: 732,
+			Alpha: 913,
+			Beta: 914,
+			Gamma: 915,
+			Delta: 916,
+			Epsilon: 917,
+			Zeta: 918,
+			Eta: 919,
+			Theta: 920,
+			Iota: 921,
+			Kappa: 922,
+			Lambda: 923,
+			Mu: 924,
+			Nu: 925,
+			Xi: 926,
+			Omicron: 927,
+			Pi: 928,
+			Rho: 929,
+			Sigma: 931,
+			Tau: 932,
+			Upsilon: 933,
+			Phi: 934,
+			Chi: 935,
+			Psi: 936,
+			Omega: 937,
+			alpha: 945,
+			beta: 946,
+			gamma: 947,
+			delta: 948,
+			epsilon: 949,
+			zeta: 950,
+			eta: 951,
+			theta: 952,
+			iota: 953,
+			kappa: 954,
+			lambda: 955,
+			mu: 956,
+			nu: 957,
+			xi: 958,
+			omicron: 959,
+			pi: 960,
+			rho: 961,
+			sigmaf: 962,
+			sigma: 963,
+			tau: 964,
+			upsilon: 965,
+			phi: 966,
+			chi: 967,
+			psi: 968,
+			omega: 969,
+			thetasym: 977,
+			upsih: 978,
+			piv: 982,
+			ensp: 8194,
+			emsp: 8195,
+			thinsp: 8201,
+			zwnj: 8204,
+			zwj: 8205,
+			lrm: 8206,
+			rlm: 8207,
+			ndash: 8211,
+			mdash: 8212,
+			lsquo: 8216,
+			rsquo: 8217,
+			sbquo: 8218,
+			ldquo: 8220,
+			rdquo: 8221,
+			bdquo: 8222,
+			dagger: 8224,
+			Dagger: 8225,
+			bull: 8226,
+			hellip: 8230,
+			permil: 8240,
+			prime: 8242,
+			Prime: 8243,
+			lsaquo: 8249,
+			rsaquo: 8250,
+			oline: 8254,
+			frasl: 8260,
+			euro: 8364,
+			image: 8465,
+			weierp: 8472,
+			real: 8476,
+			trade: 8482,
+			alefsym: 8501,
+			larr: 8592,
+			uarr: 8593,
+			rarr: 8594,
+			darr: 8595,
+			harr: 8596,
+			crarr: 8629,
+			lArr: 8656,
+			uArr: 8657,
+			rArr: 8658,
+			dArr: 8659,
+			hArr: 8660,
+			forall: 8704,
+			part: 8706,
+			exist: 8707,
+			empty: 8709,
+			nabla: 8711,
+			isin: 8712,
+			notin: 8713,
+			ni: 8715,
+			prod: 8719,
+			sum: 8721,
+			minus: 8722,
+			lowast: 8727,
+			radic: 8730,
+			prop: 8733,
+			infin: 8734,
+			ang: 8736,
+			and: 8743,
+			or: 8744,
+			cap: 8745,
+			cup: 8746,
+			'int': 8747,
+			there4: 8756,
+			sim: 8764,
+			cong: 8773,
+			asymp: 8776,
+			ne: 8800,
+			equiv: 8801,
+			le: 8804,
+			ge: 8805,
+			sub: 8834,
+			sup: 8835,
+			nsub: 8836,
+			sube: 8838,
+			supe: 8839,
+			oplus: 8853,
+			otimes: 8855,
+			perp: 8869,
+			sdot: 8901,
+			lceil: 8968,
+			rceil: 8969,
+			lfloor: 8970,
+			rfloor: 8971,
+			lang: 9001,
+			rang: 9002,
+			loz: 9674,
+			spades: 9824,
+			clubs: 9827,
+			hearts: 9829,
+			diams: 9830
+		};
+		controlCharacters = [
+			8364,
+			129,
+			8218,
+			402,
+			8222,
+			8230,
+			8224,
+			8225,
+			710,
+			8240,
+			352,
+			8249,
+			338,
+			141,
+			381,
+			143,
+			144,
+			8216,
+			8217,
+			8220,
+			8221,
+			8226,
+			8211,
+			8212,
+			732,
+			8482,
+			353,
+			8250,
+			339,
+			157,
+			382,
+			376
+		];
+		entityPattern = new RegExp( '&(#?(?:x[\\w\\d]+|\\d+|' + Object.keys( htmlEntities ).join( '|' ) + '));?', 'g' );
+		__export = function decodeCharacterReferences( html ) {
+			return html.replace( entityPattern, function( match, entity ) {
+				var code;
+				// Handle named entities
+				if ( entity[ 0 ] !== '#' ) {
+					code = htmlEntities[ entity ];
+				} else if ( entity[ 1 ] === 'x' ) {
+					code = parseInt( entity.substring( 2 ), 16 );
+				} else {
+					code = parseInt( entity.substring( 1 ), 10 );
+				}
+				if ( !code ) {
+					return match;
+				}
+				return String.fromCharCode( validateCode( code ) );
+			} );
+		};
+		// some code points are verboten. If we were inserting HTML, the browser would replace the illegal
+		// code points with alternatives in some cases - since we're bypassing that mechanism, we need
+		// to replace them ourselves
+		//
+		// Source: http://en.wikipedia.org/wiki/Character_encodings_in_HTML#Illegal_characters
+		function validateCode( code ) {
+			if ( !code ) {
+				return 65533;
+			}
+			// line feed becomes generic whitespace
+			if ( code === 10 ) {
+				return 32;
+			}
+			// ASCII range. (Why someone would use HTML entities for ASCII characters I don't know, but...)
+			if ( code < 128 ) {
+				return code;
+			}
+			// code points 128-159 are dealt with leniently by browsers, but they're incorrect. We need
+			// to correct the mistake or we'll end up with missing € signs and so on
+			if ( code <= 159 ) {
+				return controlCharacters[ code - 128 ];
+			}
+			// basic multilingual plane
+			if ( code < 55296 ) {
+				return code;
+			}
+			// UTF-16 surrogate halves
+			if ( code <= 57343 ) {
+				return 65533;
+			}
+			// rest of the basic multilingual plane
+			if ( code <= 65535 ) {
+				return code;
+			}
+			return 65533;
+		}
+		return __export;
+	}( legacy );
+
 	/* virtualdom/items/Text.js */
-	var Text = function( types, escapeHtml, detach ) {
+	var Text = function( types, escapeHtml, detach, decodeCharacterReferences ) {
 
 		var Text = function( options ) {
 			this.type = types.TEXT;
@@ -4717,7 +5064,7 @@
 			},
 			render: function() {
 				if ( !this.node ) {
-					this.node = document.createTextNode( this.text );
+					this.node = document.createTextNode( decodeCharacterReferences( this.text ) );
 				}
 				return this.node;
 			},
@@ -4731,7 +5078,7 @@
 			}
 		};
 		return Text;
-	}( types, escapeHtml, detach );
+	}( types, escapeHtml, detach, decodeCharacterReferences );
 
 	/* virtualdom/items/shared/unbind.js */
 	var unbind = function( runloop ) {
@@ -5039,6 +5386,12 @@
 				if ( keypath = resolveRef( ractive, reference, parentFragment ) ) {
 					args[ i ] = {
 						keypath: keypath
+					};
+					return;
+				} else if ( reference === '.' ) {
+					// special case of context reference to root
+					args[ i ] = {
+						'': ''
 					};
 					return;
 				}
@@ -6166,7 +6519,8 @@
 		__export = function( html, node, docFrag ) {
 			var container, nodes = [],
 				wrapper, selectedOption, child, i;
-			if ( html ) {
+			// render 0 and false
+			if ( html != null && html !== '' ) {
 				if ( ieBug && ( wrapper = ieBlacklist[ node.tagName ] ) ) {
 					container = element( 'DIV' );
 					container.innerHTML = wrapper[ 0 ] + html + wrapper[ 1 ];
@@ -6285,9 +6639,12 @@
 	}( runloop );
 
 	/* virtualdom/items/Triple/prototype/toString.js */
-	var virtualdom_items_Triple$toString = function Triple$toString() {
-		return this.value != undefined ? this.value : '';
-	};
+	var virtualdom_items_Triple$toString = function( decodeCharacterReferences ) {
+
+		return function Triple$toString() {
+			return this.value != undefined ? decodeCharacterReferences( '' + this.value ) : '';
+		};
+	}( decodeCharacterReferences );
 
 	/* virtualdom/items/Triple/prototype/unrender.js */
 	var virtualdom_items_Triple$unrender = function( detachNode ) {
@@ -6899,10 +7256,10 @@
 	var virtualdom_items_Element_Attribute$update = function( namespaces, noop, updateSelectValue, updateMultipleSelectValue, updateRadioName, updateRadioValue, updateCheckboxName, updateClassName, updateIdAttribute, updateIEStyleAttribute, updateContentEditableValue, updateValue, updateBoolean, updateEverythingElse ) {
 
 		return function Attribute$update() {
-			var name, element, node, type, updateMethod;
-			name = this.name;
-			element = this.element;
-			node = this.node;
+			var name = ( node = this ).name,
+				element = node.element,
+				node = node.node,
+				type, updateMethod;
 			if ( name === 'id' ) {
 				updateMethod = updateIdAttribute;
 			} else if ( name === 'value' ) {
@@ -9469,30 +9826,20 @@
 	};
 
 	/* virtualdom/items/Partial/_Partial.js */
-	var Partial = function( types, getPartialDescriptor, applyIndent, circular ) {
+	var Partial = function( types, getPartialDescriptor, applyIndent, circular, runloop, Mustache, config, parser ) {
 
 		var Partial, Fragment;
 		circular.push( function() {
 			Fragment = circular.Fragment;
 		} );
 		Partial = function( options ) {
-			var parentFragment = this.parentFragment = options.parentFragment,
-				template;
+			var parentFragment = this.parentFragment = options.parentFragment;
 			this.type = types.PARTIAL;
 			this.name = options.template.r;
 			this.index = options.index;
 			this.root = parentFragment.root;
-			if ( !options.template.r ) {
-				// TODO support dynamic partial switching
-				throw new Error( 'Partials must have a static reference (no expressions). This may change in a future version of Ractive.' );
-			}
-			template = getPartialDescriptor( parentFragment.root, options.template.r );
-			this.fragment = new Fragment( {
-				template: template,
-				root: parentFragment.root,
-				owner: this,
-				pElement: parentFragment.pElement
-			} );
+			Mustache.init( this, options );
+			this.update();
 		};
 		Partial.prototype = {
 			bubble: function() {
@@ -9508,16 +9855,23 @@
 				return this.fragment.detach();
 			},
 			render: function() {
+				this.update();
+				this.rendered = true;
 				return this.fragment.render();
 			},
 			unrender: function( shouldDestroy ) {
-				this.fragment.unrender( shouldDestroy );
+				if ( this.rendered ) {
+					this.fragment.unrender( shouldDestroy );
+					this.rendered = false;
+				}
 			},
 			rebind: function( indexRef, newIndex, oldKeypath, newKeypath ) {
 				return this.fragment.rebind( indexRef, newIndex, oldKeypath, newKeypath );
 			},
 			unbind: function() {
-				this.fragment.unbind();
+				if ( this.fragment ) {
+					this.fragment.unbind();
+				}
 			},
 			toString: function( toString ) {
 				var string, previousItem, lastLine, match;
@@ -9546,10 +9900,52 @@
 			},
 			getValue: function() {
 				return this.fragment.getValue();
+			},
+			resolve: Mustache.resolve,
+			setValue: function( value ) {
+				if ( this.value !== value ) {
+					if ( this.fragment && this.rendered ) {
+						this.fragment.unrender( true );
+					}
+					this.fragment = null;
+					this.value = value;
+					if ( this.rendered ) {
+						runloop.addView( this );
+					} else {
+						this.update();
+						this.bubble();
+					}
+				}
+			},
+			update: function() {
+				var template, docFrag, target, anchor;
+				if ( !this.fragment ) {
+					if ( this.name && ( config.registries.partials.findInstance( this.root, this.name ) || parser.fromId( this.name, {
+						noThrow: true
+					} ) ) ) {
+						template = getPartialDescriptor( this.root, this.name );
+					} else if ( this.value ) {
+						template = getPartialDescriptor( this.root, this.value );
+					} else {
+						template = [];
+					}
+					this.fragment = new Fragment( {
+						template: template,
+						root: this.root,
+						owner: this,
+						pElement: this.parentFragment.pElement
+					} );
+					if ( this.rendered ) {
+						target = this.parentFragment.getNode();
+						docFrag = this.fragment.render();
+						anchor = this.parentFragment.findNextNode( this );
+						target.insertBefore( docFrag, anchor );
+					}
+				}
 			}
 		};
 		return Partial;
-	}( types, getPartialDescriptor, applyIndent, circular );
+	}( types, getPartialDescriptor, applyIndent, circular, runloop, Mustache, config, parser );
 
 	/* virtualdom/items/Component/getComponent.js */
 	var getComponent = function( config, log, circular ) {
@@ -10023,9 +10419,7 @@
 	var virtualdom_items_Component$unrender = function( fireEvent ) {
 
 		return function Component$unrender( shouldDestroy ) {
-			fireEvent( this.instance, 'teardown', {
-				reserved: true
-			} );
+			fireEvent( this.instance, 'teardown' );
 			this.shouldDestroy = shouldDestroy;
 			this.instance.unrender();
 		};
@@ -10241,7 +10635,7 @@
 			} );
 			this.value = this.argsList = null;
 			this.dirtyArgs = this.dirtyValue = true;
-			this.inited = true;
+			this.bound = true;
 		};
 	}( types, create, virtualdom_Fragment$init_createItem );
 
@@ -10292,7 +10686,11 @@
 
 		var __export;
 		__export = function Fragment$unbind() {
+			if ( !this.bound ) {
+				return;
+			}
 			this.items.forEach( unbindItem );
+			this.bound = false;
 		};
 
 		function unbindItem( item ) {
@@ -10311,6 +10709,7 @@
 		this.items.forEach( function( i ) {
 			return i.unrender( shouldDestroy );
 		} );
+		this.rendered = false;
 	};
 
 	/* virtualdom/Fragment.js */
@@ -10533,6 +10932,7 @@
 			if ( this.rendered && this.el.__ractive_instances__ ) {
 				removeFromArray( this.el.__ractive_instances__, this );
 			}
+			this.shouldDestroy = true;
 			promise = this.rendered ? this.unrender() : Promise.resolve();
 			if ( callback ) {
 				// TODO deprecate this?
@@ -10567,19 +10967,22 @@
 	};
 
 	/* Ractive/prototype/unrender.js */
-	var Ractive$unrender = function( removeFromArray, runloop, css ) {
+	var Ractive$unrender = function( removeFromArray, runloop, css, log, Promise ) {
 
 		return function Ractive$unrender() {
 			var this$0 = this;
 			var promise, shouldDestroy;
 			if ( !this.rendered ) {
-				throw new Error( 'ractive.unrender() was called on a Ractive instance that was not rendered' );
+				log.warn( {
+					debug: this.debug,
+					message: 'ractive.unrender() was called on a Ractive instance that was not rendered'
+				} );
+				return Promise.resolve();
 			}
 			promise = runloop.start( this, true );
 			// If this is a component, and the component isn't marked for destruction,
 			// don't detach nodes from the DOM unnecessarily
-			shouldDestroy = !this.component || this.component.shouldDestroy;
-			shouldDestroy = shouldDestroy || this.shouldDestroy;
+			shouldDestroy = !this.component || this.component.shouldDestroy || this.shouldDestroy;
 			if ( this.constructor.css ) {
 				promise.then( function() {
 					css.remove( this$0.constructor );
@@ -10595,7 +10998,7 @@
 			runloop.end();
 			return promise;
 		};
-	}( removeFromArray, runloop, global_css );
+	}( removeFromArray, runloop, global_css, log, Promise );
 
 	/* Ractive/prototype/unshift.js */
 	var Ractive$unshift = function( makeArrayMethod ) {
@@ -12261,7 +12664,7 @@
 			},
 			// version
 			VERSION: {
-				value: '0.5.7'
+				value: '0.5.8'
 			},
 			// Plugins
 			adaptors: {

@@ -8,10 +8,10 @@
 {{ format(population) }}
 </pre>
 
-<p>Add a <code>format</code> property alongside the country data (it may seem weird adding a function as 'data', but it will make sense in due course!):</p>
+<p>After the <code>population</code> property, add a <code>format</code> property with a function as its value (it may seem weird adding a function as 'data', but it will make sense in due course!):</p>
 
 <pre class='prettyprint lang-js'>
-function ( num ) {
+format: function ( num ) {
   if ( num > 1000000000 ) return ( num / 1000000000 ).toFixed( 1 ) + ' billion';
   if ( num > 1000000 ) return ( num / 1000000 ).toFixed( 1 ) + ' million';
   if ( num > 1000 ) return ( Math.floor( num / 1000 ) ) + ',' + ( num % 1000 );

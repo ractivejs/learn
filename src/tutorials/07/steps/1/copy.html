@@ -44,7 +44,7 @@ function ( imageNum ) {
 <p>Next, we need to listen for the <code>goto</code> event, so that we can call <code>this.goto()</code>. We wire it up inside our <code>init</code> method:</p>
 
 <pre class='prettyprint lang-js'>
-function ( options ) {
+init: function ( options ) {
   this.on( 'goto', function ( event, index ) {
     this.goto( index );
   });
@@ -54,6 +54,7 @@ function ( options ) {
 }
 </pre>
 
+<p>The initial value of <code>current</code> is set to 0 at the end of the <code>init()</code> method. </p>
 <p>Let's add some code to instantiate the slideshow with our gifs. There's a ready-made <code>images</code> variable you can use for this step:</p>
 
 <pre class='prettyprint lang-js'>

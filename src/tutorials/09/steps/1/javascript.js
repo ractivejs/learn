@@ -98,7 +98,9 @@ var TodoList = Ractive.extend({
     enter: function ( node, fire ) {
       var keydownHandler = function ( event ) {
         var which = event.which || event.keyCode;
-        which === 13 && fire({ node: node, original: event });
+        if ( which === 13 ) { 
+          fire({ node: node, original: event }); 
+        }
       };
 
       node.addEventListener( 'keydown', keydownHandler );

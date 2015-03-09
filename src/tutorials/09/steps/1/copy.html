@@ -6,7 +6,7 @@
 &lt;script id='item' type='text/ractive'&gt;
 &lt;li class='{{ done ? "done" : "pending" }}'&gt;
   &lt;input type='checkbox' checked='{{done}}'&gt;
-  &lt;span on-tap='edit'&gt;
+  &lt;span class='description' on-tap='edit'&gt;
     {{description}}
 
     {{#if editing}}
@@ -30,7 +30,7 @@
 &lt;!-- {{>item}} --&gt;
 &lt;li class='{{ done ? "done" : "pending" }}'&gt;
   &lt;input type='checkbox' checked='{{done}}'&gt;
-  &lt;span on-tap='edit'&gt;
+  &lt;span class='description' on-tap='edit'&gt;
     {{description}}
 
     {{#if editing}}

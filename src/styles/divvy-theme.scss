@@ -26,9 +26,10 @@
 }
 
 .divvy-vertical-control:after {
+	width: 5px;
 	border-right: 1px solid #eee;
 	border-left: none;
-	left: -10px;
+	left: -5px;
 }
 
 .divvy-horizontal-control {

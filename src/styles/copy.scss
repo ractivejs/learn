@@ -15,7 +15,7 @@ kbd {
 	border-right-width: 2px;
 	border-bottom-width: 2px;
 	border-radius: 0.2em;
-	font-family: 'Source Code Pro';
+	font-family: Inconsolata, monospace;
 	font-size: 0.8em;
 	padding: 0.1em 0.3em;
 	white-space: pre;
@@ -53,7 +53,7 @@ kbd {
 #copy-block {
 	& > pre, aside > pre {
 		white-space: pre;
-		font-family: 'Source Code Pro', monospace;
+		font-family: Inconsolata, monospace;
 		font-size: 14px;
 		background-color: rgba(0,0,0,0.03);
 		display: block;
@@ -80,7 +80,7 @@ kbd {
 	}
 
 	code {
-		font-family: 'Source Code Pro';
+		font-family: Inconsolata, monospace;
 		background-color: rgba(0,0,0,0.03);
 		border: 1px solid rgba(0,0,0,0.08);
 		white-space: pre;

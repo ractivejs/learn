@@ -1,6 +1,6 @@
 var item = "<li class='{{ done ? \"done\" : \"pending\" }}'>" +
              "<input type='checkbox' checked='{{done}}'>" +
-             "<span on-tap='edit'>" +
+             "<span class='description' on-tap='edit'>" +
                "{{description}}" +
 
                "{{#if editing}}" +
@@ -98,8 +98,8 @@ var TodoList = Ractive.extend({
     enter: function ( node, fire ) {
       var keydownHandler = function ( event ) {
         var which = event.which || event.keyCode;
-        if ( which === 13 ) { 
-          fire({ node: node, original: event }); 
+        if ( which === 13 ) {
+          fire({ node: node, original: event });
         }
       };
 

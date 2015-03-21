@@ -1,6 +1,6 @@
 var item = "<li class='{{ done ? \"done\" : \"pending\" }}'>" +
              "<input type='checkbox' checked='{{done}}'>" +
-             "<span on-tap='edit'>" +
+             "<span class='description' on-tap='edit'>" +
                "{{description}}" +
 
                "{{#if editing}}" +

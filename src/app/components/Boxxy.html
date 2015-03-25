@@ -1,0 +1,35 @@
+<div class='boxxy-container'>
+	{{yield}}
+</div>
+
+<script>
+	var Boxxy = require( 'boxxy' );
+
+	window.Boxxy = Boxxy;
+
+	component.exports = {
+		onrender () {
+			var self = this, boxxy, timeout;
+
+			// Create boxxy layout helper
+			boxxy = new Boxxy( this.find( '.boxxy-container' ), {
+				columns: this.get( 'columns' ),
+				rows: this.get( 'rows' )
+			});
+
+			window.boxxy = boxxy;
+
+			boxxy.restore( 'learn_ractivejs' );
+
+			boxxy.on( 'resize', changed => {
+				clearTimeout( timeout );
+
+				if ( changed[ 'output-block' ] ) {
+					self.fire( 'resize' );
+				}
+
+				timeout = setTimeout( () => boxxy.save( 'learn_ractivejs' ), 50 );
+			});
+		}
+	};
+</script>

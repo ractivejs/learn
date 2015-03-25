@@ -1,6 +1,6 @@
 <link rel='ractive' href='./tutorial-header.html'>
 <link rel='ractive' href='./left-nav.html'>
-<link rel='ractive' href='./divvy.html'>
+<link rel='ractive' href='./Boxxy.html'>
 <link rel='ractive' href='./codemirror.html'>
 
 <div class='app' on-tap='tapped'>
@@ -8,7 +8,7 @@
 		<tutorial-header step='{{currentStep}}' on-resetStep='resetStep' on-fix='fix'/>
 
 		<!-- TODO events shouldn't need to pass through parent component! -->
-		<divvy
+		<Boxxy
 			columns='[
 				{ size: 45, children: [{ id: "copy-block", size: 3 }, { id: "output-block", size: 2 }] },
 				{ size: 55, children: [{ id: "template", size: 3 }, { id: "javascript", size: 5 }] }
@@ -39,7 +39,7 @@
 
 				<button class='execute' on-tap='execute'>Execute (Shift-Enter)</button>
 			</div>
-		</divvy>
+		</Boxxy>
 	</div>
 
 	<left-nav open='{{navOpen}}'/>
@@ -79,7 +79,7 @@
 		opacity: 0.2;
 	}
 
-	.divvy-container {
+	.boxxy-container {
 		position: relative;
 		width: 100%;
 		height: 100%;
@@ -127,10 +127,10 @@
 		_clearTimeout,
 		prop;
 
-	require( 'ractive-events-tap' );
-	require( 'ractive-transitions-fade' );
-	require( 'ractive-transitions-fly' );
-	require( 'ractive-transitions-slide' );
+	Ractive.events.tap   = require( 'ractive-events-tap' );
+	Ractive.events.fade  = require( 'ractive-transitions-fade' );
+	Ractive.events.fly   = require( 'ractive-transitions-fly' );
+	Ractive.events.slide = require( 'ractive-transitions-slide' );
 
 	if ( !String.prototype.trim ) {
 		String.prototype.trim = function () {
@@ -200,7 +200,7 @@
 	window.Ractive = Ractive;
 
 	component.exports = {
-		init: function () {
+		onrender () {
 			var self = this,
 				container,
 				baseUrl,

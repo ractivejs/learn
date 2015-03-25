@@ -34,7 +34,7 @@
 	};
 
 	changeHandlers = {
-		javascript: function ( component, editor, value ) {
+		javascript ( component, editor, value ) {
 			var errorsByLine = [];
 
 			// remove any existing error annotations
@@ -68,7 +68,7 @@
 			});
 		},
 
-		ractive: function ( component, editor, value ) {
+		ractive ( component, editor, value ) {
 			var marker;
 
 			try {
@@ -94,7 +94,7 @@
 	}
 
 	component.exports = {
-		init: function () {
+		onrender () {
 			var component = this, mode, altMode, editor, doc, updating, autoIndent;
 
 			this.lineWidgets = [];

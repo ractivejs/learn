@@ -1,9 +1,15 @@
-import AppView from 'ractive_components/app';
+import AppView from './components/app';
+import Nav from './components/Nav';
 import getStep from 'getStep';
 import handleError from 'utils/handleError';
 import baseUrl from 'baseUrl';
 
 var view, data;
+
+new Nav({
+	el: '.nav-container',
+	tab: 'learn'
+});
 
 data = window.TUTORIAL_DATA;
 

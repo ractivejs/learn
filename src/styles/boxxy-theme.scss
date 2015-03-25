@@ -1,9 +1,9 @@
-.divvy-inner {
+.boxxy-inner {
 	position: relative;
 	@include border-box;
 }
 
-.divvy-inner.copy-block {
+.boxxy-inner.copy-block {
 	border: 1px solid #aaa;
 
 	.info {
@@ -19,30 +19,30 @@
 	}
 }
 
-.divvy-vertical-control {
-	width: 10px;
+.boxxy-vertical-control {
+	width: 10px !important;
 	background-color: transparent;
 	z-index: 10;
 }
 
-.divvy-vertical-control:after {
+.boxxy-vertical-control:after {
 	border-right: 1px solid #eee;
 	border-left: none;
 	left: -10px;
 }
 
-.divvy-horizontal-control {
-	height: 10px;
+.boxxy-horizontal-control {
+	height: 10px !important;
 	background-color: transparent;
 	z-index: 10;
 }
 
-.divvy-horizontal-control:after {
+.boxxy-horizontal-control:after {
 	border-bottom: 1px solid #eee;
 	border-top: none;
 	top: -10px;
 }
 
-.divvy-leaf {
+.boxxy-leaf {
 	padding: 0;
 }

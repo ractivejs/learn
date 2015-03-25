@@ -1,0 +1,26 @@
+<link rel='ractive' href='./Page.html'>
+<link rel='ractive' href='./Analytics.html'>
+
+<Page title='[[title]]' tab='learn'>
+	{{#partial head}}
+		<link rel='stylesheet' href='../../main.css'>
+	{{/partial}}
+
+	<div class='app-container'>
+		<p class='loading'>loading...</p>
+	</div>
+
+	{{#partial scripts}}
+		<script>
+			window.TUTORIAL_DATA = {
+				manifest: <@manifest@>,
+
+				// initial tutorial on page load
+				step: <@step@>
+			};
+		</script>
+
+		<script src='../../bundle.js'></script>
+		<script src='../../app.js'></script>
+	{{/partial}}
+</Page>

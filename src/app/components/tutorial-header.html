@@ -101,7 +101,7 @@
 
 <script>
 	component.exports = {
-		init: function () {
+		onrender () {
 			this.on({
 				ripple: function ( event ) {
 					if ( event.node.classList ) {
@@ -114,7 +114,7 @@
 		},
 
 		computed: {
-			siblingProxies: function () {
+			siblingProxies () {
 				return getRange( this.get( 'step.numSiblings' ) );
 			}
 		},

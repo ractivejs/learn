@@ -1,60 +1,48 @@
-var gobble = require( 'gobble' ),
-	compileTutorials = require( './gobble/compile-tutorials' ),
+var gobble = require( 'gobble' );
+var compileTutorials = require( './gobble/compile-tutorials' );
 
-	prod = gobble.env() === 'production',
+var prod = gobble.env() === 'production';
 
-	globals = {
-		define: true,
-		CodeMirror: true,
-		prettyPrint: true,
-		JSHINT: true
-	},
+var common = gobble( 'node_modules/ractive-www' );
+var components = gobble([ common.grab( 'components' ), 'src/app/components' ]).moveTo( 'components' );
 
-	shared, assets, app, bundle, css, tutorials, tree;
+var babelWhitelist = [
+	'es6.arrowFunctions',
+	'es6.blockScoping',
+	'es6.classes',
+	'es6.constants',
+	'es6.destructuring',
+	'es6.parameters.default',
+	'es6.parameters.rest',
+	'es6.properties.shorthand',
+	'es6.spread',
+	'es6.templateLiterals'
+];
 
-shared = gobble( 'shared' );
-assets = gobble( 'src/assets' );
+var assets = gobble([ common.grab( 'assets' ).moveTo( 'assets' ), 'src/assets' ]);
 
-app = (function () {
-	var app, ractive_components, vendor;
+var app = (function () {
+	var app, vendor;
 
-	app = gobble( 'src/app' )
-		.map( 'es6-transpiler', { globals: globals })
-		.map( 'esperanto', { defaultOnly: true });
-
-	ractive_components = gobble( 'src/ractive_components' )
-		.map( 'ractive' )
-		.map( 'es6-transpiler', { globals: globals })
-		.moveTo( 'ractive_components' );
-
-	// external libs
-	vendor = gobble( 'vendor', { static: true }).moveTo( 'vendor' );
-
-	app = gobble([ app, ractive_components, vendor ])
-		.transform( 'requirejs', {
-			name: 'app',
-			out: 'app.js',
-			optimize: 'none',
-
-			paths: {
-				'ractive': 'vendor/ractive/ractive-legacy',
-				'ractive-events-tap': 'vendor/ractive-events-tap/ractive-events-tap',
-				'ractive-transitions-fade': 'vendor/ractive-transitions-fade/ractive-transitions-fade',
-				'ractive-transitions-fly': 'vendor/ractive-transitions-fly/ractive-transitions-fly',
-				'ractive-transitions-slide': 'vendor/ractive-transitions-slide/ractive-transitions-slide',
-				'divvy': 'vendor/divvy/divvy'
-			}
-		}).map( 'amdclean', {
-			wrap: {
-				start: '(function(){',
-				end: '}());'
-			}
+	app = gobble([ 'src/app', components ])
+		.transform( 'ractive', { type: 'es6' })
+		.transform( 'babel', { whitelist: babelWhitelist })
+		.transform( 'esperanto-bundle', {
+			entry: 'app',
+			type: 'cjs'
+		})
+		.transform( 'derequire' )
+		.transform( 'browserify', {
+			entries: [ './app' ],
+			dest: 'app.js',
+			debug: true,
+			standalone: 'app'
 		});
 
-	return prod ? app.map( 'uglifyjs' ) : app;
+	return prod ? app.transform( 'uglifyjs' ) : app;
 }());
 
-bundle = gobble( 'vendor' ).transform( 'concat', {
+var bundle = gobble( 'vendor' ).transform( 'concat', {
 	files: [
 		'codemirror/lib/codemirror.js',
 		'codemirror/mode/javascript/javascript.js',
@@ -72,20 +60,21 @@ if ( prod ) {
 	bundle = bundle.map( 'uglifyjs' );
 }
 
-css = gobble([ 'src/styles', shared ]).transform( 'sass', {
-	src: 'main.scss',
-	dest: 'min.css',
-	outputStyle: 'compressed'
-});
+var css = gobble([ 'src/styles', common.grab( 'scss' ).moveTo( 'common' ) ])
+	.transform( 'sass', {
+		src: 'main.scss',
+		dest: 'main.css',
+		outputStyle: 'compressed'
+	});
 
-tutorials = (function () {
-	var templates, tutorials, partials;
+var tutorials = (function () {
+	var templates, tutorials;
 
-	templates = gobble( 'src/templates' ).moveTo( 'templates' );
-	tutorials = gobble( 'src/tutorials' ).moveTo( 'tutorials' );
-	partials = shared.include( 'partials/**' );
-
-	return gobble([ templates, tutorials, partials ]).transform( compileTutorials );
+	return gobble([
+		components.transform( 'ractive', { type: 'cjs' }),
+		gobble( 'src/templates' ).moveTo( 'templates' ),
+		gobble( 'src/tutorials' ).moveTo( 'tutorials' )
+	]).transform( compileTutorials );
 }());
 
-module.exports = gobble([ assets, app, bundle, css, shared, tutorials ]);
+module.exports = gobble([ assets, app, bundle, css, tutorials ]);

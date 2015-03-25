@@ -1,4 +1,10 @@
 {
 	"esnext": true,
-	"boss": true
+	"boss": true,
+	"undef": true,
+	"unused": true,
+	"globals": {
+		"require": true,
+		"module": true
+	}
 }

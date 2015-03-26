@@ -8,7 +8,7 @@
   {{/each}}
 </ul>
 
-<!-- {{>item}} -->
+{{#partial item}}
 <li class='{{ done ? "done" : "pending" }}'>
   <input type='checkbox' checked='{{done}}'>
   <span class='description' on-tap='edit'>
@@ -20,4 +20,4 @@
   </span>
   <a class='button' on-tap='remove'>x</a>
 </li>
-<!-- {{/item}} -->
+{{/partial}}

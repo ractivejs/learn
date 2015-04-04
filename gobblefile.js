@@ -22,9 +22,7 @@ var babelWhitelist = [
 var assets = gobble([ common.grab( 'assets' ).moveTo( 'assets' ), 'src/assets' ]);
 
 var app = (function () {
-	var app, vendor;
-
-	app = gobble([ 'src/app', components ])
+	var app = gobble([ 'src/app', components ])
 		.transform( 'ractive', { type: 'es6' })
 		.transform( 'babel', { whitelist: babelWhitelist })
 		.transform( 'esperanto-bundle', {
@@ -42,19 +40,27 @@ var app = (function () {
 	return prod ? app.transform( 'uglifyjs' ) : app;
 }());
 
-var bundle = gobble( 'vendor' ).transform( 'concat', {
-	files: [
-		'codemirror/lib/codemirror.js',
-		'codemirror/mode/javascript/javascript.js',
-		'codemirror/mode/xml/xml.js',
-		'codemirror/mode/htmlmixed/htmlmixed.js',
-		'codemirror/keymap/sublime.js',
-		'codemirror/addon/search/search.js',
-		'jshint/dist/jshint.js',
-		'google-code-prettify/src/prettify.js'
-	],
-	dest: 'bundle.js'
-});
+var bundle = gobble([
+	gobble( 'vendor', { static: true }),
+	gobble( 'node_modules', { static: true })
+])
+	.transform( 'concat', {
+		files: [
+			// from node_modules
+			'codemirror/lib/codemirror.js',
+			'codemirror/mode/javascript/javascript.js',
+			'codemirror/mode/xml/xml.js',
+			'codemirror/mode/htmlmixed/htmlmixed.js',
+			'codemirror/keymap/sublime.js',
+			'codemirror/addon/search/search.js',
+			'codemirror/addon/search/searchcursor.js',
+
+			// from vendor. TODO replace with eslint/hljs?
+			'jshint/dist/jshint.js',
+			'google-code-prettify/src/prettify.js'
+		],
+		dest: 'bundle.js'
+	});
 
 if ( prod ) {
 	bundle = bundle.map( 'uglifyjs' );
@@ -67,14 +73,10 @@ var css = gobble([ 'src/styles', common.grab( 'scss' ).moveTo( 'common' ) ])
 		outputStyle: 'compressed'
 	});
 
-var tutorials = (function () {
-	var templates, tutorials;
-
-	return gobble([
-		components.transform( 'ractive', { type: 'cjs' }),
-		gobble( 'src/templates' ).moveTo( 'templates' ),
-		gobble( 'src/tutorials' ).moveTo( 'tutorials' )
-	]).transform( compileTutorials );
-}());
+var tutorials = gobble([
+	components.transform( 'ractive', { type: 'cjs' }),
+	gobble( 'src/templates' ).moveTo( 'templates' ),
+	gobble( 'src/tutorials' ).moveTo( 'tutorials' )
+]).transform( compileTutorials );
 
 module.exports = gobble([ assets, app, bundle, css, tutorials ]);

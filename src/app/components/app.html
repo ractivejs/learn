@@ -235,50 +235,6 @@
 			interactiveHelperError = this.find( '.interactive-helper-error' );
 			interactiveHelperError.parentNode.removeChild( interactiveHelperError );
 
-
-			if ( window.history !== undefined && typeof window.history.pushState === 'function' ) {
-				this.on({
-					tapped: function ( event ) {
-						var target = event.original.target, isLeftButton, href, match;
-
-						if ( target === container ) {
-							return;
-						}
-
-						// if it wasn't the left mouse button, or the
-						// meta key was pressed, abort
-						isLeftButton = ( event.original.which !== undefined && event.original.which !== 1 ) ||
-										( event.original.button !== undefined && event.original.button === 0 );
-
-						if ( event.original.metaKey || !isLeftButton ) {
-							return;
-						}
-
-						// need to see if we're navigating to another tutorial,
-						// and if so navigate without reloading the page
-						do {
-							if ( target.tagName === 'A' ) {
-								href = target.href;
-
-								if ( href.indexOf( baseUrl ) ) {
-									target = target.parentNode;
-									continue;
-								}
-
-								href = href.substring( baseUrl.length );
-								if ( match = pattern.exec( href ) ) {
-									event.original.preventDefault();
-									this.fire( 'navigate', match[1], match[2] );
-									break;
-								}
-							}
-
-							target = target.parentNode;
-						} while ( target && target !== container );
-					}
-				});
-			}
-
 			this.on({
 				hideNav: () => this.set( 'navOpen', false ),
 				execute: execute,

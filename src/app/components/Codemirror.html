@@ -27,13 +27,9 @@
 </style>
 
 <script>
-	var keyNames, changeHandlers, throttle = require( 'utils/throttle' );
+	const JSHINT = require( 'jshint' ).JSHINT;
 
-	keyNames = {
-		'13': 'enter'
-	};
-
-	changeHandlers = {
+	const changeHandlers = {
 		javascript ( component, editor, value ) {
 			var errorsByLine = [];
 
@@ -41,6 +37,7 @@
 			editor.clearGutter( 'errors' );
 
 			JSHINT( value, {
+				esnext: true,
 				asi: true,
 				undef: true
 			});

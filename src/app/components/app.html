@@ -127,6 +127,8 @@
 		_clearTimeout,
 		prop;
 
+	const babel = require( 'babel-core' );
+
 	Ractive.events.tap   = require( 'ractive-events-tap' );
 	Ractive.events.fade  = require( 'ractive-transitions-fade' );
 	Ractive.events.fly   = require( 'ractive-transitions-fly' );
@@ -478,6 +480,7 @@
 
 				try {
 					self.set( 'codeError', false );
+					code = babel.transform( code ).code; // TODO eesh
 					globalEval( code );
 				} catch ( err ) {
 					setTimeout( () => {

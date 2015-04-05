@@ -1,4 +1,5 @@
 var gobble = require( 'gobble' );
+var sander = require( 'sander' );
 var compileTutorials = require( './gobble/compile-tutorials' );
 
 var prod = gobble.env() === 'production';
@@ -55,8 +56,7 @@ var bundle = gobble([
 			'codemirror/addon/search/search.js',
 			'codemirror/addon/search/searchcursor.js',
 
-			// from vendor. TODO replace with eslint/hljs?
-			'jshint/dist/jshint.js',
+			// from vendor. TODO replace with hljs?
 			'google-code-prettify/src/prettify.js'
 		],
 		dest: 'bundle.js'
@@ -77,6 +77,14 @@ var tutorials = gobble([
 	components.transform( 'ractive', { type: 'cjs' }),
 	gobble( 'src/templates' ).moveTo( 'templates' ),
 	gobble( 'src/tutorials' ).moveTo( 'tutorials' )
-]).transform( compileTutorials );
+])
+.transform( copy )
+.transform( compileTutorials );
+
+function copy ( inputdir, outputdir, options ) {
+	// this is super hacky, but we need physical copies of the files
+	// on disk, not symlinks, because of how node's module resolver works
+	return sander.copydir( inputdir ).to( outputdir );
+}
 
 module.exports = gobble([ assets, app, bundle, css, tutorials ]);

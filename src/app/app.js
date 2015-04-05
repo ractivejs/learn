@@ -4,16 +4,14 @@ import getStep from 'getStep';
 import handleError from 'utils/handleError';
 import baseUrl from 'baseUrl';
 
-var view, data;
-
 new Nav({
 	el: '.nav-container',
 	tab: 'learn'
 });
 
-data = window.TUTORIAL_DATA;
+const data = window.TUTORIAL_DATA;
 
-view = new AppView({
+const view = new AppView({
 	el: '.app-container',
 	data: {
 		manifest: data.manifest,
@@ -21,11 +19,12 @@ view = new AppView({
 	}
 });
 
+// TODO use proper router?
 view.on({
-	navigate: function ( tutorialTitle, stepNumber ) {
+	navigate ( tutorialTitle, stepNumber ) {
 		var tutorialIndex, stepIndex;
 
-		getStep( tutorialTitle, stepNumber ).then( function ( step ) {
+		getStep( tutorialTitle, stepNumber ).then( step => {
 			view.set( 'currentStep', step );
 			window.history.pushState( step, null, `${baseUrl}/${tutorialTitle}/${stepNumber}` );
 		}).catch( handleError );
@@ -37,7 +36,7 @@ if ( window.history && typeof window.history.replaceState === 'function' ) {
 	window.history.replaceState( data.step, '', window.location.pathname );
 }
 
-window.addEventListener( 'popstate', function ( event ) {
+window.addEventListener( 'popstate', event => {
 	if ( event.state ) {
 		view.set( 'currentStep', event.state );
 	}

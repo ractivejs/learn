@@ -1,6 +1,7 @@
 import Ractive from 'ractive';
 import getUrl from 'utils/get';
 import slugify from 'utils/slugify';
+import Promise from 'utils/Promise';
 import baseUrl from 'baseUrl';
 
 var promises, data, step, indexByTitle = {}, queue = [];
@@ -10,7 +11,7 @@ promises = {};
 // we already have some data...
 data = window.TUTORIAL_DATA;
 step = data.step;
-promises[ `${baseUrl}/${step.tutorialTitle}/${step.index+1}/index.json` ] = Ractive.Promise.resolve( step );
+promises[ `${baseUrl}/${step.tutorialTitle}/${step.index+1}/index.json` ] = Promise.resolve( step );
 
 // So we can identify next/previous steps...
 data.manifest.forEach( ( x, i ) => {

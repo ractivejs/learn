@@ -1,7 +1,7 @@
 import Promise from 'utils/Promise';
 
-export default function get ( url, options ) {
-	return new Promise( function ( fulfil, reject ) {
+export default function get ( url ) {
+	return new Promise( ( fulfil, reject ) => {
 		var xhr = new XMLHttpRequest();
 
 		xhr.onload = () => fulfil( xhr.responseText );

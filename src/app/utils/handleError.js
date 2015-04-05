@@ -1,5 +1,5 @@
 export default function handleError ( err ) {
-	setTimeout( function () {
+	setTimeout( () => {
 		throw err;
 	});
 }

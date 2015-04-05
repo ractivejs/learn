@@ -31,7 +31,7 @@
 
 	const changeHandlers = {
 		javascript ( component, editor, value ) {
-			var errorsByLine = [];
+			let errorsByLine = [];
 
 			// remove any existing error annotations
 			editor.clearGutter( 'errors' );
@@ -43,14 +43,13 @@
 			});
 
 			JSHINT.errors.forEach( error => {
-				var match;
+				let match;
 
 				if ( match = /^'([^']+)' is not defined/.exec( error.reason ) ) {
 					if ( window[ match[1] ] !== undefined ) {
 						return;
 					}
 				}
-
 
 				if ( !errorsByLine[ error.line ] ) {
 					errorsByLine[ error.line ] = [];
@@ -60,26 +59,24 @@
 			});
 
 			errorsByLine.forEach( ( errors, line ) => {
-				var marker = createMarker( errors.map( e => e.reason ).join( '\n\n' ) );
+				const marker = createMarker( errors.map( e => e.reason ).join( '\n\n' ) );
 				editor.setGutterMarker( line - 1, 'errors', marker );
 			});
 		},
 
 		ractive ( component, editor, value ) {
-			var marker;
-
 			try {
 				Ractive.parse( value );
 				editor.clearGutter( 'errors' );
 			} catch ( err ) {
-				marker = createMarker( err.shortMessage );
+				let marker = createMarker( err.shortMessage );
 				editor.setGutterMarker( err.line - 1, 'errors', marker );
 			}
 		}
 	};
 
 	function createMarker ( error ) {
-		var marker = document.createElement( 'span' );
+		const marker = document.createElement( 'span' );
 
 		marker.className = 'error-marker';
 		marker.style.color = '#d00';
@@ -92,12 +89,12 @@
 
 	component.exports = {
 		onrender () {
-			var component = this, mode, altMode, editor, doc, updating, autoIndent;
-
 			this.lineWidgets = [];
 
-			mode = this.get( 'mode' );
-			autoIndent = this.get( 'autoIndent' ) !== false;
+			const mode = this.get( 'mode' );
+			const autoIndent = this.get( 'autoIndent' ) !== false;
+
+			let altMode;
 
 			if ( mode === 'json' ) {
 				altMode = {
@@ -108,7 +105,7 @@
 				altMode = 'htmlmixed';
 			}
 
-			editor = CodeMirror.fromTextArea( this.find( 'textarea' ), {
+			const editor = CodeMirror.fromTextArea( this.find( 'textarea' ), {
 				mode: altMode || mode,
 				theme: this.get( 'theme' ) || 'ractive',
 				lineWrapping: true,
@@ -116,48 +113,47 @@
 				keyMap: 'sublime',
 				gutters: [ 'CodeMirror-linenumbers', 'errors' ]
 			});
-			doc = editor.getDoc();
+			const doc = editor.getDoc();
 
 			this.editor = editor;
 
-			editor.on( 'change', function ( editor, change ) {
-				var value;
+			let updating;
 
+			editor.on( 'change', ( editor, change ) => {
 				if ( updating ) {
 					return;
 				}
 
 				if ( autoIndent && change.origin === 'paste' ) {
 					editor.operation( () => {
-						var line, end;
+						let line;
+						const end = CodeMirror.changeEnd( change ).line + 1;
 
-						for ( line = change.from.line, end = CodeMirror.changeEnd(change).line + 1; line < end; ++line ) {
-							editor.indentLine(line, "smart");
+						for ( line = change.from.line; line < end; ++line ) {
+							editor.indentLine( line, 'smart' );
 						}
 					});
 				}
 
-				value = editor.getValue();
+				const value = editor.getValue();
 
 				if ( changeHandlers[ mode ] ) {
-					changeHandlers[ mode ]( component, editor, value );
+					changeHandlers[ mode ]( this, editor, value );
 				}
 
 				updating = true;
-				component.set( 'value', value );
+				this.set( 'value', value );
 				updating = false;
 			});
 
-			setTimeout( function () {
-				component.fire( 'shiftEnter' );
-			}, 500 );
+			setTimeout( () => this.fire( 'shiftEnter' ), 500 );
 
-			editor.on( 'keydown', function ( editor, event ) {
-				var name = CodeMirror.keyNames[ event.which ];
+			editor.on( 'keydown', ( editor, event ) => {
+				const name = CodeMirror.keyNames[ event.which ];
 
 				if ( name ) {
-					component.fire( name.toLowerCase(), {
-						component: component,
+					this.fire( name.toLowerCase(), {
+						component: this,
 						shift: event.shiftKey,
 						original: event
 					});
@@ -166,7 +162,7 @@
 				return;
 			});
 
-			this.observe( 'value', function ( value ) {
+			this.observe( 'value', value => {
 				if ( updating ) {
 					return;
 				}
@@ -176,9 +172,7 @@
 				updating = false;
 			});
 
-			this.on( 'teardown', function () {
-				editor.toTextArea();
-			});
+			this.on( 'teardown', () => editor.toTextArea() );
 		}
 	};
 </script>

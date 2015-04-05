@@ -195,10 +195,10 @@
 	component.exports = {
 		onrender () {
 			this.on({
-				toggle: function () {
+				toggle: () => {
 					this.toggle( 'open' );
 				},
-				ripple: function ( event ) {
+				ripple: event => {
 					if ( event.node.classList ) {
 						setTimeout( () => event.node.classList.add( 'tapped' ), 100 );
 					}

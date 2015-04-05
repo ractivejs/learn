@@ -5,6 +5,11 @@
 	"unused": true,
 	"globals": {
 		"require": true,
-		"module": true
+		"module": true,
+		"component": true,
+		"Ractive": true,
+		"window": true,
+		"setTimeout": true,
+		"clearTimeout": true
 	}
 }

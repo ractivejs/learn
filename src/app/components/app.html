@@ -113,20 +113,8 @@
 </style>
 
 <script>
-	var forceRedraw = require( 'utils/forceRedraw' ),
-		slugify = require( 'utils/slugify' ),
-		globalEval = eval,
-
-		_Ractive,
-		FakeRactive,
-		timeouts = [],
-		teardown,
-		teardownQueue = [],
-		resizeHandlers = [],
-		_setTimeout,
-		_clearTimeout,
-		prop;
-
+	const forceRedraw = require( 'utils/forceRedraw' );
+	const slugify = require( 'utils/slugify' );
 	const babel = require( 'babel-core' );
 
 	Ractive.events.tap   = require( 'ractive-events-tap' );
@@ -134,22 +122,29 @@
 	Ractive.events.fly   = require( 'ractive-transitions-fly' );
 	Ractive.events.slide = require( 'ractive-transitions-slide' );
 
+	const globalEval = eval;
+	const _Ractive = Ractive;
+
+		let timeouts = [],
+		teardown,
+		teardownQueue = [],
+		resizeHandlers = [];
+
 	if ( !String.prototype.trim ) {
 		String.prototype.trim = function () {
 			return this.replace( /^\s+/, '' ).replace( /\s+$/, '' );
 		};
 	}
 
-	_Ractive = Ractive;
-
-	FakeRactive = function () {
+	function FakeRactive () {
 		// we need to override the constructor so we can keep track of
 		// which views need to be torn down during the tutorial
 		_Ractive.apply( this, arguments );
-		teardownQueue[ teardownQueue.length ] = this;
-	};
+		teardownQueue.push( this );
+	}
 
 	// copy static methods and properties from the real Ractive to the fake one
+	let prop;
 	for ( prop in _Ractive ) {
 		if ( _Ractive.hasOwnProperty( prop ) ) {
 			FakeRactive[ prop ] = _Ractive[ prop ];
@@ -157,8 +152,8 @@
 	}
 
 	// Ditto for the non-enumerable ones
-	[ 'prototype', 'partials', 'adaptors', 'components', 'decorators', 'easing', 'events', 'interpolators', 'transitions', 'extend', 'svg', 'VERSION', 'Promise' ].forEach( function ( prop ) {
-		var descriptor = Object.getOwnPropertyDescriptor( _Ractive, prop );
+	[ 'prototype', 'partials', 'adaptors', 'components', 'decorators', 'easing', 'events', 'interpolators', 'transitions', 'extend', 'svg', 'VERSION', 'Promise' ].forEach( prop => {
+		const descriptor = Object.getOwnPropertyDescriptor( _Ractive, prop );
 		Object.defineProperty( FakeRactive, prop, descriptor );
 	});
 
@@ -167,7 +162,7 @@
 	// override teardown method...
 	teardown = _Ractive.prototype.teardown;
 	FakeRactive.prototype.teardown = function () {
-		var index = teardownQueue.indexOf( this );
+		const index = teardownQueue.indexOf( this );
 
 		if ( ~index ) {
 			teardownQueue.splice( index, 1 );
@@ -177,15 +172,15 @@
 	};
 
 	// setTimeout and clearTimeout
-	_setTimeout = window.setTimeout;
-	_clearTimeout = window.clearTimeout;
+	const _setTimeout = window.setTimeout;
+	const _clearTimeout = window.clearTimeout;
 
-	window.setTimeout = function () {
-		var timeout = _setTimeout.apply( window, arguments );
-		timeouts[ timeouts.length ] = timeout;
+	window.setTimeout = function () { // not arrow function, we need arguments
+		const timeout = _setTimeout.apply( window, arguments );
+		timeouts.push( timeout );
 	};
 
-	window.clearTimeout = function ( timeout ) {
+	window.clearTimeout = timeout => {
 		var index = timeouts.indexOf( timeout );
 		if ( index !== -1 ) {
 			timeouts.splice( index, 1 );
@@ -195,9 +190,7 @@
 	};
 
 	// resize handlers
-	window.onResize = function ( handler ) {
-		resizeHandlers[ resizeHandlers.length ] = handler;
-	};
+	window.onResize = handler => resizeHandlers.push( handler );
 
 	window.Ractive = Ractive;
 
@@ -207,7 +200,6 @@
 				container,
 				baseUrl,
 				pattern,
-				redrawTimeout,
 				copyBlock,
 				outputBlock,
 				outputStyles,
@@ -216,8 +208,7 @@
 				interactives,
 				interactiveHelper,
 				interactiveHelperError,
-				activeInlineEditor,
-				lineWidgets = [];
+				activeInlineEditor;
 
 			window.app = this;
 
@@ -516,8 +507,8 @@
 		},
 
 		computed: {
-			next: function () {
-				var step = this.get( 'currentStep' ), tutorial;
+			next () {
+				const step = this.get( 'currentStep' );
 
 				if ( !step ) {
 					return null;
@@ -525,16 +516,16 @@
 
 				if ( step.index >= step.numSiblings - 1 ) {
 					// next tutorial
-					tutorial = this.get( 'manifest' )[ step.tutorialIndex + 1 ];
+					const tutorial = this.get( 'manifest' )[ step.tutorialIndex + 1 ];
 
 					if ( !tutorial ) {
 						return null;
 					}
 
-					return '/' + slugify( tutorial.title ) + '/1';
+					return `/${slugify( tutorial.title )}/1`;
 				}
 
-				return '/' + slugify( step.tutorialTitle ) + '/' + ( step.index + 2 );
+				return `/${slugify( step.tutorialTitle )}/${( step.index + 2 )}`;
 			}
 		}
 	};

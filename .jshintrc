@@ -10,6 +10,8 @@
 		"Ractive": true,
 		"window": true,
 		"setTimeout": true,
-		"clearTimeout": true
+		"clearTimeout": true,
+		"document": true,
+		"prettyPrint": true
 	}
 }

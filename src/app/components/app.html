@@ -113,6 +113,12 @@
 </style>
 
 <script>
+	const {
+		FakeRactive,
+		teardownExistingInstances,
+		setTimeout,
+		clearTimeout
+	} = require( 'utils/environment' );
 	const forceRedraw = require( 'utils/forceRedraw' );
 	const slugify = require( 'utils/slugify' );
 	const babel = require( 'babel-core' );
@@ -125,145 +131,109 @@
 	const globalEval = eval;
 	const _Ractive = Ractive;
 
-		let timeouts = [],
-		teardown,
-		teardownQueue = [],
-		resizeHandlers = [];
-
-	if ( !String.prototype.trim ) {
-		String.prototype.trim = function () {
-			return this.replace( /^\s+/, '' ).replace( /\s+$/, '' );
-		};
-	}
-
-	function FakeRactive () {
-		// we need to override the constructor so we can keep track of
-		// which views need to be torn down during the tutorial
-		_Ractive.apply( this, arguments );
-		teardownQueue.push( this );
-	}
-
-	// copy static methods and properties from the real Ractive to the fake one
-	let prop;
-	for ( prop in _Ractive ) {
-		if ( _Ractive.hasOwnProperty( prop ) ) {
-			FakeRactive[ prop ] = _Ractive[ prop ];
-		}
-	}
-
-	// Ditto for the non-enumerable ones
-	[ 'prototype', 'partials', 'adaptors', 'components', 'decorators', 'easing', 'events', 'interpolators', 'transitions', 'extend', 'svg', 'VERSION', 'Promise' ].forEach( prop => {
-		const descriptor = Object.getOwnPropertyDescriptor( _Ractive, prop );
-		Object.defineProperty( FakeRactive, prop, descriptor );
-	});
-
-	FakeRactive.prototype.constructor = FakeRactive;
-
-	// override teardown method...
-	teardown = _Ractive.prototype.teardown;
-	FakeRactive.prototype.teardown = function () {
-		const index = teardownQueue.indexOf( this );
-
-		if ( ~index ) {
-			teardownQueue.splice( index, 1 );
-		}
-
-		teardown.call( this );
-	};
-
-	// setTimeout and clearTimeout
-	const _setTimeout = window.setTimeout;
-	const _clearTimeout = window.clearTimeout;
-
-	window.setTimeout = function () { // not arrow function, we need arguments
-		const timeout = _setTimeout.apply( window, arguments );
-		timeouts.push( timeout );
-	};
-
-	window.clearTimeout = timeout => {
-		var index = timeouts.indexOf( timeout );
-		if ( index !== -1 ) {
-			timeouts.splice( index, 1 );
-		}
-
-		_clearTimeout( timeout );
-	};
+	window.Ractive = Ractive;
+	window.setTimeout = setTimeout;
+	window.clearTimeout = clearTimeout;
 
 	// resize handlers
+	let resizeHandlers = [];
 	window.onResize = handler => resizeHandlers.push( handler );
-
-	window.Ractive = Ractive;
 
 	component.exports = {
 		onrender () {
-			var self = this,
-				container,
-				baseUrl,
-				pattern,
-				copyBlock,
-				outputBlock,
-				outputStyles,
-				templateEditor,
-				codeEditor,
-				interactives,
-				interactiveHelper,
-				interactiveHelperError,
-				activeInlineEditor;
+			const copyBlock = this.find( '#copy-block' );
+			const outputBlock = this.find( '#output-block' );
+			const outputStyles = this.find( '#output-styles' );
 
-			window.app = this;
+			const interactiveHelper = this.find( '.interactive-helper' );
+			const interactiveHelperError = this.find( '.interactive-helper-error' );
 
-			container = this.find( '.app' );
-
-			// store references to editors...
-			(function () {
-				var editorComponents = self.findAllComponents( 'codemirror' );
-
-				templateEditor = editorComponents[0].editor;
-				codeEditor = editorComponents[1].editor;
-			}());
-
-			baseUrl = window.location.origin;
-			pattern = /\/([^\/]+)\/(\d+)/;
-
-			copyBlock = this.find( '#copy-block' );
-			outputBlock = window.output = this.find( '#output-block' );
-			outputStyles = this.find( '#output-styles' );
-
-			interactiveHelper = this.find( '.interactive-helper' );
+			// detach helpers so we can insert them where needed
 			interactiveHelper.parentNode.removeChild( interactiveHelper );
-
-			interactiveHelperError = this.find( '.interactive-helper-error' );
 			interactiveHelperError.parentNode.removeChild( interactiveHelperError );
 
+			let interactives; // inline executable snippets
+			let activeInlineEditor;
+
+			const execute = () => {
+				const setup = this.get( 'currentStep.setup' );
+				if ( setup ) globalEval( setup );
+
+				try {
+					this.set( 'templateError', false );
+					window.template = _Ractive.parse( this.get( 'template' ) );
+				} catch ( err ) {
+					setTimeout( () => {
+						this.set( 'templateError', true );
+						throw err;
+					});
+					return;
+				}
+
+				window.output = outputBlock;
+				window.Ractive = FakeRactive;
+
+				try {
+					this.set( 'codeError', false );
+
+					const code = this.get( 'javascript' );
+					const es5 = babel.transform( code, {
+						blacklist: [ 'useStrict' ] // important!
+					}).code;
+
+					globalEval( es5 );
+				} catch ( err ) {
+					setTimeout( () => {
+						this.set( 'codeError', true );
+						throw err;
+					});
+				}
+
+				window.Ractive = _Ractive;
+			};
+
+			const executeInline = () => {
+				try {
+					globalEval( activeInlineEditor.getValue() );
+
+					if ( interactiveHelperError.parentNode ) {
+						interactiveHelperError.parentNode.removeChild( interactiveHelperError );
+					}
+					this.set( 'inlineError', null );
+				} catch ( err ) {
+					this.set( 'inlineError', err.message );
+
+					const wrapper = activeInlineEditor.display.wrapper;
+					wrapper.parentNode.insertBefore( interactiveHelperError, wrapper.nextSibling );
+
+					if ( interactiveHelper.parentNode ) {
+						interactiveHelper.parentNode.removeChild( interactiveHelper );
+					}
+				}
+			};
+
 			this.on({
+				execute,
+				executeInline,
 				hideNav: () => this.set( 'navOpen', false ),
-				execute: execute,
-				executeInline: executeInline,
-				resize: function () {
-					resizeHandlers.forEach( call );
-				},
+				resize: () => resizeHandlers.forEach( call ),
 				'codemirror.enter': event => {
 					if ( event.original.shiftKey ) {
 						event.original.preventDefault();
 						execute();
 					}
 				},
-				resetStep: function () {
-					var step = this.get( 'currentStep' );
+				resetStep: () => {
+					teardownExistingInstances();
 
-					teardownQueue.forEach( r => r.teardown() );
+					const { template, javascript, init } = this.get( 'currentStep' );
 
-					this.set({
-						template: step.template,
-						javascript: step.javascript
-					});
-
-					if ( step.init ) {
-						execute();
-					}
+					this.set({ template, javascript });
+					if ( init ) execute();
 				},
-				fix: function () {
-					var step = this.get( 'currentStep' ), fixed = step.fixed;
+				fix: () => {
+					const step = this.get( 'currentStep' );
+					const fixed = step.fixed;
 
 					this.set({
 						template: fixed.template || step.template,
@@ -272,8 +242,9 @@
 
 					execute();
 				},
-				selectCode: function ( event ) {
-					var target = event.original.target, range;
+				selectCode: event => {
+					let target = event.original.target;
+					let range;
 
 					while ( target !== event.node ) {
 						if ( target.tagName === 'PRE' && /prettyprint/.test( target.className ) ) {
@@ -298,13 +269,8 @@
 			});
 
 			this.observe({
-				currentStep: function ( step, oldStep ) {
-
-					// Teardown existing instances
-					teardownQueue.forEach( r => {
-						r.transitionsEnabled = false; // otherwise outros will mess things up!
-						r.teardown();
-					});
+				currentStep: ( step, oldStep ) => {
+					teardownExistingInstances();
 
 					// Destroy any old interactive codemirror components
 					if ( interactives ) {
@@ -328,9 +294,7 @@
 					// to bork things up a bit
 					forceRedraw();
 
-					if ( !step ) {
-						return;
-					}
+					if ( !step ) return;
 
 					this.set({
 						// whenever this changes, shut the nav
@@ -349,11 +313,9 @@
 					prettyPrint( null, copyBlock );
 
 					interactives = this.findAll( '.interactive' ).map( textarea => {
-						var cm;
-
 						textarea.value = textarea.value.trim();
 
-						cm = CodeMirror.fromTextArea( textarea, {
+						const cm = CodeMirror.fromTextArea( textarea, {
 							mode: 'javascript',
 							theme: 'ractive',
 							lineWrapping: true,
@@ -369,14 +331,14 @@
 							}
 						});
 
-						cm.on( 'focus', function ( cm, event ) {
-							var wrapper = cm.display.wrapper;
+						cm.on( 'focus', cm => {
+							const wrapper = cm.display.wrapper;
 							wrapper.parentNode.insertBefore( interactiveHelper, wrapper.nextSibling );
 
 							activeInlineEditor = cm;
 						});
 
-						cm.on( 'blur', function ( cm, event ) {
+						cm.on( 'blur', () => {
 							if ( interactiveHelper.parentNode ) {
 								interactiveHelper.parentNode.removeChild( interactiveHelper );
 							}
@@ -385,81 +347,14 @@
 						return cm;
 					});
 
-					if ( step.setup ) {
-						globalEval( step.setup );
-					}
-
-					if ( step.init ) {
-						execute();
-					}
+					if ( step.setup ) globalEval( step.setup );
+					if ( step.init ) execute();
 				}
 			});
 
-			window.addEventListener( 'keypress', function ( event ) {
-				if ( event.which === 13 && event.shiftKey ) {
-					execute();
-				}
+			window.addEventListener( 'keypress', event => {
+				if ( event.which === 13 && event.shiftKey ) execute();
 			});
-
-			function execute () {
-				var setup, code, line, pattern = /^(.+? at line (\d+) character (\d+))/, match, node;
-
-				if ( setup = self.get( 'currentStep.setup' ) ) {
-					globalEval( setup );
-				}
-
-				try {
-					self.set( 'templateError', false );
-					window.template = _Ractive.parse( self.get( 'template' ) );
-				} catch ( err ) {
-					setTimeout( () => {
-						self.set( 'templateError', true );
-						throw err;
-					});
-					return;
-				}
-
-				// ensure these haven't been mucked about with
-				window.output = outputBlock;
-				window.Ractive = FakeRactive;
-
-				code = self.get( 'javascript' );
-
-				try {
-					self.set( 'codeError', false );
-					code = babel.transform( code ).code; // TODO eesh
-					globalEval( code );
-				} catch ( err ) {
-					setTimeout( () => {
-						self.set( 'codeError', true );
-						throw err;
-					});
-				}
-
-				window.Ractive = _Ractive;
-			}
-
-			function executeInline () {
-				var wrapper;
-
-				try {
-					globalEval( activeInlineEditor.getValue() );
-
-					if ( interactiveHelperError.parentNode ) {
-						interactiveHelperError.parentNode.removeChild( interactiveHelperError );
-					}
-					self.set( 'inlineError', null );
-				} catch ( err ) {
-					self.set( 'inlineError', err.message );
-
-					wrapper = activeInlineEditor.display.wrapper;
-					wrapper.parentNode.insertBefore( interactiveHelperError, wrapper.nextSibling );
-
-					if ( interactiveHelper.parentNode ) {
-						interactiveHelper.parentNode.removeChild( interactiveHelper );
-					}
-				}
-			}
 		},
 
 		computed: {

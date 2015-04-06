@@ -1,23 +1,19 @@
 <p>Let's say we want to update a nested property. If we'd stored a reference to our <em>model object</em>, we could do it like this:</p>
 
-<pre class='prettyprint lang-js'>
+<textarea class='interactive'>
 // we didn't store a reference, so let's do it now
 var country = ractive.get('country');
 
 country.climate.rainfall = 'very high';
 ractive.update('country');
-</pre>
+</textarea>
 
 <p><span class='logo'>Ractive</span> will recognise that only the <code>rainfall</code> property has changed, and leave everything else untouched.</p>
 
 <p>But there's an easier way to do it:</p>
 
-<pre class='prettyprint lang-js'>
-ractive.set('country.climate.rainfall', 'very high');
-</pre>
+<textarea class='interactive'>
+ractive.set('country.climate.rainfall', 'too much');
+</textarea>
 
 <p>Try changing properties. (If you're not from the UK, suitable values for <code>rainfall</code> include 'near-constant', 'unnecessarily high', or 'an unholy amount of'.)</p>
-
-<textarea class='interactive'>
-ractive.set('country.climate.rainfall', 'very high');
-</textarea>

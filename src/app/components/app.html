@@ -109,6 +109,11 @@
 		width: 100%;
 		height: 100%;
 	}
+
+	.block button {
+		z-index: 2;
+		box-shadow: 0 0 8px 4px rgba(255,255,255,1);
+	}
 </style>
 
 <script>
@@ -123,9 +128,9 @@
 	const babel = require( 'babel-core' );
 
 	Ractive.events.tap   = require( 'ractive-events-tap' );
-	Ractive.events.fade  = require( 'ractive-transitions-fade' );
-	Ractive.events.fly   = require( 'ractive-transitions-fly' );
-	Ractive.events.slide = require( 'ractive-transitions-slide' );
+	Ractive.transitions.fade  = require( 'ractive-transitions-fade' );
+	Ractive.transitions.fly   = require( 'ractive-transitions-fly' );
+	Ractive.transitions.slide = require( 'ractive-transitions-slide' );
 
 	const globalEval = eval;
 	const _Ractive = Ractive;
@@ -133,6 +138,8 @@
 	window.Ractive = Ractive;
 	window.setTimeout = setTimeout;
 	window.clearTimeout = clearTimeout;
+
+	window.output = null; // to prevent lint errors...
 
 	// resize handlers
 	let resizeHandlers = [];

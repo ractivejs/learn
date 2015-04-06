@@ -3,7 +3,7 @@
 <p>There are two. Firstly, you can add partials as <code>&lt;script&gt;</code> tags on the page:</p>
 
 <pre class='prettyprint lang-html'>
-&lt;script id='item' type='text/ractive'&gt;
+&lt;script id='item' type='text/html'&gt;
 &lt;li class='{{ done ? "done" : "pending" }}'&gt;
   &lt;input type='checkbox' checked='{{done}}'&gt;
   &lt;span on-tap='edit'&gt;
@@ -21,25 +21,25 @@
 </pre>
 
 <aside>
-	<p>Note that the <code>id</code> attribute is the name of the partial, and that the <code>type</code> attribute is <code>text/ractive</code> (though it could be anything, as long as it's not <code>text/javascript</code>). This is a convenient way to quickly test ideas out on a blank page (you can use these script tags as main templates as well as partials - just reference them as e.g. <code>'#myTemplate'</code> in your initialisation options).</p>
+	<p>Note that the <code>id</code> attribute is the name of the partial, and that the <code>type</code> attribute is <code>text/html</code> (though it could be anything, as long as it's not <code>text/javascript</code>). This is a convenient way to quickly test ideas out on a blank page (you can use these script tags as main templates as well as partials - just reference them as e.g. <code>'#myTemplate'</code> in your initialisation options).</p>
 </aside>
 
-<p>Or, you can use an <em>inline partial</em>. Inline partials are declared within your main template, surrounded by comment blocks:</p>
+<p>Or, you can use an <em>inline partial</em>. Inline partials are declared within your main template like so:</p>
 
 <pre class='prettyprint lang-html'>
-&lt;!-- {{>item}} --&gt;
-&lt;li class='{{ done ? "done" : "pending" }}'&gt;
-  &lt;input type='checkbox' checked='{{done}}'&gt;
-  &lt;span on-tap='edit'&gt;
-    {{description}}
+{{#partial item}}
+  &lt;li class='{{ done ? "done" : "pending" }}'&gt;
+    &lt;input type='checkbox' checked='{{done}}'&gt;
+    &lt;span on-tap='edit'&gt;
+      {{description}}
 
-    {{#if editing}}
-      &lt;input class='edit' value='{{description}}' on-blur='stop_editing'&gt;
-    {{/if}}
-  &lt;/span&gt;
-  &lt;a class='button' on-tap='remove'&gt;x&lt;/a&gt;
-&lt;/li&gt;
-&lt;!-- {{/item}} --&gt;
+      {{#if editing}}
+        &lt;input class='edit' value='{{description}}' on-blur='stop_editing'&gt;
+      {{/if}}
+    &lt;/span&gt;
+    &lt;a class='button' on-tap='remove'&gt;x&lt;/a&gt;
+  &lt;/li&gt;
+{{/partial}}
 </pre>
 
 <p>Add the partial to the template, and remove it (and the <code>var item = ...</code> bit) from the javascript code.</p>

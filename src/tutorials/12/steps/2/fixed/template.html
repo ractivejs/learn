@@ -1,11 +1,7 @@
 {{#if visible === 1 }}
   <button intro='fade:slow' outro='fly:fast' on-tap='show:2'>Click me!</button>
-{{/if}}
-
-{{#if visible === 2 }}
+{{elseif visible === 2 }}
   <button intro='slide:slow' outro='fade:1000' on-tap='show:3'>And me!</button>
-{{/if}}
-
-{{#if visible === 3 }}
+{{elseif visible === 3 }}
   <button intro='fly:1000' outro='slide:100' on-tap='show:1'>Now click me!</button>
 {{/if}}

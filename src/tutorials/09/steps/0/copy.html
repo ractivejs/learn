@@ -22,9 +22,9 @@ var item = "&lt;li class='{{ done ? \"done\" : \"pending\" }}'&gt;" +
 
 <pre class='prettyprint lang-html'>
 &lt;ul class='todos'&gt;
-  {{#items:i}}
+  {{#each items:i}}
     {{&gt;item}}
-  {{/items}}
+  {{/each}}
 &lt;/ul&gt;
 </pre>
 

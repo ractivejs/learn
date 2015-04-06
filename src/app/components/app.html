@@ -1,13 +1,12 @@
-<link rel='ractive' href='./tutorial-header.html'>
-<link rel='ractive' href='./left-nav.html'>
+<link rel='ractive' href='./TutorialHeader.html'>
+<link rel='ractive' href='./LeftNav.html'>
 <link rel='ractive' href='./Boxxy.html'>
-<link rel='ractive' href='./codemirror.html'>
+<link rel='ractive' href='./Codemirror.html'>
 
 <div class='app' on-tap='tapped'>
-	<div class='content {{navOpen ? "obscured" : "" }}' on-tap='hideNav'>
-		<tutorial-header step='{{currentStep}}' on-resetStep='resetStep' on-fix='fix'/>
+	<div class='content {{navOpen ? "obscured" : "" }}' on-tap='hideNav()'>
+		<TutorialHeader step='{{currentStep}}' on-resetStep='resetStep' on-fix='fix'/>
 
-		<!-- TODO events shouldn't need to pass through parent component! -->
 		<Boxxy
 			columns='[
 				{ size: 45, children: [{ id: "copy-block", size: 3 }, { id: "output-block", size: 2 }] },
@@ -30,22 +29,22 @@
 
 			<!-- template -->
 			<div id='template' class='block {{templateError?"error":""}}'>
-				<codemirror mode='ractive' value='{{template}}' height='100%'/>
+				<Codemirror mode='ractive' value='{{template}}' height='100%'/>
 			</div>
 
 			<!-- js -->
 			<div id='javascript' class='block {{codeError?"error":""}}'>
-				<codemirror mode='javascript' value='{{javascript}}' height='100%'/>
+				<Codemirror mode='javascript' value='{{javascript}}' height='100%'/>
 
-				<button class='execute' on-tap='execute'>Execute (Shift-Enter)</button>
+				<button class='execute' on-tap='execute()'>Execute (Shift-Enter)</button>
 			</div>
 		</Boxxy>
 	</div>
 
-	<left-nav open='{{navOpen}}'/>
+	<LeftNav open='{{navOpen}}'/>
 </div>
 
-<div class='interactive-helper' on-mousedown-touchstart='executeInline'>
+<div class='interactive-helper' on-mousedown-touchstart='executeInlineSnippet()'>
 	<p><kbd>Shift-Space</kbd> or tap to run this code</p>
 </div>
 
@@ -139,88 +138,34 @@
 	let resizeHandlers = [];
 	window.onResize = handler => resizeHandlers.push( handler );
 
+	function detach ( node ) {
+		if ( node.parentNode ) {
+			node.parentNode.removeChild( node );
+		}
+	}
+
 	component.exports = {
 		onrender () {
+			this.outputBlock = this.find( '#output-block' );
+			this.interactiveHelper = this.find( '.interactive-helper' );
+			this.interactiveHelperError = this.find( '.interactive-helper-error' );
+
 			const copyBlock = this.find( '#copy-block' );
-			const outputBlock = this.find( '#output-block' );
 			const outputStyles = this.find( '#output-styles' );
 
-			const interactiveHelper = this.find( '.interactive-helper' );
-			const interactiveHelperError = this.find( '.interactive-helper-error' );
 
 			// detach helpers so we can insert them where needed
-			interactiveHelper.parentNode.removeChild( interactiveHelper );
-			interactiveHelperError.parentNode.removeChild( interactiveHelperError );
+			detach( this.interactiveHelper );
+			detach( this.interactiveHelperError );
 
 			let interactives; // inline executable snippets
-			let activeInlineEditor;
-
-			const execute = () => {
-				const setup = this.get( 'currentStep.setup' );
-				if ( setup ) globalEval( setup );
-
-				try {
-					this.set( 'templateError', false );
-					window.template = _Ractive.parse( this.get( 'template' ) );
-				} catch ( err ) {
-					setTimeout( () => {
-						this.set( 'templateError', true );
-						throw err;
-					});
-					return;
-				}
-
-				window.output = outputBlock;
-				window.Ractive = FakeRactive;
-
-				try {
-					this.set( 'codeError', false );
-
-					const code = this.get( 'javascript' );
-					const es5 = babel.transform( code, {
-						blacklist: [ 'useStrict' ] // important!
-					}).code;
-
-					globalEval( es5 );
-				} catch ( err ) {
-					setTimeout( () => {
-						this.set( 'codeError', true );
-						throw err;
-					});
-				}
-
-				window.Ractive = _Ractive;
-			};
-
-			const executeInline = () => {
-				try {
-					globalEval( activeInlineEditor.getValue() );
-
-					if ( interactiveHelperError.parentNode ) {
-						interactiveHelperError.parentNode.removeChild( interactiveHelperError );
-					}
-					this.set( 'inlineError', null );
-				} catch ( err ) {
-					this.set( 'inlineError', err.message );
-
-					const wrapper = activeInlineEditor.display.wrapper;
-					wrapper.parentNode.insertBefore( interactiveHelperError, wrapper.nextSibling );
-
-					if ( interactiveHelper.parentNode ) {
-						interactiveHelper.parentNode.removeChild( interactiveHelper );
-					}
-				}
-			};
 
 			this.on({
-				execute,
-				executeInline,
-				hideNav: () => this.set( 'navOpen', false ),
-				resize: () => resizeHandlers.forEach( call ),
-				'codemirror.enter': event => {
+				'resize': () => resizeHandlers.forEach( call ),
+				'Codemirror.enter': event => {
 					if ( event.original.shiftKey ) {
 						event.original.preventDefault();
-						execute();
+						this.execute();
 					}
 				},
 				resetStep: () => {
@@ -229,7 +174,7 @@
 					const { template, javascript, init } = this.get( 'currentStep' );
 
 					this.set({ template, javascript });
-					if ( init ) execute();
+					if ( init ) this.execute();
 				},
 				fix: () => {
 					const step = this.get( 'currentStep' );
@@ -240,7 +185,7 @@
 						javascript: fixed.javascript || step.javascript
 					});
 
-					execute();
+					this.execute();
 				},
 				selectCode: event => {
 					let target = event.original.target;
@@ -272,13 +217,10 @@
 				currentStep: ( step, oldStep ) => {
 					teardownExistingInstances();
 
-					// Destroy any old interactive codemirror components
+					// Destroy any old interactive Codemirror components
 					if ( interactives ) {
 						interactives.forEach( cm => cm.toTextArea() );
-
-						if ( interactiveHelper.parentNode ) {
-							interactiveHelper.parentNode.removeChild( interactiveHelper );
-						}
+						detach( this.interactiveHelper );
 					}
 
 					// Do any other cleanup
@@ -288,7 +230,7 @@
 
 					// Filthy hack... need to figure out how to make Ractive.extend
 					// work in this messed-up environment
-					outputBlock.innerHTML = '';
+					this.outputBlock.innerHTML = '';
 
 					// force a redraw... the use of transforms seems
 					// to bork things up a bit
@@ -323,38 +265,91 @@
 							keyMap: 'sublime'
 						});
 
-						cm.on( 'keydown', function ( cm, event ) {
+						cm.on( 'keydown', ( cm, event ) => {
 							if ( event.which === 32 && event.shiftKey ) {
 								// run code
 								event.preventDefault();
-								executeInline();
+								this.executeInlineSnippet();
 							}
 						});
 
 						cm.on( 'focus', cm => {
 							const wrapper = cm.display.wrapper;
-							wrapper.parentNode.insertBefore( interactiveHelper, wrapper.nextSibling );
+							wrapper.parentNode.insertBefore( this.interactiveHelper, wrapper.nextSibling );
 
-							activeInlineEditor = cm;
+							this.activeInlineEditor = cm;
 						});
 
-						cm.on( 'blur', () => {
-							if ( interactiveHelper.parentNode ) {
-								interactiveHelper.parentNode.removeChild( interactiveHelper );
-							}
-						});
+						cm.on( 'blur', () => detach( this.interactiveHelper ) );
 
 						return cm;
 					});
 
 					if ( step.setup ) globalEval( step.setup );
-					if ( step.init ) execute();
+					if ( step.init ) this.execute();
 				}
 			});
 
 			window.addEventListener( 'keypress', event => {
-				if ( event.which === 13 && event.shiftKey ) execute();
+				if ( event.which === 13 && event.shiftKey ) this.execute();
 			});
+		},
+
+		execute () {
+			const setup = this.get( 'currentStep.setup' );
+			if ( setup ) globalEval( setup );
+
+			try {
+				this.set( 'templateError', false );
+				window.template = _Ractive.parse( this.get( 'template' ) );
+			} catch ( err ) {
+				setTimeout( () => {
+					this.set( 'templateError', true );
+					throw err;
+				});
+				return;
+			}
+
+			window.output = this.outputBlock;
+			window.Ractive = FakeRactive;
+
+			try {
+				this.set( 'codeError', false );
+
+				const code = this.get( 'javascript' );
+				const es5 = babel.transform( code, {
+					blacklist: [ 'useStrict' ] // important!
+				}).code;
+
+				globalEval( es5 );
+			} catch ( err ) {
+				setTimeout( () => {
+					this.set( 'codeError', true );
+					throw err;
+				});
+			}
+
+			window.Ractive = _Ractive;
+		},
+
+		executeInlineSnippet () {
+			try {
+				globalEval( this.activeInlineEditor.getValue() );
+
+				detach( this.interactiveHelperError );
+				this.set( 'inlineError', null );
+			} catch ( err ) {
+				this.set( 'inlineError', err.message );
+
+				const wrapper = this.activeInlineEditor.display.wrapper;
+				wrapper.parentNode.insertBefore( this.interactiveHelperError, wrapper.nextSibling );
+
+				detach( this.interactiveHelper );
+			}
+		},
+
+		hideNav () {
+			this.set( 'navOpen', false );
 		},
 
 		computed: {

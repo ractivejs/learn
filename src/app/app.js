@@ -5,7 +5,9 @@ import getStep from 'getStep';
 
 new Nav({
 	el: '.nav-container',
-	tab: 'learn'
+	data: {
+		tab: 'learn'
+	}
 });
 
 const data = window.TUTORIAL_DATA;

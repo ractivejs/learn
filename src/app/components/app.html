@@ -125,7 +125,6 @@
 	} = require( 'utils/environment' );
 	const forceRedraw = require( 'utils/forceRedraw' );
 	const slugify = require( 'utils/slugify' );
-	const babel = require( 'babel-core' );
 
 	Ractive.events.tap   = require( 'ractive-events-tap' );
 	Ractive.transitions.fade  = require( 'ractive-transitions-fade' );
@@ -322,13 +321,7 @@
 
 			try {
 				this.set( 'codeError', false );
-
-				const code = this.get( 'javascript' );
-				const es5 = babel.transform( code, {
-					blacklist: [ 'useStrict' ] // important!
-				}).code;
-
-				globalEval( es5 );
+				globalEval( this.get( 'javascript' ) );
 			} catch ( err ) {
 				setTimeout( () => {
 					this.set( 'codeError', true );

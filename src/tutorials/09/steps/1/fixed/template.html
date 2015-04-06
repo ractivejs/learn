@@ -9,15 +9,15 @@
 </ul>
 
 {{#partial item}}
-<li class='{{ done ? "done" : "pending" }}'>
-  <input type='checkbox' checked='{{done}}'>
-  <span class='description' on-tap='edit'>
-    {{description}}
+  <li class='{{ done ? "done" : "pending" }}'>
+    <input type='checkbox' checked='{{done}}'>
+    <span on-tap='edit'>
+      {{description}}
 
-    {{#if editing}}
-      <input class='edit' value='{{description}}' on-blur='stop_editing'>
-    {{/if}}
-  </span>
-  <a class='button' on-tap='remove'>x</a>
-</li>
+      {{#if editing}}
+        <input class='edit' value='{{description}}' on-blur='stop_editing'>
+      {{/if}}
+    </span>
+    <a class='button' on-tap='remove'>x</a>
+  </li>
 {{/partial}}

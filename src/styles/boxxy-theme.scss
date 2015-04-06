@@ -1,0 +1,49 @@
+.boxxy-inner {
+	position: relative;
+	@include border-box;
+}
+
+.boxxy-inner.copy-block {
+	border: 1px solid #aaa;
+
+	.info {
+		background-color: #fafafa;
+
+		strong {
+			width: 2.5em;
+			display: inline-block;
+			text-align: center;
+			top: 0.1em;
+			line-height: 1;
+		}
+	}
+}
+
+.boxxy-vertical-control {
+	width: 10px !important;
+	background-color: transparent;
+	z-index: 10;
+}
+
+.boxxy-vertical-control:after {
+	width: 5px;
+	border-right: 1px solid #eee;
+	border-left: none;
+	left: -5px;
+}
+
+.boxxy-horizontal-control {
+	height: 10px !important;
+	background-color: transparent;
+	z-index: 10;
+}
+
+.boxxy-horizontal-control:after {
+	border-bottom: 1px solid #eee;
+	border-top: none;
+	top: -10px;
+}
+
+.boxxy-leaf {
+	padding: 0;
+}

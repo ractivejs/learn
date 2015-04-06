@@ -12,12 +12,10 @@ this.animate( 'selectedCity', cities[ index ], {
     // as determined by the easing function.
     //
     // `value` is the intermediate value
-  },
-  complete: function ( t, value ) {
-    // function that will be called when the animation
-    // completes - same function signature as `step`,
-    // except `t` is always 1
   }
+}).then( function () {
+  // .animate() returns a promise that fulfils
+  // when the animation completes
 });
 </pre>
 

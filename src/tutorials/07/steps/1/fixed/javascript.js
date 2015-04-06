@@ -21,7 +21,7 @@ var Slideshow = Ractive.extend({
   },
 
   // initialisation code
-  init: function ( options ) {
+  oninit: function ( options ) {
     this.on( 'goto', function ( event, index ) {
       this.goto( index );
     });

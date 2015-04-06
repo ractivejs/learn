@@ -11,13 +11,13 @@ var Slideshow = Ractive.extend({
   },
 
   // initialisation code
-  init: function ( options ) {
+  oninit: function ( options ) {
     // initialisation code goes here...
   }
 });
 </pre>
 
-<p>Each <code>Slideshow</code> instance will have a <code>goto</code> method in addition to the normal <code>Ractive</code> instance methods. Any set-up work we need to do can happen in the <code>init</code> method, which gets called as soon as the template has been rendered.</p>
+<p>Each <code>Slideshow</code> instance will have a <code>goto</code> method in addition to the normal <code>Ractive</code> instance methods. Any set-up work we need to do can happen in the <code>oninit</code> handler, which gets called as soon as the template has been rendered.</p>
 
 <p>Let's write our <code>goto</code> method:</p>
 
@@ -41,7 +41,7 @@ function ( imageNum ) {
 }
 </pre>
 
-<p>Next, we need to listen for the <code>goto</code> event, so that we can call <code>this.goto()</code>. We wire it up inside our <code>init</code> method:</p>
+<p>Next, we need to listen for the <code>goto</code> event, so that we can call <code>this.goto()</code>. We wire it up inside our <code>oninit</code> handler:</p>
 
 <pre class='prettyprint lang-js'>
 function ( options ) {

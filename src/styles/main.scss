@@ -1,9 +1,12 @@
-@import 'shared/scss/main';
+@import 'common/main';
 @import 'layout';
 @import 'loading';
-@import 'divvy';
-@import 'divvy-theme';
+@import 'boxxy-theme';
 @import 'code';
 @import 'copy';
 @import 'output';
 @import 'fx';
+
+header h1 {
+	border: none;
+}

@@ -49,9 +49,7 @@ var TodoList = Ractive.extend({
     this.set( 'items.' + index + '.editing', true );
   },
 
-  init: function ( options ) {
-    var self = this;
-
+  oninit: function ( options ) {
     // proxy event handlers
     this.on({
       remove: function ( event ) {

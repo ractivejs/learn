@@ -2,7 +2,7 @@
 
 if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
 	echo "Deploy script running..."
-	( cd build
+	( cd dist
 		git init
 		git config user.name "Travis-CI"
 		git config user.email "richard.a.harris+travis@gmail.com"

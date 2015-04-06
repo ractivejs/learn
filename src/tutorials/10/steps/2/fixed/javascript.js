@@ -4,12 +4,11 @@ getJSON( '/temperature.json' ).then( function ( cities ) {
   // when the user makes a selection from the drop-down, update the chart
   ractive.observe( 'selectedIndex', function ( index ) {
     this.animate( 'selectedCity', cities[ index ], {
-      easing: 'easeOut',
-      complete: function () {
-        setTimeout( function () {
-          ractive.set( 'selectedIndex', ( index + 1 ) % cities.length );
-        }, 1000 );
-      }
+      easing: 'easeOut'
+    }).then( function () {
+      setTimeout( function () {
+        ractive.set( 'selectedIndex', ( index + 1 ) % cities.length );
+      }, 1000 );
     });
   });
 });

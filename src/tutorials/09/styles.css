@@ -56,7 +56,7 @@
 	cursor: pointer;
 }
 
-#output-block li.done .description {
+#output-block li.done span {
 	opacity: 0.5;
 	text-decoration: line-through;
 }

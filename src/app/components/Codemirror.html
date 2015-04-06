@@ -1,0 +1,177 @@
+<div class='codemirror-container' style='{{#height}}height: {{height}};{{/height}}'>
+	<textarea></textarea>
+</div>
+
+<style>
+	.errors {
+		width: 0.8em;
+	}
+
+	.error-marker {
+		position: relative;
+	}
+
+	.error-marker:hover:after {
+		content: attr(data-errors);
+		position: absolute;
+		display: block;
+		background-color: white;
+		color: #d00;
+		width: 20em;
+		font-size: 0.8em;
+		line-height: 1;
+		left: 1em;
+		top: 1.5em;
+		padding: 0.5em;
+	}
+</style>
+
+<script>
+	const JSHINT = require( 'jshint' ).JSHINT;
+
+	const changeHandlers = {
+		javascript ( component, editor, value ) {
+			let errorsByLine = [];
+
+			// remove any existing error annotations
+			editor.clearGutter( 'errors' );
+
+			JSHINT( value, {
+				esnext: true,
+				asi: true,
+				undef: true
+			});
+
+			JSHINT.errors.forEach( error => {
+				let match;
+
+				if ( match = /^'([^']+)' is not defined/.exec( error.reason ) ) {
+					if ( window[ match[1] ] !== undefined ) {
+						return;
+					}
+				}
+
+				if ( !errorsByLine[ error.line ] ) {
+					errorsByLine[ error.line ] = [];
+				}
+
+				errorsByLine[ error.line ].push( error );
+			});
+
+			errorsByLine.forEach( ( errors, line ) => {
+				const marker = createMarker( errors.map( e => e.reason ).join( '\n\n' ) );
+				editor.setGutterMarker( line - 1, 'errors', marker );
+			});
+		},
+
+		ractive ( component, editor, value ) {
+			try {
+				Ractive.parse( value );
+				editor.clearGutter( 'errors' );
+			} catch ( err ) {
+				let marker = createMarker( err.shortMessage );
+				editor.setGutterMarker( err.line - 1, 'errors', marker );
+			}
+		}
+	};
+
+	function createMarker ( error ) {
+		const marker = document.createElement( 'span' );
+
+		marker.className = 'error-marker';
+		marker.style.color = '#d00';
+		marker.innerHTML = '●';
+
+		marker.setAttribute( 'data-errors', error );
+
+		return marker;
+	}
+
+	component.exports = {
+		onrender () {
+			this.lineWidgets = [];
+
+			const mode = this.get( 'mode' );
+			const autoIndent = this.get( 'autoIndent' ) !== false;
+
+			let altMode;
+
+			if ( mode === 'json' ) {
+				altMode = {
+					name: 'javascript',
+					json: true
+				};
+			} else if ( mode === 'ractive' ) {
+				altMode = 'htmlmixed';
+			}
+
+			const editor = CodeMirror.fromTextArea( this.find( 'textarea' ), {
+				mode: altMode || mode,
+				theme: this.get( 'theme' ) || 'ractive',
+				lineWrapping: true,
+				lineNumbers: true,
+				keyMap: 'sublime',
+				gutters: [ 'CodeMirror-linenumbers', 'errors' ]
+			});
+
+			this.editor = editor;
+
+			let updating;
+
+			editor.on( 'change', ( editor, change ) => {
+				if ( updating ) {
+					return;
+				}
+
+				if ( autoIndent && change.origin === 'paste' ) {
+					editor.operation( () => {
+						let line;
+						const end = CodeMirror.changeEnd( change ).line + 1;
+
+						for ( line = change.from.line; line < end; ++line ) {
+							editor.indentLine( line, 'smart' );
+						}
+					});
+				}
+
+				const value = editor.getValue();
+
+				if ( changeHandlers[ mode ] ) {
+					changeHandlers[ mode ]( this, editor, value );
+				}
+
+				updating = true;
+				this.set( 'value', value );
+				updating = false;
+			});
+
+			setTimeout( () => this.fire( 'shiftEnter' ), 500 );
+
+			editor.on( 'keydown', ( editor, event ) => {
+				const name = CodeMirror.keyNames[ event.which ];
+
+				if ( name ) {
+					this.fire( name.toLowerCase(), {
+						component: this,
+						shift: event.shiftKey,
+						original: event
+					});
+				}
+
+				return;
+			});
+
+			this.observe( 'value', value => {
+				if ( updating ) {
+					return;
+				}
+
+				updating = true;
+				editor.setValue( value || '' );
+				updating = false;
+			});
+
+			this.on( 'teardown', () => editor.toTextArea() );
+		}
+	};
+</script>

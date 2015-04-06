@@ -1,0 +1,380 @@
+<link rel='ractive' href='./TutorialHeader.html'>
+<link rel='ractive' href='./LeftNav.html'>
+<link rel='ractive' href='./Boxxy.html'>
+<link rel='ractive' href='./Codemirror.html'>
+
+<div class='app' on-tap='tapped'>
+	<div class='content {{navOpen ? "obscured" : "" }}' on-tap='hideNav()'>
+		<TutorialHeader step='{{currentStep}}' on-resetStep='resetStep' on-fix='fix'/>
+
+		<Boxxy
+			columns='[
+				{ size: 45, children: [{ id: "copy-block", size: 3 }, { id: "output-block", size: 2 }] },
+				{ size: 55, children: [{ id: "template", size: 3 }, { id: "javascript", size: 5 }] }
+			]'
+			on-resize='resize'
+		>
+			<!-- copy -->
+			<div id='copy-block' on-tap='selectCode'>
+				{{{copy}}}
+
+				{{#if next}}
+					<a class='next' href='{{next}}'>next &raquo;</a>
+				{{/if}}
+			</div>
+
+			<!-- output -->
+			<style id='output-styles' type='text/css'></style>
+			<div id='output-block'></div>
+
+			<!-- template -->
+			<div id='template' class='block {{templateError?"error":""}}'>
+				<Codemirror mode='ractive' value='{{template}}' height='100%'/>
+			</div>
+
+			<!-- js -->
+			<div id='javascript' class='block {{codeError?"error":""}}'>
+				<Codemirror mode='javascript' value='{{javascript}}' height='100%'/>
+
+				<button class='execute' on-tap='execute()'>Execute (Shift-Enter)</button>
+			</div>
+		</Boxxy>
+	</div>
+
+	<LeftNav open='{{navOpen}}'/>
+</div>
+
+<div class='interactive-helper' on-mousedown-touchstart='executeInlineSnippet()'>
+	<p><kbd>Shift-Space</kbd> or tap to run this code</p>
+</div>
+
+<div class='interactive-helper-error'>
+	{{inlineError}}
+</div>
+
+<style>
+	.app {
+		position: relative;
+		padding: 5em 1em 1em 5em;
+
+		-webkit-box-sizing: border-box;
+		-moz-box-sizing: border-box;
+		box-sizing: border-box;
+	}
+
+	.content {
+		position: relative;
+		width: 100%;
+		height: 100%;
+
+		-webkit-transition: opacity 0.2s cubic-bezier(.02,.91,.29,1);
+		-moz-transition: opacity 0.2s cubic-bezier(.02,.91,.29,1);
+		-ms-transition: opacity 0.2s cubic-bezier(.02,.91,.29,1);
+		-o-transition: opacity 0.2s cubic-bezier(.02,.91,.29,1);
+		transition: opacity 0.2s cubic-bezier(.02,.91,.29,1);
+	}
+
+	.content.obscured {
+		opacity: 0.2;
+	}
+
+	.boxxy-container {
+		position: relative;
+		width: 100%;
+		height: 100%;
+	}
+
+	#copy-block {
+		padding: 1em 1em 0 0;
+	}
+
+	#output-block {
+		padding: 1em 1em 0 0;
+	}
+
+	.execute {
+		position: absolute;
+		bottom: 0.2em;
+		right: 0.1em;
+		margin: 0;
+	}
+
+	.next {
+		float: right;
+		font-size: 1.6em;
+		padding: 0.5rem 1rem 1rem 1rem;
+	}
+
+	.block {
+		width: 100%;
+		height: 100%;
+	}
+
+	.block button {
+		z-index: 2;
+		box-shadow: 0 0 8px 4px rgba(255,255,255,1);
+	}
+</style>
+
+<script>
+	const {
+		FakeRactive,
+		teardownExistingInstances,
+		setTimeout,
+		clearTimeout
+	} = require( 'utils/environment' );
+	const forceRedraw = require( 'utils/forceRedraw' );
+	const slugify = require( 'utils/slugify' );
+
+	Ractive.events.tap   = require( 'ractive-events-tap' );
+	Ractive.transitions.fade  = require( 'ractive-transitions-fade' );
+	Ractive.transitions.fly   = require( 'ractive-transitions-fly' );
+	Ractive.transitions.slide = require( 'ractive-transitions-slide' );
+
+	const globalEval = eval;
+	const _Ractive = Ractive;
+
+	window.Ractive = Ractive;
+	window.setTimeout = setTimeout;
+	window.clearTimeout = clearTimeout;
+
+	window.output = null; // to prevent lint errors...
+
+	// resize handlers
+	let resizeHandlers = [];
+	window.onResize = handler => resizeHandlers.push( handler );
+
+	function detach ( node ) {
+		if ( node.parentNode ) {
+			node.parentNode.removeChild( node );
+		}
+	}
+
+	component.exports = {
+		onrender () {
+			this.outputBlock = this.find( '#output-block' );
+			this.interactiveHelper = this.find( '.interactive-helper' );
+			this.interactiveHelperError = this.find( '.interactive-helper-error' );
+
+			const copyBlock = this.find( '#copy-block' );
+			const outputStyles = this.find( '#output-styles' );
+
+
+			// detach helpers so we can insert them where needed
+			detach( this.interactiveHelper );
+			detach( this.interactiveHelperError );
+
+			let interactives; // inline executable snippets
+
+			this.on({
+				'resize': () => resizeHandlers.forEach( call ),
+				'Codemirror.enter': event => {
+					if ( event.original.shiftKey ) {
+						event.original.preventDefault();
+						this.execute();
+					}
+				},
+				resetStep: () => {
+					teardownExistingInstances();
+
+					const { template, javascript, init } = this.get( 'currentStep' );
+
+					this.set({ template, javascript });
+					if ( init ) this.execute();
+				},
+				fix: () => {
+					const step = this.get( 'currentStep' );
+					const fixed = step.fixed;
+
+					this.set({
+						template: fixed.template || step.template,
+						javascript: fixed.javascript || step.javascript
+					});
+
+					this.execute();
+				},
+				selectCode: event => {
+					let target = event.original.target;
+					let range;
+
+					while ( target !== event.node ) {
+						if ( target.tagName === 'PRE' && /prettyprint/.test( target.className ) ) {
+							// select contents
+							if ( window.getSelection ) {
+								range = document.createRange();
+								range.selectNodeContents( target );
+								range.setEnd( range.endContainer, range.endOffset );
+								window.getSelection().addRange( range );
+							} else if ( document.selection ) {
+								range = document.body.createTextRange();
+								range.moveToElementText( target );
+								range.select();
+							}
+
+							break;
+						}
+
+						target = target.parentNode;
+					}
+				}
+			});
+
+			this.observe({
+				currentStep: ( step, oldStep ) => {
+					teardownExistingInstances();
+
+					// Destroy any old interactive Codemirror components
+					if ( interactives ) {
+						interactives.forEach( cm => cm.toTextArea() );
+						detach( this.interactiveHelper );
+					}
+
+					// Do any other cleanup
+					if ( oldStep && oldStep.cleanup ) {
+						globalEval( oldStep.cleanup );
+					}
+
+					// Filthy hack... need to figure out how to make Ractive.extend
+					// work in this messed-up environment
+					this.outputBlock.innerHTML = '';
+
+					// force a redraw... the use of transforms seems
+					// to bork things up a bit
+					forceRedraw();
+
+					if ( !step ) return;
+
+					this.set({
+						// whenever this changes, shut the nav
+						navOpen: false,
+
+						// clone step data
+						copy: ( step.copy || '' ).trim(),
+						template: ( step.template || '' ).trim(),
+						javascript: ( step.javascript || '' ).trim()
+					});
+
+					outputStyles.innerHTML = step.styles || '';
+
+					copyBlock.scrollTop = 0;
+
+					prettyPrint( null, copyBlock );
+
+					interactives = this.findAll( '.interactive' ).map( textarea => {
+						textarea.value = textarea.value.trim();
+
+						const cm = CodeMirror.fromTextArea( textarea, {
+							mode: 'javascript',
+							theme: 'ractive',
+							lineWrapping: true,
+							lineNumbers: true,
+							keyMap: 'sublime'
+						});
+
+						cm.on( 'keydown', ( cm, event ) => {
+							if ( event.which === 32 && event.shiftKey ) {
+								// run code
+								event.preventDefault();
+								this.executeInlineSnippet();
+							}
+						});
+
+						cm.on( 'focus', cm => {
+							const wrapper = cm.display.wrapper;
+							wrapper.parentNode.insertBefore( this.interactiveHelper, wrapper.nextSibling );
+
+							this.activeInlineEditor = cm;
+						});
+
+						cm.on( 'blur', () => detach( this.interactiveHelper ) );
+
+						return cm;
+					});
+
+					if ( step.setup ) globalEval( step.setup );
+					if ( step.init ) this.execute();
+				}
+			});
+
+			window.addEventListener( 'keypress', event => {
+				if ( event.which === 13 && event.shiftKey ) this.execute();
+			});
+		},
+
+		execute () {
+			const setup = this.get( 'currentStep.setup' );
+			if ( setup ) globalEval( setup );
+
+			try {
+				this.set( 'templateError', false );
+				window.template = _Ractive.parse( this.get( 'template' ) );
+			} catch ( err ) {
+				setTimeout( () => {
+					this.set( 'templateError', true );
+					throw err;
+				});
+				return;
+			}
+
+			window.output = this.outputBlock;
+			window.Ractive = FakeRactive;
+
+			try {
+				this.set( 'codeError', false );
+				globalEval( this.get( 'javascript' ) );
+			} catch ( err ) {
+				setTimeout( () => {
+					this.set( 'codeError', true );
+					throw err;
+				});
+			}
+
+			window.Ractive = _Ractive;
+		},
+
+		executeInlineSnippet () {
+			try {
+				globalEval( this.activeInlineEditor.getValue() );
+
+				detach( this.interactiveHelperError );
+				this.set( 'inlineError', null );
+			} catch ( err ) {
+				this.set( 'inlineError', err.message );
+
+				const wrapper = this.activeInlineEditor.display.wrapper;
+				wrapper.parentNode.insertBefore( this.interactiveHelperError, wrapper.nextSibling );
+
+				detach( this.interactiveHelper );
+			}
+		},
+
+		hideNav () {
+			this.set( 'navOpen', false );
+		},
+
+		computed: {
+			next () {
+				const step = this.get( 'currentStep' );
+
+				if ( !step ) {
+					return null;
+				}
+
+				if ( step.index >= step.numSiblings - 1 ) {
+					// next tutorial
+					const tutorial = this.get( 'manifest' )[ step.tutorialIndex + 1 ];
+
+					if ( !tutorial ) {
+						return null;
+					}
+
+					return `/${slugify( tutorial.title )}/1`;
+				}
+
+				return `/${slugify( step.tutorialTitle )}/${( step.index + 2 )}`;
+			}
+		}
+	};
+
+	function call ( fn ) { fn(); }
+</script>

@@ -6,6 +6,7 @@
     "gobble": "^0.7.11",
     "gobble-babel": "^4.0.1",
     "gobble-browserify": "^0.2.0",
+    "gobble-cli": "^0.3.5",
     "gobble-concat": "^0.2.0",
     "gobble-derequire": "^0.1.1",
     "gobble-esperanto": "^0.1.0",
@@ -25,12 +26,16 @@
     "boxxy": "^0.2.2",
     "codemirror": "^5.1.0",
     "eslint": "^0.18.0",
+    "jshint": "^2.6.3",
     "ractive": "^0.7.2",
     "ractive-events-tap": "^0.2.0",
     "ractive-transitions-fade": "^0.2.0",
     "ractive-transitions-fly": "^0.2.0",
     "ractive-transitions-slide": "^0.2.0",
-    "ractive-www": "^0.4.0",
-    "roadtrip": "^0.1.5"
+    "ractive-www": "^0.4.1",
+    "roadtrip": "^0.1.6"
+  },
+  "scripts": {
+    "start": "gobble"
   }
 }

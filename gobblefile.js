@@ -75,7 +75,6 @@ var css = gobble([ 'src/styles', common.grab( 'scss' ).moveTo( 'common' ) ])
 
 var tutorials = gobble([
 	components.transform( 'ractive', { type: 'cjs' }),
-	gobble( 'src/templates' ).moveTo( 'templates' ),
 	gobble( 'src/tutorials' ).moveTo( 'tutorials' )
 ])
 .transform( copy )

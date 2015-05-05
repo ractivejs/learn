@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 18.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 1024 1024" enable-background="new 0 0 1024 1024" xml:space="preserve">
+<font horiz-adv-x="2048">
+<!-- Voltaire is a trademark of Sorkin Type Co. -->
+<!-- Copyright: Copyright 2014 Adobe System Incorporated. All rights reserved. -->
+<font-face font-family="Voltaire" units-per-em="2048" underline-position="-75" underline-thickness="50"/>
+<missing-glyph horiz-adv-x="748" d="M68,0l0,1365l544,0l0,-1365M136,68l408,0l0,1229l-408,0z"/>
+<glyph unicode="R" horiz-adv-x="940" d="M170,0l0,1613C188,1614 206,1614 223,1614C315,1614 397,1604 468,1583C553,1558 623,1522 678,1473C733,1424 775,1364 802,1294C829,1224 843,1146 843,1061C843,962 825,873 789,796C753,719 698,656 623,607l277,-607l-210,0l-228,537C429,528 393,521 356,516l0,-516M356,705C399,709 438,719 474,735C510,751 541,774 567,804C593,833 613,869 628,912C643,955 650,1004 650,1061C650,1118 643,1167 628,1210C613,1253 593,1289 567,1319C541,1348 510,1371 474,1387C438,1403 399,1413 356,1417z"/>
+</font>
+
+	<font horiz-adv-x="1000">
+<!-- Source is a trademark of Adobe Systems Incorporated in the United States and/or other countries. -->
+<font-face font-family="SourceSansPro-Light" units-per-em="1000" underline-position="-100" underline-thickness="50"/>
+<missing-glyph horiz-adv-x="632" d="M94,0l444,0l0,660l-444,0M139,84l0,516l147,-260M346,340l145,260l0,-516M158,39l95,164l61,105l4,0l59,-105l93,-164M314,372l-54,92l-87,155l284,0l-86,-155l-53,-92z"/>
+<glyph unicode="J" horiz-adv-x="455" d="M37,85C71,23 126,-12 200,-12C319,-12 364,73 364,179l0,480l-46,0l0,-475C318,77 279,30 199,30C144,30 105,52 72,108z"/>
+<glyph unicode="S" horiz-adv-x="514" d="M43,87C95,29 169,-12 265,-12C393,-12 476,64 476,165C476,266 411,307 338,340l-100,44C190,406 124,435 124,511C124,583 182,629 269,629C335,629 388,602 426,561l27,31C413,635 349,671 269,671C160,671 78,604 78,509C78,411 154,370 211,345l100,-45C376,271 430,244 430,162C430,84 366,30 266,30C189,30 120,65 72,119z"/>
+</font>
+
+	<rect fill="#739F40" width="1024" height="1024"/>
+<text transform="matrix(1 0 0 1 137.81 892.6309)" fill="#FFFFFF" font-family="'Voltaire'" font-size="963.1821">R</text>
+<text transform="matrix(1 0 0 1 577.9922 891.417)"><tspan x="0" y="0" fill="#FFFFFF" font-family="'SourceSansPro-Light'" font-size="328.2402" letter-spacing="-21">J</tspan><tspan x="128.3" y="0" fill="#FFFFFF" font-family="'SourceSansPro-Light'" font-size="328.2402">S</tspan></text>
+</svg>

@@ -26,7 +26,7 @@
     "boxxy": "^0.2.2",
     "codemirror": "^5.1.0",
     "eslint": "^0.18.0",
-    "jshint": "^2.6.3",
+    "jshint": "2.6.3",
     "ractive": "^0.7.2",
     "ractive-events-tap": "^0.2.0",
     "ractive-transitions-fade": "^0.2.0",

@@ -1,8 +1,9 @@
+sudo: false
 language: node_js
 node_js:
-- '0.10'
+- 'iojs'
 before_script:
-- chmod u+x scripts/deploy-to-gh-pages.sh; gobble build dist
+- chmod u+x scripts/deploy-to-gh-pages.sh; npm run build
 script: ./scripts/deploy-to-gh-pages.sh
 env:
   global:

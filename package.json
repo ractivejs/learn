@@ -36,6 +36,7 @@
     "roadtrip": "^0.1.6"
   },
   "scripts": {
-    "start": "gobble"
+    "start": "gobble",
+    "build": "gobble build -f dist"
   }
 }

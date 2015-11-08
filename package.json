@@ -12,14 +12,15 @@
     "gobble-esperanto": "^0.1.0",
     "gobble-esperanto-bundle": "^0.1.7",
     "gobble-ractive": "^0.2.0",
-    "gobble-sass": "^0.4.0",
+    "gobble-sass": "^0.5.0",
     "gobble-uglifyjs": "^0.1.0",
     "grunt": "~0.4.5",
     "lodash": "~2.4.1",
     "mkdirp": "~0.5.0",
     "promo": "~0.1.0",
     "sander": "^0.2.2",
-    "spelunk": "^0.2.0"
+    "spelunk": "^0.2.0",
+    "surge": "^0.17.2"
   },
   "dependencies": {
     "babel-core": "^5.0.8",
@@ -37,6 +38,8 @@
   },
   "scripts": {
     "start": "gobble",
-    "build": "gobble build -f dist"
+    "build": "gobble build -f dist",
+    "predeploy": "npm run build",
+    "deploy": "surge dist learn.ractivejs.org"
   }
 }

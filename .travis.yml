@@ -1,14 +1,9 @@
 sudo: false
 language: node_js
 node_js:
-- 'iojs'
-before_script:
-- chmod u+x scripts/deploy-to-gh-pages.sh; npm run build
-script: ./scripts/deploy-to-gh-pages.sh
-env:
-  global:
-  - GH_REF: github.com/ractivejs/learn.ractivejs.org.git
-  - secure: ah1vQQy5Zd69w91q4FvgDEGYQ5PhtXnQTITF1LYnPr8sZL/BIkuTnqqcd7wOmvLTpRDpI5xDVtmiHYHEgx/j6XTSEppTs/S2NN0UkQMjLzsqhbvYh7yZOI9WvmgA2QUzyg7LsKO6t4hb/8J7kTgAGzpW/eQ+ZViE6S0Aj0as5FU=
+- '5'
 branches:
   only:
     - master
+script:
+  npm run deploy

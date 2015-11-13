@@ -12,14 +12,14 @@
 {{/each}}
 </pre>
 
-<p>Now we need to add the <code>sort</code> function. Here's one (if you're not sure why this works, <a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Array/sort'>here's an MDN page</a> that will help explain):</p>
+<p>Now we need to add a <code>sort</code> function. Here's one (if you're not sure why this works, <a href='https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Array/sort'>here's an MDN page</a> that will help explain):</p>
 
 <pre class='prettyprint lang-js'>
-function ( array, sortColumn ) {
+sort: function ( array, column ) {
   array = array.slice(); // clone, so we don't modify the underlying data
 
   return array.sort( function ( a, b ) {
-    return a[ sortColumn ] < b[ sortColumn ] ? -1 : 1;
+    return a[ column ] < b[ column ] ? -1 : 1;
   });
 }
 </pre>

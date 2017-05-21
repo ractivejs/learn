@@ -3,7 +3,7 @@ var ractive = new Ractive({
   template: template
 });
 
-listener = ractive.on({
+var listener = ractive.on({
   activate: function () {
     alert( 'Activating!' );
   },
